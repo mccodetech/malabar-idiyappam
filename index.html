@@ -75,22 +75,20 @@
           </li>
         </ul>
       </div>
-
-      <div class="sidebar-footer">
-        <button class="btn btn-pill btn-block" onclick="confirmLogout()" style="background: var(--color-error); color: white;">
-          <i class="fa-solid fa-power-off"></i> ലോഗൗട്ട് (Logout)
-        </button>
-      </div>
     </aside>
 
     <div class="main-wrapper">
+      <!-- HEADER WITH SMALL LOGOUT BUTTON -->
       <nav class="navbar">
         <div>
           <h3 id="user-display">സ്വാഗതം</h3>
         </div>
-        <div>
-          <button class="btn btn-primary btn-pill" id="btn-top-refresh" onclick="refreshDirectoryData()">
-            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> റീഫ്രഷ് ചെയ്യുക
+        <div class="header-action-btns">
+          <button class="btn btn-primary btn-pill btn-sm" id="btn-top-refresh" onclick="refreshDirectoryData()">
+            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> <span class="hide-on-mobile">റീഫ്രഷ്</span>
+          </button>
+          <button class="btn btn-danger-soft btn-pill btn-sm" onclick="confirmLogout()" title="Logout">
+            <i class="fa-solid fa-power-off"></i> Logout
           </button>
         </div>
       </nav>
@@ -255,15 +253,15 @@
 
         <!-- SECTION 3: PRODUCTION UNIT -->
         <section id="tab-production" class="section-view">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+          <div class="section-header-flex">
             <h2><i class="fa-solid fa-industry"></i> പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ</h2>
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <input type="date" id="production-date-filter" class="form-control" style="min-height: 40px; padding: 6px 14px;" onchange="fetchProductionMetrics()">
+            <div class="header-action-group">
+              <input type="date" id="production-date-filter" class="form-control compact-input" onchange="fetchProductionMetrics()">
               <button class="btn btn-whatsapp btn-pill" onclick="shareProductionToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> പൂർണ്ണ ലിസ്റ്റ് വാട്സ്ആപ്പ് ചെയ്യുക
+                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">പൂർണ്ണ ലിസ്റ്റ് അയക്കുക</span>
               </button>
               <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-production')">
-                <i class="fa-solid fa-print"></i> പ്രിന്റ് എടുക്കുക
+                <i class="fa-solid fa-print"></i> <span class="hide-on-mobile">പ്രിന്റ്</span>
               </button>
             </div>
           </div>
@@ -287,30 +285,30 @@
             <h3><i class="fa-solid fa-boxes-packing"></i> പാക്കിംഗ് ക്രമീകരണം (Packet Breakdown)</h3>
             
             <div style="margin-top: 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div class="sub-header-flex">
                 <h4 style="color: #475569;">ഇടിയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('idiyappam')">
-                  <i class="fa-brands fa-whatsapp"></i> ഇടിയപ്പം ലിസ്റ്റ് മാത്രം അയക്കുക
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idiyappam')">
+                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
                 </button>
               </div>
               <div id="idiyappam-packets-list" class="packet-pill-box"></div>
             </div>
 
             <div style="margin-top: 25px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div class="sub-header-flex">
                 <h4 style="color: #475569;">വെള്ളയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('vellayappam')">
-                  <i class="fa-brands fa-whatsapp"></i> വെള്ളയപ്പം ലിസ്റ്റ് മാത്രം അയക്കുക
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('vellayappam')">
+                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
                 </button>
               </div>
               <div id="vellayappam-packets-list" class="packet-pill-box"></div>
             </div>
 
             <div style="margin-top: 25px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div class="sub-header-flex">
                 <h4 style="color: #475569;">ഇഡ്ഡലി പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('idli')">
-                  <i class="fa-brands fa-whatsapp"></i> ഇഡ്ഡലി ലിസ്റ്റ് മാത്രം അയക്കുക
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idli')">
+                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
                 </button>
               </div>
               <div id="idli-packets-list" class="packet-pill-box"></div>
@@ -338,14 +336,16 @@
         <!-- SECTION 4: INTERACTIVE CALENDAR MONTHLY OVERVIEW -->
         <section id="tab-calendar" class="section-view">
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <div class="section-header-flex">
               <h2><i class="fa-solid fa-calendar-days"></i> മാസാന്തര ഓർഡർ കലണ്ടർ</h2>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="month" id="calendar-month-picker" class="form-control" style="min-height: 40px; padding: 6px 14px;" onchange="renderMonthlyCalendar()">
+              <div class="header-action-group">
+                <input type="month" id="calendar-month-picker" class="form-control compact-input" onchange="renderMonthlyCalendar()">
               </div>
             </div>
 
-            <div class="calendar-grid" id="calendar-days-container"></div>
+            <div class="calendar-grid-wrapper">
+              <div class="calendar-grid" id="calendar-days-container"></div>
+            </div>
           </div>
 
           <div class="panel-card" id="calendar-day-detail-panel" style="display: none;">
@@ -376,6 +376,7 @@
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
+                    <th>പ്രവർത്തനങ്ങൾ</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -386,21 +387,21 @@
 
         <!-- SECTION 5: DELIVERY MANIFEST -->
         <section id="tab-delivery" class="section-view">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+          <div class="section-header-flex">
             <h2><i class="fa-solid fa-truck-dispatch"></i> കടകൾ തിരിച്ചുള്ള ഡെലിവറി ഷീറ്റ്</h2>
-            <div style="display: flex; gap: 10px;">
+            <div class="header-action-group">
               <button class="btn btn-whatsapp btn-pill" onclick="shareDeliveryToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> റൂട്ട് ഷീറ്റ് വാട്സ്ആപ്പ് ചെയ്യുക
+                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">വാട്സ്ആപ്പ്</span>
               </button>
               <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-delivery')">
-                <i class="fa-solid fa-file-pdf"></i> പ്രിന്റ് എടുക്കുക
+                <i class="fa-solid fa-file-pdf"></i> <span class="hide-on-mobile">പ്രിന്റ്</span>
               </button>
             </div>
           </div>
 
           <div class="panel-card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-              <div class="form-group" style="max-width: 380px; margin-bottom: 0;">
+              <div class="form-group" style="max-width: 380px; margin-bottom: 0; width: 100%;">
                 <label><i class="fa-solid fa-filter"></i> റൂട്ട് ഫിൽട്ടർ ചെയ്യുക</label>
                 <select id="delivery-route-filter" class="form-control" onchange="filterDeliveryTable()">
                   <option value="ALL">-- എല്ലാ റൂട്ടുകളും --</option>
@@ -414,7 +415,7 @@
               </div>
 
               <button class="btn btn-pill" style="background: var(--color-success); color: white;" onclick="markAllVisibleDelivered()">
-                <i class="fa-solid fa-check-double"></i> എല്ലാം ഡെലിവറി ചെയ്തു എന്ന് മാർക്ക് ചെയ്യുക
+                <i class="fa-solid fa-check-double"></i> എല്ലാം ഡെലിവറി ചെയ്തു
               </button>
             </div>
 
