@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>മലബാർ ഇടിയപ്പം കമ്പനി</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen">
+    <div class="auth-card">
+      <i class="fa-solid fa-utensils" style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 15px;"></i>
+      <h2>മലബാർ ഇടിയപ്പം കമ്പനി</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label>കട നമ്പർ / യൂസർനേം</label>
+          <input type="text" id="login-user" class="form-control" placeholder="കട നമ്പർ (e.g. 101) അല്ലെങ്കിൽ admin" required>
+        </div>
+        <div class="form-group">
+          <label>പാസ്‌വേഡ്</label>
+          <input type="password" id="login-pass" class="form-control" placeholder="പാസ്‌വേഡ് നൽകുക" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-pill btn-block" style="margin-top: 10px;">
+          <i class="fa-solid fa-right-to-bracket"></i> ലോഗിൻ ചെയ്യുക
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD UI -->
+  <div id="app-screen">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-brand">
+          <i class="fa-solid fa-wheat-awn"></i> മലബാർ ഇടിയപ്പം കോ.
+        </div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" onclick="switchTab('tab-stores-dir', event)">
+              <i class="fa-solid fa-store"></i> കടകൾ (കടകളുടെ ഡയറക്ടറി)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-orders', event)">
+              <i class="fa-solid fa-cart-plus"></i> ഓർഡറുകൾ (Daily Orders)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-production', event)">
+              <i class="fa-solid fa-industry"></i> പ്രൊഡക്ഷൻ യൂണിറ്റ്
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-calendar', event)">
+              <i class="fa-solid fa-calendar-days"></i> കലണ്ടർ വ്യൂ (Calendar Overview)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-delivery', event)">
+              <i class="fa-solid fa-truck"></i> ഡെലിവറി ഷീറ്റ്
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-accounts', event)">
+              <i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് (Accounts)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-settings', event)">
+              <i class="fa-solid fa-gear"></i> സിസ്റ്റം സെറ്റിംഗ്സ്
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-pill btn-block" onclick="confirmLogout()" style="background: var(--color-error); color: white;">
+          <i class="fa-solid fa-power-off"></i> ലോഗൗട്ട് (Logout)
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <nav class="navbar">
+        <div>
+          <h3 id="user-display">സ്വാഗതം</h3>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-pill" id="btn-top-refresh" onclick="refreshDirectoryData()">
+            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> റീഫ്രഷ് ചെയ്യുക
+          </button>
+        </div>
+      </nav>
+
+      <main class="content-area">
+        
+        <!-- SECTION 1: STORES DIRECTORY & REGISTRATION -->
+        <section id="tab-stores-dir" class="section-view active">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h2><i class="fa-solid fa-store-slash"></i> പുതിയ കട രജിസ്റ്റർ ചെയ്യുക</h2>
+            </div>
+            
+            <form id="store-form">
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>കടയുടെ പേര്</label>
+                  <input type="text" id="reg-store-name" class="form-control" placeholder="ഉദാഹരണത്തിന്: ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
+                </div>
+                <div class="form-group">
+                  <label>ഉടമയുടെ പേര്</label>
+                  <input type="text" id="reg-owner-name" class="form-control" placeholder="ഉടമയുടെ പേര്">
+                </div>
+              </div>
+
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>മൊബൈൽ നമ്പർ (ഓപ്ഷണൽ)</label>
+                  <div class="input-with-btn">
+                    <input type="tel" id="reg-mobile" class="form-control" placeholder="മൊബൈൽ നമ്പർ" oninput="autoCopyWhatsapp('reg-mobile', 'reg-whatsapp')">
+                    <button type="button" class="btn btn-pill btn-contact-picker" onclick="pickContactNumber('reg-mobile', 'reg-whatsapp')">
+                      <i class="fa-solid fa-address-book"></i> കോൺടാക്റ്റ്
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>വാട്സ്ആപ്പ് നമ്പർ (ബില്ലുകൾ അയക്കാൻ)</label>
+                  <div class="input-with-btn">
+                    <input type="tel" id="reg-whatsapp" class="form-control" placeholder="വാട്സ്ആപ്പ് നമ്പർ">
+                    <button type="button" class="btn btn-pill btn-contact-picker" onclick="pickContactNumber('reg-whatsapp')">
+                      <i class="fa-solid fa-address-book"></i> കോൺടാക്റ്റ്
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
+                <select id="reg-route" class="form-control" required>
+                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                </select>
+              </div>
+
+              <h4 style="margin: 25px 0 15px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> സാധനങ്ങളുടെ വില നിശ്ചയിക്കുക (Fixed Item Prices)</h4>
+              <div class="grid-cards" style="margin-bottom: 20px;">
+                <div class="form-group">
+                  <label>ഇടിയപ്പം വില (₹ / നിരക്ക്)</label>
+                  <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" placeholder="5.00" required>
+                </div>
+                <div class="form-group">
+                  <label>വെള്ളയപ്പം വില (₹ / നിരക്ക്)</label>
+                  <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" placeholder="6.00" required>
+                </div>
+                <div class="form-group">
+                  <label>ഇഡ്ഡലി വില (₹ / നിരക്ക്)</label>
+                  <input type="number" step="0.01" id="reg-price-idli" class="form-control" placeholder="4.00" required>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary btn-pill" onclick="confirmFormSubmit('store-form', 'കട രജിസ്ട്രേഷൻ വീണ്ടും പരിശോധിച്ച് ഉറപ്പുവരുത്തുക. തുടരണമോ?')">
+                <i class="fa-solid fa-user-plus"></i> കട സേവ് ചെയ്യുക
+              </button>
+            </form>
+          </div>
+
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h2><i class="fa-solid fa-address-book"></i> രജിസ്റ്റർ ചെയ്ത കടകൾ</h2>
+                <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">0 കടകൾ</span>
+              </div>
+            </div>
+            
+            <div class="table-container">
+              <table id="dashboard-stores-table">
+                <thead>
+                  <tr>
+                    <th>കട നമ്പർ</th>
+                    <th>കടയുടെ പേര്</th>
+                    <th>ഉടമ</th>
+                    <th>മൊബൈൽ</th>
+                    <th>റൂട്ട് ഷിഫ്റ്റ്</th>
+                    <th>വില നിരക്ക് (₹)</th>
+                    <th>പ്രവർത്തനങ്ങൾ</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: DAILY ORDER ENTRY -->
+        <section id="tab-orders" class="section-view">
+          <div class="panel-card">
+            <h2 style="margin-bottom: 20px;">
+              <i class="fa-solid fa-file-circle-plus"></i> ദിവസേനയുള്ള ഓർഡർ നൽകുക
+            </h2>
+            
+            <form id="order-form" autocomplete="off">
+              <div class="form-group">
+                <label><i class="fa-solid fa-calendar-day"></i> ഓർഡർ തിയ്യതി</label>
+                <input type="date" id="order-delivery-date" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa-solid fa-magnifying-glass"></i> കട പേര് / നമ്പർ തിരയുക</label>
+                <input type="text" id="order-store-search" class="form-control" placeholder="കട നമ്പർ അല്ലെങ്കിൽ പേര് നൽകുക..." oninput="handleInstantSuggest()" onfocus="handleInstantSuggest()">
+                <input type="hidden" id="selected-store-id">
+                <div id="suggest-box" class="suggest-results-box"></div>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa-solid fa-route"></i> ഡെലിവറി റൂട്ട് ഷിഫ്റ്റ്</label>
+                <select id="order-route" class="form-control" required>
+                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                </select>
+              </div>
+
+              <div class="grid-cards" style="margin-top: 20px;">
+                <div class="form-group">
+                  <label><i class="fa-solid fa-circle-dot"></i> ഇടിയപ്പം (എണ്ണം)</label>
+                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                  <label><i class="fa-solid fa-circle-dot"></i> വെള്ളയപ്പം (എണ്ണം)</label>
+                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                  <label><i class="fa-solid fa-circle-dot"></i> ഇഡ്ഡലി (എണ്ണം)</label>
+                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0">
+                </div>
+              </div>
+
+              <button type="submit" id="submit-order-btn" class="btn btn-primary btn-pill">
+                <i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- SECTION 3: PRODUCTION UNIT -->
+        <section id="tab-production" class="section-view">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h2><i class="fa-solid fa-industry"></i> പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="date" id="production-date-filter" class="form-control" style="min-height: 40px; padding: 6px 14px;" onchange="fetchProductionMetrics()">
+              <button class="btn btn-whatsapp btn-pill" onclick="shareProductionToWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> പൂർണ്ണ ലിസ്റ്റ് വാട്സ്ആപ്പ് ചെയ്യുക
+              </button>
+              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-production')">
+                <i class="fa-solid fa-print"></i> പ്രിന്റ് എടുക്കുക
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-cards">
+            <div class="stat-card">
+              <h4>ആകെ ഇടിയപ്പം</h4>
+              <div class="val" id="total-idiyappam">0</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--color-success);">
+              <h4>ആകെ വെള്ളയപ്പം</h4>
+              <div class="val" id="total-vellayappam">0</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--bg-sidebar);">
+              <h4>ആകെ ഇഡ്ഡലി</h4>
+              <div class="val" id="total-idli">0</div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3><i class="fa-solid fa-boxes-packing"></i> പാക്കിംഗ് ക്രമീകരണം (Packet Breakdown)</h3>
+            
+            <div style="margin-top: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="color: #475569;">ഇടിയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
+                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('idiyappam')">
+                  <i class="fa-brands fa-whatsapp"></i> ഇടിയപ്പം ലിസ്റ്റ് മാത്രം അയക്കുക
+                </button>
+              </div>
+              <div id="idiyappam-packets-list" class="packet-pill-box"></div>
+            </div>
+
+            <div style="margin-top: 25px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="color: #475569;">വെള്ളയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
+                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('vellayappam')">
+                  <i class="fa-brands fa-whatsapp"></i> വെള്ളയപ്പം ലിസ്റ്റ് മാത്രം അയക്കുക
+                </button>
+              </div>
+              <div id="vellayappam-packets-list" class="packet-pill-box"></div>
+            </div>
+
+            <div style="margin-top: 25px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 style="color: #475569;">ഇഡ്ഡലി പാക്കിംഗ് എണ്ണം:</h4>
+                <button class="btn btn-whatsapp btn-pill" style="padding: 4px 12px; font-size: 0.8rem;" onclick="shareSingleItemWhatsApp('idli')">
+                  <i class="fa-brands fa-whatsapp"></i> ഇഡ്ഡലി ലിസ്റ്റ് മാത്രം അയക്കുക
+                </button>
+              </div>
+              <div id="idli-packets-list" class="packet-pill-box"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3><i class="fa-solid fa-truck-ramp-box"></i> റൂട്ട് തിരിച്ചുള്ള ആകെ വിവരങ്ങൾ</h3>
+            <div class="table-container">
+              <table id="route-table">
+                <thead>
+                  <tr>
+                    <th>റൂട്ട് ഷിഫ്റ്റ്</th>
+                    <th>ഇടിയപ്പം</th>
+                    <th>വെള്ളയപ്പം</th>
+                    <th>ഇഡ്ഡലി</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: INTERACTIVE CALENDAR MONTHLY OVERVIEW -->
+        <section id="tab-calendar" class="section-view">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+              <h2><i class="fa-solid fa-calendar-days"></i> മാസാന്തര ഓർഡർ കലണ്ടർ</h2>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="month" id="calendar-month-picker" class="form-control" style="min-height: 40px; padding: 6px 14px;" onchange="renderMonthlyCalendar()">
+              </div>
+            </div>
+
+            <div class="calendar-grid" id="calendar-days-container"></div>
+          </div>
+
+          <div class="panel-card" id="calendar-day-detail-panel" style="display: none;">
+            <h3 id="cal-selected-date-title" style="margin-bottom: 15px; color: #1e3c72;"></h3>
+            
+            <div class="grid-cards">
+              <div class="stat-card">
+                <h4>ഇടിയപ്പം</h4>
+                <div class="val" id="cal-day-idiyappam">0</div>
+              </div>
+              <div class="stat-card" style="border-color: var(--color-success);">
+                <h4>വെള്ളയപ്പം</h4>
+                <div class="val" id="cal-day-vellayappam">0</div>
+              </div>
+              <div class="stat-card" style="border-color: var(--bg-sidebar);">
+                <h4>ഇഡ്ഡലി</h4>
+                <div class="val" id="cal-day-idli">0</div>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table id="calendar-day-orders-table">
+                <thead>
+                  <tr>
+                    <th>കട നമ്പർ</th>
+                    <th>കടയുടെ പേര്</th>
+                    <th>റൂട്ട്</th>
+                    <th>ഇടിയപ്പം</th>
+                    <th>വെള്ളയപ്പം</th>
+                    <th>ഇഡ്ഡലി</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: DELIVERY MANIFEST -->
+        <section id="tab-delivery" class="section-view">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h2><i class="fa-solid fa-truck-dispatch"></i> കടകൾ തിരിച്ചുള്ള ഡെലിവറി ഷീറ്റ്</h2>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-whatsapp btn-pill" onclick="shareDeliveryToWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> റൂട്ട് ഷീറ്റ് വാട്സ്ആപ്പ് ചെയ്യുക
+              </button>
+              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-delivery')">
+                <i class="fa-solid fa-file-pdf"></i> പ്രിന്റ് എടുക്കുക
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+              <div class="form-group" style="max-width: 380px; margin-bottom: 0;">
+                <label><i class="fa-solid fa-filter"></i> റൂട്ട് ഫിൽട്ടർ ചെയ്യുക</label>
+                <select id="delivery-route-filter" class="form-control" onchange="filterDeliveryTable()">
+                  <option value="ALL">-- എല്ലാ റൂട്ടുകളും --</option>
+                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                </select>
+              </div>
+
+              <button class="btn btn-pill" style="background: var(--color-success); color: white;" onclick="markAllVisibleDelivered()">
+                <i class="fa-solid fa-check-double"></i> എല്ലാം ഡെലിവറി ചെയ്തു എന്ന് മാർക്ക് ചെയ്യുക
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table id="delivery-manifest-table">
+                <thead>
+                  <tr>
+                    <th>ഡെലിവറി?</th>
+                    <th>തിയ്യതി</th>
+                    <th>കട നമ്പർ</th>
+                    <th>കടയുടെ പേര്</th>
+                    <th>ഇടിയപ്പം</th>
+                    <th>വെള്ളയപ്പം</th>
+                    <th>ഇഡ്ഡലി</th>
+                    <th>തുക (₹)</th>
+                    <th>പ്രവർത്തനങ്ങൾ</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: ACCOUNTS & COLLECTIONS LEDGER VIEW -->
+        <section id="tab-accounts" class="section-view">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2><i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് & കളക്ഷൻ</h2>
+          </div>
+
+          <div class="grid-cards">
+            <div class="stat-card">
+              <h4>ആകെ ബിസിനസ്</h4>
+              <div class="val" id="acc-total-revenue">₹0.00</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--color-success);">
+              <h4>പിരിഞ്ഞ തുക</h4>
+              <div class="val" id="acc-total-collected" style="color: var(--color-success);">₹0.00</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--color-error);">
+              <h4>കിട്ടാനുള്ള ബാക്കി</h4>
+              <div class="val" id="acc-total-pending" style="color: var(--color-error);">₹0.00</div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3><i class="fa-solid fa-receipt"></i> കടകളുടെ അക്കൗണ്ട് വിവരങ്ങൾ</h3>
+
+            <div class="table-container">
+              <table id="accounts-ledger-table">
+                <thead>
+                  <tr>
+                    <th style="width: 110px; text-align: center;">പണം തന്നോ?</th>
+                    <th>തിയ്യതി</th>
+                    <th>കട</th>
+                    <th>ഓർഡർ ബിൽ (₹)</th>
+                    <th>അടച്ച തുക (₹)</th>
+                    <th>ബാക്കി (₹)</th>
+                    <th>സ്റ്റാറ്റസ്</th>
+                    <th>പ്രവർത്തനങ്ങൾ</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 7: SYSTEM SETTINGS -->
+        <section id="tab-settings" class="section-view">
+          <div class="panel-card">
+            <h2 style="margin-bottom: 20px;"><i class="fa-solid fa-sliders"></i> സിസ്റ്റം സെറ്റിംഗ്സ്</h2>
+            <form id="settings-form">
+              <div class="form-group">
+                <label>Target Google Sheet ID</label>
+                <input type="text" id="set-sheet-id" class="form-control" value="1yX_lmhnfbI7o5IZuE__oHxjnVhlPjqVjSo-wdPlYfEM" required>
+              </div>
+              <div class="form-group">
+                <label>ആപ്ലിക്കേഷൻ പേര്</label>
+                <input type="text" id="set-app-title" class="form-control" value="മലബാർ ഇടിയപ്പം കമ്പനി" required>
+              </div>
+              <button type="button" class="btn btn-primary btn-pill" onclick="confirmFormSubmit('settings-form', 'സെറ്റിംഗ്സ് മാറ്റങ്ങൾ സൂക്ഷിക്കാൻ ഉറപ്പാണോ?')">
+                <i class="fa-solid fa-floppy-disk"></i> മാറ്റങ്ങൾ സേവ് ചെയ്യുക
+              </button>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- PARTIAL PAYMENT MODAL -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-hand-holding-dollar"></i> ഭാഗികമായി പണം സ്വീകരിക്കുക</h3>
+        <span onclick="closePaymentModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        <form id="payment-form">
+          <input type="hidden" id="pay-order-id">
+          <div class="form-group">
+            <label>കിട്ടാനുള്ള ബാക്കി തുക</label>
+            <input type="text" id="pay-balance-due" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label>ഇപ്പോൾ അടച്ച തുക (₹)</label>
+            <input type="number" step="1" id="pay-amount" class="form-control" placeholder="തുക നൽകുക" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pill" onclick="closePaymentModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-primary btn-pill" onclick="submitPaymentRecord()">
+          <i class="fa-solid fa-check"></i> സേവ് ചെയ്യുക
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT STORE MODAL -->
+  <div id="edit-store-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i> കട വിവരങ്ങൾ തിരുത്തുക</h3>
+        <span onclick="closeEditModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        <form id="edit-store-form">
+          <input type="hidden" id="edit-store-id">
+          <div class="form-group">
+            <label>കടയുടെ പേര്</label>
+            <input type="text" id="edit-store-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>ഉടമയുടെ പേര്</label>
+            <input type="text" id="edit-owner-name" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>മൊബൈൽ നമ്പർ</label>
+            <input type="tel" id="edit-mobile" class="form-control" oninput="autoCopyWhatsapp('edit-mobile', 'edit-whatsapp')">
+          </div>
+          <div class="form-group">
+            <label>വാട്സ്ആപ്പ് നമ്പർ</label>
+            <input type="tel" id="edit-whatsapp" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
+            <select id="edit-route" class="form-control" required>
+              <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+            </select>
+          </div>
+
+          <h4 style="margin: 20px 0 10px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> വില നിരക്കുകൾ (₹)</h4>
+          <div class="grid-cards" style="margin-bottom: 10px;">
+            <div class="form-group">
+              <label>ഇടിയപ്പം വില</label>
+              <input type="number" step="0.01" id="edit-price-idiyappam" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>വെള്ളയപ്പം വില</label>
+              <input type="number" step="0.01" id="edit-price-vellayappam" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>ഇഡ്ഡലി വില</label>
+              <input type="number" step="0.01" id="edit-price-idli" class="form-control" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pill" onclick="closeEditModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-primary btn-pill" onclick="confirmActionModal('കടയുടെ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?', submitStoreUpdate)">
+          <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT ORDER MODAL -->
+  <div id="edit-order-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i> ഓർഡർ തിരുത്തുക</h3>
+        <span onclick="closeEditOrderModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        <form id="edit-order-form">
+          <input type="hidden" id="edit-order-id">
+          <div class="form-group">
+            <label>ഡെലിവറി റൂട്ട് ഷിഫ്റ്റ്</label>
+            <select id="edit-order-route" class="form-control" required>
+              <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ഇടിയപ്പം എണ്ണം</label>
+            <input type="number" id="edit-order-idiyappam" class="form-control" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>വെള്ളയപ്പം എണ്ണം</label>
+            <input type="number" id="edit-order-vellayappam" class="form-control" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>ഇഡ്ഡലി എണ്ണം</label>
+            <input type="number" id="edit-order-idli" class="form-control" min="0" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pill" onclick="closeEditOrderModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-primary btn-pill" onclick="confirmActionModal('ഓർഡർ തിരുത്തലുകൾ സേവ് ചെയ്യാൻ ഉറപ്പാണോ?', submitOrderUpdate)">
+          <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM NOTIFICATION MODAL -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3 id="modal-title">വിവരങ്ങൾ</h3>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div id="modal-icon-container"></div>
+        <p id="modal-message">സിസ്റ്റം സന്ദേശം.</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-primary btn-pill" onclick="closeModal()">
+          <i class="fa-solid fa-check"></i> ശരി (OK)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION DIALOG MODAL -->
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header" style="background: var(--color-error);">
+        <h3 id="confirm-title">ഉറപ്പാക്കുക (Confirm)</h3>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <i class="fa-solid fa-circle-question modal-icon" style="color: var(--color-error);"></i>
+        <p id="confirm-message">നിങ്ങൾ ഈ പ്രവർത്തനം ചെയ്യാൻ ഉറപ്പാണോ?</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-pill" onclick="closeConfirmModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക (Cancel)</button>
+        <button class="btn btn-pill" id="confirm-action-btn" style="background: var(--color-error); color: white;">
+          <i class="fa-solid fa-check"></i> ഉറപ്പാണ് (Confirm)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
