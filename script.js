@@ -197,7 +197,7 @@ function loadStoreOptions() {
             <button class="btn btn-delete btn-pill" onclick="confirmDeleteStore('${store.id}', '${store.storeName}')">
               <i class="fa-solid fa-trash"></i> മായ്ക്കുക
             </button>
-            <a href="${store.whatsappLink}" target="_blank" class="btn btn-whatsapp btn-pill">
+            <a href="${store.whatsappLink}" target="_blank" class="btn btn-whatsapp btn-pill" style="padding:6px 12px; font-size:0.8rem;">
               <i class="fa-brands fa-whatsapp"></i> ചാറ്റ്
             </a>
           </td>
@@ -437,6 +437,7 @@ function renderMonthlyCalendar() {
   }
 }
 
+// 🌟 CALENDAR VIEW DETAILS WITH EDIT & DELETE BUTTONS
 function showCalendarDayDetails(dateStr, dayData) {
   document.getElementById('calendar-day-detail-panel').style.display = 'block';
   document.getElementById('cal-selected-date-title').innerText = `${dateStr} ലെ ഓർഡർ വിവരങ്ങൾ`;
@@ -449,11 +450,12 @@ function showCalendarDayDetails(dateStr, dayData) {
   tbody.innerHTML = '';
 
   if (!dayData.orders || dayData.orders.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8;">ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8;">ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
     return;
   }
 
   dayData.orders.forEach(o => {
+    const escapedRoute = String(o.route).replace(/'/g, "\\'");
     const row = `<tr>
       <td><strong>${o.storeId}</strong></td>
       <td>${o.storeName}</td>
@@ -461,6 +463,14 @@ function showCalendarDayDetails(dateStr, dayData) {
       <td>${o.idiyappam}</td>
       <td>${o.vellayappam}</td>
       <td>${o.idli}</td>
+      <td style="display: flex; gap: 6px;">
+        <button class="btn btn-edit btn-pill" onclick="openEditOrderModal('${o.orderId}', ${o.idiyappam}, ${o.vellayappam}, ${o.idli}, '${escapedRoute}')">
+          <i class="fa-solid fa-pen-to-square"></i> തിരുത്തുക
+        </button>
+        <button class="btn btn-delete btn-pill" onclick="confirmDeleteOrder('${o.orderId}')">
+          <i class="fa-solid fa-trash"></i> മായ്ക്കുക
+        </button>
+      </td>
     </tr>`;
     tbody.innerHTML += row;
   });
