@@ -820,11 +820,15 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     return;
   }
   
+  // 📌 1. അഡ്മിൻ ഇപ്പോൾ സെലക്ട് ചെയ്തു വെച്ചിട്ടുള്ള ഡേറ്റും റൂട്ടും ഓർത്തു വെക്കുന്നു (Memory Lock)
+  const lockedDeliveryDate = document.getElementById('order-delivery-date').value;
+  const lockedRoute = document.getElementById('order-route').value;
+
   const payload = {
     storeId: selectedStore.id,
     storeName: selectedStore.storeName,
-    route: document.getElementById('order-route').value,
-    deliveryDate: document.getElementById('order-delivery-date').value,
+    route: lockedRoute,
+    deliveryDate: lockedDeliveryDate,
     idiyappam: document.getElementById('qty-idiyappam').value,
     vellayappam: document.getElementById('qty-vellayappam').value,
     idli: document.getElementById('qty-idli').value
@@ -843,11 +847,18 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     if (res.success) {
       showModal('ഓർഡർ സമർപ്പിച്ചു', res.message, 'success');
       
-      const lastDate = document.getElementById('order-delivery-date').value;
+      // 📌 2. ഫോം ക്ലിയർ ചെയ്യുന്നു (എണ്ണവും കടയുടെ പേരും മാത്രം മായും)
       document.getElementById('order-form').reset();
       document.getElementById('selected-store-id').value = '';
-      document.getElementById('order-delivery-date').value = lastDate;
+      document.getElementById('order-store-search').value = '';
       
+      // 📌 3. അഡ്മിൻ നേരത്തെ ലോക്ക് ചെയ്ത അതേ ഡേറ്റും റൂട്ടും വീണ്ടും തിരികെ സെറ്റ് ചെയ്യുന്നു!
+      document.getElementById('order-delivery-date').value = lockedDeliveryDate;
+      document.getElementById('order-route').value = lockedRoute;
+      
+      // ഫോക്കസ് അടുത്ത കട തിരയാൻ പാകത്തിൽ സ്റ്റോർ സെർച്ച് ബോക്സിലേക്ക് മാറ്റുന്നു
+      document.getElementById('order-store-search').focus();
+
       fetchProductionMetrics();
     } else {
       showModal('സമർപ്പണം പരാജയപ്പെട്ടു', res.message, 'error');
@@ -859,7 +870,6 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     showModal('പിശക്', err.toString(), 'error');
   });
 });
-
 document.getElementById('store-form').addEventListener('submit', function(e) {
   e.preventDefault();
   const storeData = {
