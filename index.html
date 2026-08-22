@@ -45,7 +45,7 @@
     }
 
     .fa-solid, .fas, .fa-brands {
-      margin-right: 6px;
+      margin-right: 4px;
     }
 
     #auth-screen {
@@ -141,8 +141,8 @@
     }
 
     .btn {
-      min-height: 40px;
-      padding: 8px 18px;
+      min-height: 38px;
+      padding: 6px 16px;
       border: none;
       cursor: pointer;
       font-weight: 600;
@@ -151,18 +151,18 @@
       justify-content: center;
       transition: var(--transition-base);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .btn-sm {
-      min-height: 34px;
-      padding: 5px 12px;
+      min-height: 32px;
+      padding: 4px 10px;
       font-size: 0.8rem;
     }
 
     .btn-xs {
       min-height: 28px;
-      padding: 3px 10px;
+      padding: 2px 8px;
       font-size: 0.75rem;
     }
 
@@ -194,22 +194,16 @@
     .btn-whatsapp {
       background: #25d366;
       color: #ffffff;
-      padding: 6px 12px;
-      font-size: 0.8rem;
     }
 
     .btn-edit {
       background: var(--color-info);
       color: #ffffff;
-      padding: 6px 10px;
-      font-size: 0.8rem;
     }
 
     .btn-delete {
       background: var(--color-error);
       color: #ffffff;
-      padding: 6px 10px;
-      font-size: 0.8rem;
     }
 
     .btn-block {
@@ -491,7 +485,7 @@
     .modal-card {
       background: #ffffff;
       width: 90%;
-      max-width: 500px;
+      max-width: 480px;
       border-radius: var(--radius-modal);
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
@@ -656,7 +650,7 @@
 
       <main class="content-area">
         
-        <!-- SECTION 0: BULK ORDER ENTRY (Mobile Cards) -->
+        <!-- SECTION 0: BULK ORDER ENTRY -->
         <section id="tab-bulk-orders" class="section-view active">
           <div class="panel-card">
             <div class="section-header-flex">
@@ -669,7 +663,7 @@
               </button>
             </div>
 
-            <!-- Filters for Date & Route -->
+            <!-- Filters -->
             <div class="grid-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label><i class="fa-solid fa-calendar-day"></i> Delivery Date</label>
@@ -731,15 +725,15 @@
               <div class="grid-cards" style="margin-top: 15px;">
                 <div class="form-group">
                   <label>ഇടിയപ്പം (Qty)</label>
-                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0" value="0">
+                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0">
                 </div>
                 <div class="form-group">
                   <label>വെള്ളയപ്പം (Qty)</label>
-                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0" value="0">
+                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0">
                 </div>
                 <div class="form-group">
                   <label>ഇഡ്ഡലി (Qty)</label>
-                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0" value="0">
+                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0">
                 </div>
               </div>
 
@@ -905,7 +899,6 @@
                     <th>Store</th>
                     <th>Bill (₹)</th>
                     <th>Due (₹)</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -938,8 +931,19 @@
 
               <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
+                  <label>Owner Name</label>
+                  <input type="text" id="reg-owner-name" class="form-control" placeholder="Owner Name">
+                </div>
+                <div class="form-group">
                   <label>Mobile Number</label>
                   <input type="tel" id="reg-mobile" class="form-control" placeholder="Mobile Number">
+                </div>
+              </div>
+
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>WhatsApp Number</label>
+                  <input type="tel" id="reg-whatsapp" class="form-control" placeholder="WhatsApp Number">
                 </div>
                 <div class="form-group">
                   <label>Default Route</label>
@@ -984,11 +988,11 @@
               <table id="dashboard-stores-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th style="width: 50px;">ID</th>
                     <th>Store Name</th>
                     <th>Route</th>
                     <th>Mobile</th>
-                    <th>Action</th>
+                    <th style="width: 140px; text-align: center;">Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -998,6 +1002,67 @@
         </section>
 
       </main>
+    </div>
+  </div>
+
+  <!-- EDIT STORE MODAL -->
+  <div id="edit-store-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-pen-to-square"></i> Edit Store Details</h3>
+        <span onclick="closeEditModal()" style="cursor: pointer;"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        <form id="edit-store-form">
+          <input type="hidden" id="edit-store-id">
+          <div class="form-group">
+            <label>Store Name (കടയുടെ പേര്)</label>
+            <input type="text" id="edit-store-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Owner Name</label>
+            <input type="text" id="edit-owner-name" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Mobile</label>
+            <input type="tel" id="edit-mobile" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="tel" id="edit-whatsapp" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Route</label>
+            <select id="edit-route" class="form-control" required>
+              <option value="Route 1 - Morning">Route 1 - Morning</option>
+              <option value="Route 1 - Evening">Route 1 - Evening</option>
+              <option value="Route 2 - Morning">Route 2 - Morning</option>
+              <option value="Route 2 - Evening">Route 2 - Evening</option>
+              <option value="Route 3 - Morning">Route 3 - Morning</option>
+              <option value="Route 3 - Evening">Route 3 - Evening</option>
+            </select>
+          </div>
+
+          <div class="grid-cards" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label>ഇടിയപ്പം (₹)</label>
+              <input type="number" step="0.01" id="edit-price-idiyappam" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>വെള്ളയപ്പം (₹)</label>
+              <input type="number" step="0.01" id="edit-price-vellayappam" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>ഇഡ്ഡലി (₹)</label>
+              <input type="number" step="0.01" id="edit-price-idli" class="form-control" required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pill" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary btn-pill" onclick="submitStoreUpdate()"><i class="fa-solid fa-floppy-disk"></i> Update</button>
+      </div>
     </div>
   </div>
 
@@ -1058,7 +1123,6 @@
       checkSessionState();
       setDefaultDates();
       
-      // Auto jump on enter key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.classList.contains('bulk-qty-field')) {
           e.preventDefault();
@@ -1122,39 +1186,53 @@
       }, 500);
     }
 
-    // 🌟 Load and Sort Stores with Auto Next Store ID
+    // 🌟 Load and Properly Sort Stores Numerically (1, 2, 3... 109)
     function loadStoreOptions() {
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
-        const tableBody = document.querySelector('#dashboard-stores-table tbody');
-        if (tableBody) tableBody.innerHTML = '';
-
         let maxId = 0;
 
         snapshot.forEach(doc => {
           const store = { id: doc.id, ...doc.data() };
           registeredStoresList.push(store);
 
-          const numId = parseInt(doc.id);
+          const numId = parseInt(doc.id, 10);
           if (!isNaN(numId) && numId > maxId) maxId = numId;
+        });
 
-          if (tableBody) {
+        // 🌟 Proper Numerical Sorting: 1, 2, 3... 100, 101, 102
+        registeredStoresList.sort((a, b) => {
+          const numA = parseInt(a.id, 10);
+          const numB = parseInt(b.id, 10);
+          if (isNaN(numA) || isNaN(numB)) return a.id.localeCompare(b.id);
+          return numA - numB;
+        });
+
+        // Render Stores Table with Action Buttons
+        const tableBody = document.querySelector('#dashboard-stores-table tbody');
+        if (tableBody) {
+          tableBody.innerHTML = '';
+          registeredStoresList.forEach(store => {
             tableBody.innerHTML += `<tr>
               <td><strong>${store.id}</strong></td>
-              <td>${store.storeName}</td>
-              <td><small>${store.route || ''}</small></td>
+              <td><strong>${store.storeName}</strong></td>
+              <td><small style="color:#64748b;">${store.route || ''}</small></td>
               <td>${store.mobile || '-'}</td>
-              <td>
-                <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}')">
+              <td style="text-align: center; white-space: nowrap;">
+                <button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal('${store.id}')" title="Edit">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                ${store.whatsapp || store.mobile ? `
+                  <a href="https://wa.me/91${store.whatsapp || store.mobile}" target="_blank" class="btn btn-whatsapp btn-pill btn-xs" title="WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                  </a>` : ''}
+                <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}', '${store.storeName}')" title="Delete">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
             </tr>`;
-          }
-        });
-
-        // Numerical Sorting: 1, 2, 3...
-        registeredStoresList.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
+          });
+        }
 
         // Auto-assign next store number
         const nextIdField = document.getElementById('reg-store-id');
@@ -1167,7 +1245,7 @@
       });
     }
 
-    // 🌟 Render Mobile-Friendly Bulk Cards
+    // 🌟 Render Mobile-Friendly Bulk Cards without zero (Empty placeholder)
     function loadBulkOrderSheet() {
       const container = document.getElementById('bulk-cards-container');
       if (!container) return;
@@ -1188,9 +1266,11 @@
 
       filteredStores.forEach(store => {
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
-        const valIdi = existingOrder ? existingOrder.idiyappam : 0;
-        const valVel = existingOrder ? existingOrder.vellayappam : 0;
-        const valIdl = existingOrder ? existingOrder.idli : 0;
+        
+        // 🌟 If 0, show empty so user doesn't have to backspace '0'
+        const valIdi = existingOrder && existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '';
+        const valVel = existingOrder && existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '';
+        const valIdl = existingOrder && existingOrder.idli > 0 ? existingOrder.idli : '';
         const orderDocId = existingOrder ? existingOrder.orderId : '';
 
         const card = `
@@ -1205,15 +1285,15 @@
             <div class="bulk-inputs-row">
               <div class="bulk-input-col">
                 <label>ഇടിയപ്പം</label>
-                <input type="number" min="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
+                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
               </div>
               <div class="bulk-input-col">
                 <label>വെള്ളയപ്പം</label>
-                <input type="number" min="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
+                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
               </div>
               <div class="bulk-input-col">
                 <label>ഇഡ്ഡലി</label>
-                <input type="number" min="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
+                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
               </div>
             </div>
           </div>
@@ -1277,7 +1357,7 @@
       });
 
       batch.commit().then(() => {
-        showModal('Saved', `${count} orders saved successfully!`, 'success');
+        showModal('Saved', `${count} orders recorded successfully!`, 'success');
         fetchProductionMetrics();
       });
     }
@@ -1412,7 +1492,6 @@
           <td>[${item.storeId}] ${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
           <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
-          <td><span style="font-size:0.75rem;">${item.paymentStatus}</span></td>
         </tr>`;
       });
     }
@@ -1435,7 +1514,9 @@
       const storeId = document.getElementById('reg-store-id').value;
       const data = {
         storeName: document.getElementById('reg-store-name').value,
+        ownerName: document.getElementById('reg-owner-name').value,
         mobile: document.getElementById('reg-mobile').value,
+        whatsapp: document.getElementById('reg-whatsapp').value,
         route: document.getElementById('reg-route').value,
         priceIdiyappam: Number(document.getElementById('reg-price-idiyappam').value),
         priceVellayappam: Number(document.getElementById('reg-price-vellayappam').value),
@@ -1448,9 +1529,52 @@
       });
     });
 
-    function deleteStore(id) {
-      if (confirm(`Delete Store #${id}?`)) {
-        db.collection("stores").doc(id).delete();
+    // 🌟 Edit Store Modal
+    function openEditStoreModal(storeId) {
+      const store = registeredStoresList.find(s => s.id === storeId);
+      if (!store) return;
+
+      document.getElementById('edit-store-id').value = store.id;
+      document.getElementById('edit-store-name').value = store.storeName;
+      document.getElementById('edit-owner-name').value = store.ownerName || '';
+      document.getElementById('edit-mobile').value = store.mobile || '';
+      document.getElementById('edit-whatsapp').value = store.whatsapp || '';
+      document.getElementById('edit-route').value = store.route || 'Route 1 - Morning';
+      document.getElementById('edit-price-idiyappam').value = store.priceIdiyappam || 5;
+      document.getElementById('edit-price-vellayappam').value = store.priceVellayappam || 5;
+      document.getElementById('edit-price-idli').value = store.priceIdli || 5;
+
+      document.getElementById('edit-store-modal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-store-modal').classList.remove('active');
+    }
+
+    function submitStoreUpdate() {
+      const id = document.getElementById('edit-store-id').value;
+      const updateData = {
+        storeName: document.getElementById('edit-store-name').value,
+        ownerName: document.getElementById('edit-owner-name').value,
+        mobile: document.getElementById('edit-mobile').value,
+        whatsapp: document.getElementById('edit-whatsapp').value,
+        route: document.getElementById('edit-route').value,
+        priceIdiyappam: Number(document.getElementById('edit-price-idiyappam').value),
+        priceVellayappam: Number(document.getElementById('edit-price-vellayappam').value),
+        priceIdli: Number(document.getElementById('edit-price-idli').value)
+      };
+
+      db.collection("stores").doc(id).update(updateData).then(() => {
+        closeEditModal();
+        showModal('Updated', 'Store details updated!', 'success');
+      });
+    }
+
+    function deleteStore(id, name) {
+      if (confirm(`Are you sure you want to delete Store #${id} (${name})?`)) {
+        db.collection("stores").doc(id).delete().then(() => {
+          showModal('Deleted', 'Store removed.', 'success');
+        });
       }
     }
 
