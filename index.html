@@ -197,6 +197,11 @@
       box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
     }
 
+    .btn-secondary {
+      background: #475569;
+      color: #ffffff;
+    }
+
     .btn-danger-soft {
       background: #ffe3e3;
       color: #d63031;
@@ -711,9 +716,7 @@
                     <th style="text-align: center; width: 110px;">ഇഡ്ഡലി</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <!-- Populated via JS -->
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
             
@@ -1015,8 +1018,11 @@
         <!-- SECTION 6: STORES DIRECTORY -->
         <section id="tab-stores-dir" class="section-view">
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
               <h2><i class="fa-solid fa-store"></i> Register New Store</h2>
+              <button class="btn btn-secondary btn-pill btn-sm" onclick="openImportModal()">
+                <i class="fa-solid fa-file-import"></i> Import from Google Sheet
+              </button>
             </div>
             
             <form id="store-form">
@@ -1110,6 +1116,28 @@
         </section>
 
       </main>
+    </div>
+  </div>
+
+  <!-- IMPORT GOOGLE SHEET MODAL -->
+  <div id="import-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-import"></i> Import Stores from Google Sheets</h3>
+        <span onclick="closeImportModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">
+          Open your Google Sheet, select all cells in the <strong>Stores</strong> tab (including header), copy (<code>Ctrl+C</code>), and paste below:
+        </p>
+        <textarea id="import-sheet-data" style="width: 100%; height: 200px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: monospace; font-size: 0.85rem; outline: none;" placeholder="Paste Google Sheet data here..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pill" onclick="closeImportModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
+        <button class="btn btn-primary btn-pill" onclick="processImportSheetData()">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Import All Stores
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1490,6 +1518,75 @@
       });
     }
 
+    // GOOGLE SHEETS IMPORT LOGIC
+    function openImportModal() {
+      document.getElementById('import-sheet-data').value = '';
+      document.getElementById('import-modal').classList.add('active');
+    }
+
+    function closeImportModal() {
+      document.getElementById('import-modal').classList.remove('active');
+    }
+
+    function processImportSheetData() {
+      const rawText = document.getElementById('import-sheet-data').value.trim();
+      if (!rawText) {
+        showModal('Error', 'Please paste data from Google Sheet.', 'error');
+        return;
+      }
+
+      const lines = rawText.split('\n');
+      if (lines.length === 0) return;
+
+      const batch = db.batch();
+      let importedCount = 0;
+
+      lines.forEach((line, index) => {
+        const cols = line.split('\t').map(c => c.trim());
+        if (cols.length < 2) return;
+
+        // Skip header row if present
+        if (cols[0].toLowerCase().includes('store id') || cols[1].toLowerCase().includes('store name')) return;
+
+        const storeId = cols[0];
+        const storeName = cols[1];
+        const ownerName = cols[3] || storeName;
+        const mobile = cols[4] || '';
+        const whatsapp = cols[5] || mobile;
+        const route = cols[6] || 'Route 1 - Morning';
+        const priceIdi = parseFloat(cols[7]) || 5.0;
+        const priceVel = parseFloat(cols[8]) || 5.0;
+        const priceIdl = parseFloat(cols[9]) || 5.0;
+
+        if (storeId && storeName) {
+          const docRef = db.collection("stores").doc(storeId);
+          batch.set(docRef, {
+            storeName: storeName,
+            ownerName: ownerName,
+            mobile: mobile,
+            whatsapp: whatsapp,
+            route: route,
+            priceIdiyappam: priceIdi,
+            priceVellayappam: priceVel,
+            priceIdli: priceIdl
+          });
+          importedCount++;
+        }
+      });
+
+      if (importedCount === 0) {
+        showModal('Attention', 'No valid store rows detected.', 'error');
+        return;
+      }
+
+      batch.commit().then(() => {
+        closeImportModal();
+        showModal('Import Successful', `${importedCount} stores successfully imported from Google Sheet!`, 'success');
+      }).catch(err => {
+        showModal('Error', err.message, 'error');
+      });
+    }
+
     // BULK ORDER LOGIC
     function loadBulkOrderSheet() {
       const bulkTbody = document.querySelector('#bulk-orders-table tbody');
@@ -1499,7 +1596,7 @@
       const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
 
       if (registeredStoresList.length === 0) {
-        bulkTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No stores registered yet.</td></tr>';
+        bulkTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No stores registered yet. Use Import or Register to add stores.</td></tr>';
         return;
       }
 
