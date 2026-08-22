@@ -96,8 +96,8 @@
 
     .form-control {
       width: 100%;
-      min-height: 48px;
-      padding: 12px 20px;
+      min-height: 44px;
+      padding: 10px 16px;
       border: 2px solid #e2e8f0;
       border-radius: var(--radius-capsule);
       outline: none;
@@ -106,7 +106,7 @@
     }
 
     .compact-input {
-      min-height: 40px !important;
+      min-height: 38px !important;
       padding: 6px 14px !important;
       width: auto;
     }
@@ -114,6 +114,22 @@
     .form-control:focus {
       border-color: #2a5298;
       box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+    }
+
+    .bulk-qty-input {
+      width: 80px;
+      min-height: 36px;
+      padding: 6px 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      text-align: center;
+      outline: none;
+    }
+
+    .bulk-qty-input:focus {
+      border-color: #1e3c72;
+      background-color: #f0fdf4;
     }
 
     .suggest-results-box {
@@ -147,8 +163,8 @@
     }
 
     .btn {
-      min-height: 44px;
-      padding: 10px 22px;
+      min-height: 42px;
+      padding: 8px 20px;
       border: none;
       cursor: pointer;
       font-weight: 600;
@@ -217,13 +233,6 @@
       font-size: 0.8rem;
     }
 
-    .btn-contact-picker {
-      background: #e2e8f0;
-      color: #334155;
-      padding: 0 16px;
-      white-space: nowrap;
-    }
-
     .btn-primary:hover, .btn-pill:hover, .btn-whatsapp:hover, .btn-edit:hover, .btn-delete:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
@@ -256,7 +265,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       display: flex;
       align-items: center;
     }
@@ -267,18 +276,19 @@
     }
 
     .nav-item {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
-      padding: 14px 20px;
+      padding: 12px 18px;
       color: var(--text-sidebar);
       text-decoration: none;
       border-radius: var(--radius-pill);
       transition: var(--transition-base);
       font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .nav-link:hover, .nav-link.active {
@@ -309,7 +319,7 @@
     }
 
     .content-area {
-      padding: 30px;
+      padding: 25px 30px;
       flex-grow: 1;
     }
 
@@ -430,7 +440,7 @@
     }
 
     .calendar-day-pills {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: #475569;
       line-height: 1.3;
@@ -597,15 +607,15 @@
       <h2>മലബാർ ഇടിയപ്പം കമ്പനി</h2>
       <form id="login-form">
         <div class="form-group">
-          <label>കട നമ്പർ / യൂസർനേം</label>
-          <input type="text" id="login-user" class="form-control" placeholder="കട നമ്പർ അല്ലെങ്കിൽ admin" required>
+          <label>Username / Store ID</label>
+          <input type="text" id="login-user" class="form-control" placeholder="Enter ID (e.g. admin)" required>
         </div>
         <div class="form-group">
-          <label>പാസ്‌വേഡ്</label>
-          <input type="password" id="login-pass" class="form-control" placeholder="പാസ്‌വേഡ് നൽകുക" required>
+          <label>Password</label>
+          <input type="password" id="login-pass" class="form-control" placeholder="Enter Password" required>
         </div>
         <button type="submit" class="btn btn-primary btn-pill btn-block" style="margin-top: 10px;">
-          <i class="fa-solid fa-right-to-bracket"></i> ലോഗിൻ ചെയ്യുക
+          <i class="fa-solid fa-right-to-bracket"></i> Login
         </button>
       </form>
     </div>
@@ -616,37 +626,42 @@
     <aside class="sidebar">
       <div>
         <div class="sidebar-brand">
-          <i class="fa-solid fa-wheat-awn"></i> മലബാർ ഇടിയപ്പം കോ.
+          <i class="fa-solid fa-wheat-awn"></i> മലബാർ ഇടിയപ്പം
         </div>
         <ul class="nav-list">
           <li class="nav-item">
-            <a href="#" class="nav-link active" onclick="switchTab('tab-stores-dir', event)">
-              <i class="fa-solid fa-store"></i> കടകൾ (കടകളുടെ ഡയറക്ടറി)
+            <a href="#" class="nav-link active" onclick="switchTab('tab-bulk-orders', event)">
+              <i class="fa-solid fa-table-list"></i> Bulk Orders
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="switchTab('tab-orders', event)">
-              <i class="fa-solid fa-cart-plus"></i> ഓർഡറുകൾ (Daily Orders)
+              <i class="fa-solid fa-cart-plus"></i> Single Order
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="switchTab('tab-production', event)">
-              <i class="fa-solid fa-industry"></i> പ്രൊഡക്ഷൻ യൂണിറ്റ്
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link" onclick="switchTab('tab-calendar', event)">
-              <i class="fa-solid fa-calendar-days"></i> കലണ്ടർ വ്യൂ (Calendar Overview)
+              <i class="fa-solid fa-industry"></i> Production
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="switchTab('tab-delivery', event)">
-              <i class="fa-solid fa-truck"></i> ഡെലിവറി ഷീറ്റ്
+              <i class="fa-solid fa-truck"></i> Delivery Sheet
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-calendar', event)">
+              <i class="fa-solid fa-calendar-days"></i> Calendar
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="switchTab('tab-accounts', event)">
-              <i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് (Accounts)
+              <i class="fa-solid fa-wallet"></i> Accounts
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-stores-dir', event)">
+              <i class="fa-solid fa-store"></i> Stores Directory
             </a>
           </li>
         </ul>
@@ -656,11 +671,11 @@
     <div class="main-wrapper">
       <nav class="navbar">
         <div>
-          <h3 id="user-display">സ്വാഗതം</h3>
+          <h3 id="user-display">Welcome</h3>
         </div>
         <div class="header-action-btns">
           <button class="btn btn-primary btn-pill btn-sm" id="btn-top-refresh" onclick="refreshDirectoryData()">
-            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> <span class="hide-on-mobile">റീഫ്രഷ്</span>
+            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> <span class="hide-on-mobile">Refresh</span>
           </button>
           <button class="btn btn-danger-soft btn-pill btn-sm" onclick="confirmLogout()" title="Logout">
             <i class="fa-solid fa-power-off"></i> Logout
@@ -669,170 +684,117 @@
       </nav>
 
       <main class="content-area">
-        <!-- SECTION 1: STORES DIRECTORY & REGISTRATION -->
-        <section id="tab-stores-dir" class="section-view active">
+        
+        <!-- SECTION 0: BULK ORDER ENTRY -->
+        <section id="tab-bulk-orders" class="section-view active">
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h2><i class="fa-solid fa-store"></i> പുതിയ കട രജിസ്റ്റർ ചെയ്യുക</h2>
-            </div>
-            
-            <form id="store-form">
-              <div class="grid-cards" style="margin-bottom: 0;">
-                <div class="form-group">
-                  <label>കട നമ്പർ (Store ID)</label>
-                  <input type="text" id="reg-store-id" class="form-control" placeholder="e.g. 101" required>
-                </div>
-                <div class="form-group">
-                  <label>കടയുടെ പേര്</label>
-                  <input type="text" id="reg-store-name" class="form-control" placeholder="ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
-                </div>
+            <div class="section-header-flex">
+              <div>
+                <h2><i class="fa-solid fa-table-list"></i> Bulk Daily Order Entry</h2>
+                <small style="color: #64748b;">Enter order quantities for all stores together</small>
               </div>
-
-              <div class="grid-cards" style="margin-bottom: 0;">
-                <div class="form-group">
-                  <label>ഉടമയുടെ പേര്</label>
-                  <input type="text" id="reg-owner-name" class="form-control" placeholder="ഉടമയുടെ പേര്">
+              <div class="header-action-group">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label style="font-weight: 600; font-size: 0.9rem; color: #475569;">Delivery Date:</label>
+                  <input type="date" id="bulk-order-date" class="form-control compact-input" onchange="loadBulkOrderSheet()">
                 </div>
-                <div class="form-group">
-                  <label>മൊബൈൽ നമ്പർ</label>
-                  <div class="input-with-btn">
-                    <input type="tel" id="reg-mobile" class="form-control" placeholder="മൊബൈൽ നമ്പർ" oninput="autoCopyWhatsapp('reg-mobile', 'reg-whatsapp')">
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid-cards" style="margin-bottom: 0;">
-                <div class="form-group">
-                  <label>വാട്സ്ആപ്പ് നമ്പർ</label>
-                  <input type="tel" id="reg-whatsapp" class="form-control" placeholder="വാട്സ്ആപ്പ് നമ്പർ">
-                </div>
-                <div class="form-group">
-                  <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
-                  <select id="reg-route" class="form-control" required>
-                    <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                    <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                    <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                    <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                    <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                    <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  </select>
-                </div>
-              </div>
-
-              <h4 style="margin: 25px 0 15px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> സാധനങ്ങളുടെ വില നിശ്ചയിക്കുക (Fixed Item Prices)</h4>
-              <div class="grid-cards" style="margin-bottom: 20px;">
-                <div class="form-group">
-                  <label>ഇടിയപ്പം വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" placeholder="5.00" required>
-                </div>
-                <div class="form-group">
-                  <label>വെള്ളയപ്പം വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" placeholder="6.00" required>
-                </div>
-                <div class="form-group">
-                  <label>ഇഡ്ഡലി വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-idli" class="form-control" placeholder="4.00" required>
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-pill">
-                <i class="fa-solid fa-user-plus"></i> കട സേവ് ചെയ്യുക
-              </button>
-            </form>
-          </div>
-
-          <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <h2><i class="fa-solid fa-address-book"></i> രജിസ്റ്റർ ചെയ്ത കടകൾ</h2>
-                <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">0 കടകൾ</span>
+                <button class="btn btn-primary btn-pill btn-sm" onclick="saveBulkOrders()">
+                  <i class="fa-solid fa-floppy-disk"></i> Save All Orders
+                </button>
               </div>
             </div>
-            
+
             <div class="table-container">
-              <table id="dashboard-stores-table">
+              <table id="bulk-orders-table">
                 <thead>
                   <tr>
-                    <th>കട നമ്പർ</th>
-                    <th>കടയുടെ പേര്</th>
-                    <th>ഉടമ</th>
-                    <th>മൊബൈൽ</th>
-                    <th>റൂട്ട് ഷിഫ്റ്റ്</th>
-                    <th>വില നിരക്ക് (₹)</th>
-                    <th>പ്രവർത്തനങ്ങൾ</th>
+                    <th style="width: 80px;">Store ID</th>
+                    <th>Store Name</th>
+                    <th>Route / Shift</th>
+                    <th style="text-align: center; width: 110px;">ഇടിയപ്പം</th>
+                    <th style="text-align: center; width: 110px;">വെള്ളയപ്പം</th>
+                    <th style="text-align: center; width: 110px;">ഇഡ്ഡലി</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                  <!-- Populated via JS -->
+                </tbody>
               </table>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary btn-pill" onclick="saveBulkOrders()">
+                <i class="fa-solid fa-floppy-disk"></i> Save All Orders
+              </button>
             </div>
           </div>
         </section>
 
-        <!-- SECTION 2: DAILY ORDER ENTRY -->
+        <!-- SECTION 1: SINGLE DAILY ORDER ENTRY -->
         <section id="tab-orders" class="section-view">
           <div class="panel-card">
             <h2 style="margin-bottom: 20px;">
-              <i class="fa-solid fa-file-circle-plus"></i> ദിവസേനയുള്ള ഓർഡർ നൽകുക
+              <i class="fa-solid fa-file-circle-plus"></i> Single Order Entry
             </h2>
             
             <form id="order-form" autocomplete="off">
               <div class="form-group">
-                <label><i class="fa-solid fa-calendar-day"></i> ഓർഡർ തിയ്യതി</label>
+                <label><i class="fa-solid fa-calendar-day"></i> Delivery Date</label>
                 <input type="date" id="order-delivery-date" class="form-control" required>
               </div>
 
               <div class="form-group">
-                <label><i class="fa-solid fa-magnifying-glass"></i> കട പേര് / നമ്പർ തിരയുക</label>
-                <input type="text" id="order-store-search" class="form-control" placeholder="കട നമ്പർ അല്ലെങ്കിൽ പേര് നൽകുക..." oninput="handleInstantSuggest()" onfocus="handleInstantSuggest()">
+                <label><i class="fa-solid fa-magnifying-glass"></i> Search Store (Name or ID)</label>
+                <input type="text" id="order-store-search" class="form-control" placeholder="Type store name or number..." oninput="handleInstantSuggest()" onfocus="handleInstantSuggest()">
                 <input type="hidden" id="selected-store-id">
                 <div id="suggest-box" class="suggest-results-box"></div>
               </div>
 
               <div class="form-group">
-                <label><i class="fa-solid fa-route"></i> ഡെലിവറി റൂട്ട് ഷിഫ്റ്റ്</label>
+                <label><i class="fa-solid fa-route"></i> Delivery Route & Shift</label>
                 <select id="order-route" class="form-control" required>
-                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
+                  <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
+                  <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
+                  <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
+                  <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
+                  <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
                 </select>
               </div>
 
               <div class="grid-cards" style="margin-top: 20px;">
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> ഇടിയപ്പം (എണ്ണം)</label>
+                  <label><i class="fa-solid fa-circle-dot"></i> ഇടിയപ്പം (Qty)</label>
                   <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> വെള്ളയപ്പം (എണ്ണം)</label>
+                  <label><i class="fa-solid fa-circle-dot"></i> വെള്ളയപ്പം (Qty)</label>
                   <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> ഇഡ്ഡലി (എണ്ണം)</label>
+                  <label><i class="fa-solid fa-circle-dot"></i> ഇഡ്ഡലി (Qty)</label>
                   <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0" value="0">
                 </div>
               </div>
 
               <button type="submit" id="submit-order-btn" class="btn btn-primary btn-pill">
-                <i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക
+                <i class="fa-solid fa-paper-plane"></i> Submit Order
               </button>
             </form>
           </div>
         </section>
 
-        <!-- SECTION 3: PRODUCTION UNIT -->
+        <!-- SECTION 2: PRODUCTION UNIT -->
         <section id="tab-production" class="section-view">
           <div class="section-header-flex">
-            <h2><i class="fa-solid fa-industry"></i> പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ</h2>
+            <h2><i class="fa-solid fa-industry"></i> Production & Packaging</h2>
             <div class="header-action-group">
               <input type="date" id="production-date-filter" class="form-control compact-input" onchange="fetchProductionMetrics()">
               <button class="btn btn-whatsapp btn-pill" onclick="shareProductionToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">പൂർണ്ണ ലിസ്റ്റ് അയക്കുക</span>
+                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">Share Summary</span>
               </button>
               <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-production')">
-                <i class="fa-solid fa-print"></i> <span class="hide-on-mobile">പ്രിന്റ്</span>
+                <i class="fa-solid fa-print"></i> <span class="hide-on-mobile">Print</span>
               </button>
             </div>
           </div>
@@ -853,13 +815,13 @@
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-boxes-packing"></i> പാക്കിംഗ് ക്രമീകരണം (Packet Breakdown)</h3>
+            <h3><i class="fa-solid fa-boxes-packing"></i> Packet Breakdown</h3>
             
             <div style="margin-top: 20px;">
               <div class="sub-header-flex">
                 <h4 style="color: #475569;">ഇടിയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idiyappam')">
-                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
+                  <i class="fa-brands fa-whatsapp"></i> Share
                 </button>
               </div>
               <div id="idiyappam-packets-list" class="packet-pill-box"></div>
@@ -869,7 +831,7 @@
               <div class="sub-header-flex">
                 <h4 style="color: #475569;">വെള്ളയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('vellayappam')">
-                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
+                  <i class="fa-brands fa-whatsapp"></i> Share
                 </button>
               </div>
               <div id="vellayappam-packets-list" class="packet-pill-box"></div>
@@ -879,7 +841,7 @@
               <div class="sub-header-flex">
                 <h4 style="color: #475569;">ഇഡ്ഡലി പാക്കിംഗ് എണ്ണം:</h4>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idli')">
-                  <i class="fa-brands fa-whatsapp"></i> അയക്കുക
+                  <i class="fa-brands fa-whatsapp"></i> Share
                 </button>
               </div>
               <div id="idli-packets-list" class="packet-pill-box"></div>
@@ -887,12 +849,12 @@
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-truck-ramp-box"></i> റൂട്ട് തിരിച്ചുള്ള ആകെ വിവരങ്ങൾ</h3>
+            <h3><i class="fa-solid fa-truck-ramp-box"></i> Route-wise Breakdown</h3>
             <div class="table-container">
               <table id="route-table">
                 <thead>
                   <tr>
-                    <th>റൂട്ട് ഷിഫ്റ്റ്</th>
+                    <th>Route / Shift</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
@@ -904,11 +866,66 @@
           </div>
         </section>
 
-        <!-- SECTION 4: INTERACTIVE CALENDAR -->
+        <!-- SECTION 3: DELIVERY SHEET -->
+        <section id="tab-delivery" class="section-view">
+          <div class="section-header-flex">
+            <h2><i class="fa-solid fa-truck-dispatch"></i> Delivery Manifest</h2>
+            <div class="header-action-group">
+              <button class="btn btn-whatsapp btn-pill" onclick="shareDeliveryToWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">WhatsApp</span>
+              </button>
+              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-delivery')">
+                <i class="fa-solid fa-file-pdf"></i> <span class="hide-on-mobile">Print</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+              <div class="form-group" style="max-width: 380px; margin-bottom: 0; width: 100%;">
+                <label><i class="fa-solid fa-filter"></i> Filter by Route</label>
+                <select id="delivery-route-filter" class="form-control" onchange="filterDeliveryTable()">
+                  <option value="ALL">-- All Routes --</option>
+                  <option value="Route 1 - Morning">Route 1 - Morning</option>
+                  <option value="Route 1 - Evening">Route 1 - Evening</option>
+                  <option value="Route 2 - Morning">Route 2 - Morning</option>
+                  <option value="Route 2 - Evening">Route 2 - Evening</option>
+                  <option value="Route 3 - Morning">Route 3 - Morning</option>
+                  <option value="Route 3 - Evening">Route 3 - Evening</option>
+                </select>
+              </div>
+
+              <button class="btn btn-pill" style="background: var(--color-success); color: white;" onclick="markAllVisibleDelivered()">
+                <i class="fa-solid fa-check-double"></i> Mark All as Delivered
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table id="delivery-manifest-table">
+                <thead>
+                  <tr>
+                    <th>Delivered?</th>
+                    <th>Date</th>
+                    <th>Store ID</th>
+                    <th>Store Name</th>
+                    <th>ഇടിയപ്പം</th>
+                    <th>വെള്ളയപ്പം</th>
+                    <th>ഇഡ്ഡലി</th>
+                    <th>Total (₹)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: CALENDAR OVERVIEW -->
         <section id="tab-calendar" class="section-view">
           <div class="panel-card">
             <div class="section-header-flex">
-              <h2><i class="fa-solid fa-calendar-days"></i> മാസാന്തര ഓർഡർ കലണ്ടർ</h2>
+              <h2><i class="fa-solid fa-calendar-days"></i> Monthly Orders Calendar</h2>
               <div class="header-action-group">
                 <input type="month" id="calendar-month-picker" class="form-control compact-input" onchange="renderMonthlyCalendar()">
               </div>
@@ -941,13 +958,13 @@
               <table id="calendar-day-orders-table">
                 <thead>
                   <tr>
-                    <th>കട നമ്പർ</th>
-                    <th>കടയുടെ പേര്</th>
-                    <th>റൂട്ട്</th>
+                    <th>Store ID</th>
+                    <th>Store Name</th>
+                    <th>Route</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
-                    <th>പ്രവർത്തനങ്ങൾ</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -956,97 +973,42 @@
           </div>
         </section>
 
-        <!-- SECTION 5: DELIVERY SHEET -->
-        <section id="tab-delivery" class="section-view">
-          <div class="section-header-flex">
-            <h2><i class="fa-solid fa-truck-dispatch"></i> കടകൾ തിരിച്ചുള്ള ഡെലിവറി ഷീറ്റ്</h2>
-            <div class="header-action-group">
-              <button class="btn btn-whatsapp btn-pill" onclick="shareDeliveryToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">വാട്സ്ആപ്പ്</span>
-              </button>
-              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-delivery')">
-                <i class="fa-solid fa-file-pdf"></i> <span class="hide-on-mobile">പ്രിന്റ്</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-              <div class="form-group" style="max-width: 380px; margin-bottom: 0; width: 100%;">
-                <label><i class="fa-solid fa-filter"></i> റൂട്ട് ഫിൽട്ടർ ചെയ്യുക</label>
-                <select id="delivery-route-filter" class="form-control" onchange="filterDeliveryTable()">
-                  <option value="ALL">-- എല്ലാ റൂട്ടുകളും --</option>
-                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                </select>
-              </div>
-
-              <button class="btn btn-pill" style="background: var(--color-success); color: white;" onclick="markAllVisibleDelivered()">
-                <i class="fa-solid fa-check-double"></i> എല്ലാം ഡെലിവറി ചെയ്തു
-              </button>
-            </div>
-
-            <div class="table-container">
-              <table id="delivery-manifest-table">
-                <thead>
-                  <tr>
-                    <th>ഡെലിവറി?</th>
-                    <th>തിയ്യതി</th>
-                    <th>കട നമ്പർ</th>
-                    <th>കടയുടെ പേര്</th>
-                    <th>ഇടിയപ്പം</th>
-                    <th>വെള്ളയപ്പം</th>
-                    <th>ഇഡ്ഡലി</th>
-                    <th>തുക (₹)</th>
-                    <th>പ്രവർത്തനങ്ങൾ</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION 6: ACCOUNTS VIEW -->
+        <!-- SECTION 5: ACCOUNTS -->
         <section id="tab-accounts" class="section-view">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2><i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് & കളക്ഷൻ</h2>
+            <h2><i class="fa-solid fa-wallet"></i> Accounts & Collections</h2>
           </div>
 
           <div class="grid-cards">
             <div class="stat-card">
-              <h4>ആകെ ബിസിനസ്</h4>
+              <h4>Total Revenue</h4>
               <div class="val" id="acc-total-revenue">₹0.00</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-success);">
-              <h4>പിരിഞ്ഞ തുക</h4>
+              <h4>Total Collected</h4>
               <div class="val" id="acc-total-collected" style="color: var(--color-success);">₹0.00</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-error);">
-              <h4>കിട്ടാനുള്ള ബാക്കി</h4>
+              <h4>Balance Due</h4>
               <div class="val" id="acc-total-pending" style="color: var(--color-error);">₹0.00</div>
             </div>
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-receipt"></i> കടകളുടെ അക്കൗണ്ട് വിവരങ്ങൾ</h3>
+            <h3><i class="fa-solid fa-receipt"></i> Orders Ledger</h3>
 
             <div class="table-container">
               <table id="accounts-ledger-table">
                 <thead>
                   <tr>
-                    <th style="width: 110px; text-align: center;">പണം തന്നോ?</th>
-                    <th>തിയ്യതി</th>
-                    <th>കട</th>
-                    <th>ഓർഡർ ബിൽ (₹)</th>
-                    <th>അടച്ച തുക (₹)</th>
-                    <th>ബാക്കി (₹)</th>
-                    <th>സ്റ്റാറ്റസ്</th>
-                    <th>പ്രവർത്തനങ്ങൾ</th>
+                    <th style="width: 90px; text-align: center;">Paid?</th>
+                    <th>Date</th>
+                    <th>Store</th>
+                    <th>Bill (₹)</th>
+                    <th>Paid (₹)</th>
+                    <th>Balance (₹)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -1054,6 +1016,104 @@
             </div>
           </div>
         </section>
+
+        <!-- SECTION 6: STORES DIRECTORY -->
+        <section id="tab-stores-dir" class="section-view">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h2><i class="fa-solid fa-store"></i> Register New Store</h2>
+            </div>
+            
+            <form id="store-form">
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>Store ID / Number</label>
+                  <input type="text" id="reg-store-id" class="form-control" placeholder="e.g. 101" required>
+                </div>
+                <div class="form-group">
+                  <label>Store Name (കടയുടെ പേര്)</label>
+                  <input type="text" id="reg-store-name" class="form-control" placeholder="e.g. ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
+                </div>
+              </div>
+
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>Owner Name</label>
+                  <input type="text" id="reg-owner-name" class="form-control" placeholder="Owner Name">
+                </div>
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input type="tel" id="reg-mobile" class="form-control" placeholder="Mobile Number" oninput="autoCopyWhatsapp('reg-mobile', 'reg-whatsapp')">
+                </div>
+              </div>
+
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>WhatsApp Number</label>
+                  <input type="tel" id="reg-whatsapp" class="form-control" placeholder="WhatsApp Number">
+                </div>
+                <div class="form-group">
+                  <label>Default Route & Shift</label>
+                  <select id="reg-route" class="form-control" required>
+                    <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
+                    <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
+                    <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
+                    <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
+                    <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
+                    <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
+                  </select>
+                </div>
+              </div>
+
+              <h4 style="margin: 25px 0 15px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> Fixed Unit Prices</h4>
+              <div class="grid-cards" style="margin-bottom: 20px;">
+                <div class="form-group">
+                  <label>ഇടിയപ്പം വില (₹)</label>
+                  <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" placeholder="5.00" required>
+                </div>
+                <div class="form-group">
+                  <label>വെള്ളയപ്പം വില (₹)</label>
+                  <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" placeholder="6.00" required>
+                </div>
+                <div class="form-group">
+                  <label>ഇഡ്ഡലി വില (₹)</label>
+                  <input type="number" step="0.01" id="reg-price-idli" class="form-control" placeholder="4.00" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-pill">
+                <i class="fa-solid fa-user-plus"></i> Save Store
+              </button>
+            </form>
+          </div>
+
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <h2><i class="fa-solid fa-address-book"></i> Registered Stores</h2>
+                <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">0 Stores</span>
+              </div>
+            </div>
+            
+            <div class="table-container">
+              <table id="dashboard-stores-table">
+                <thead>
+                  <tr>
+                    <th>Store ID</th>
+                    <th>Store Name</th>
+                    <th>Owner</th>
+                    <th>Mobile</th>
+                    <th>Route</th>
+                    <th>Price Details (₹)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -1062,26 +1122,26 @@
   <div id="payment-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 420px;">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-hand-holding-dollar"></i> ഭാഗികമായി പണം സ്വീകരിക്കുക</h3>
+        <h3><i class="fa-solid fa-hand-holding-dollar"></i> Record Payment</h3>
         <span onclick="closePaymentModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
       </div>
       <div class="modal-body">
         <form id="payment-form">
           <input type="hidden" id="pay-order-id">
           <div class="form-group">
-            <label>കിട്ടാനുള്ള ബാക്കി തുക</label>
+            <label>Balance Due</label>
             <input type="text" id="pay-balance-due" class="form-control" readonly>
           </div>
           <div class="form-group">
-            <label>ഇപ്പോൾ അടച്ച തുക (₹)</label>
-            <input type="number" step="1" id="pay-amount" class="form-control" placeholder="തുക നൽകുക" required>
+            <label>Amount Paying (₹)</label>
+            <input type="number" step="1" id="pay-amount" class="form-control" placeholder="Enter amount" required>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closePaymentModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-pill" onclick="closePaymentModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
         <button class="btn btn-primary btn-pill" onclick="submitPaymentRecord()">
-          <i class="fa-solid fa-check"></i> സേവ് ചെയ്യുക
+          <i class="fa-solid fa-check"></i> Save Payment
         </button>
       </div>
     </div>
@@ -1091,41 +1151,41 @@
   <div id="edit-store-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-pen-to-square"></i> കട വിവരങ്ങൾ തിരുത്തുക</h3>
+        <h3><i class="fa-solid fa-pen-to-square"></i> Edit Store Details</h3>
         <span onclick="closeEditModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
       </div>
       <div class="modal-body">
         <form id="edit-store-form">
           <input type="hidden" id="edit-store-id">
           <div class="form-group">
-            <label>കടയുടെ പേര്</label>
+            <label>Store Name (കടയുടെ പേര്)</label>
             <input type="text" id="edit-store-name" class="form-control" required>
           </div>
           <div class="form-group">
-            <label>ഉടമയുടെ പേര്</label>
+            <label>Owner Name</label>
             <input type="text" id="edit-owner-name" class="form-control">
           </div>
           <div class="form-group">
-            <label>മൊബൈൽ നമ്പർ</label>
+            <label>Mobile</label>
             <input type="tel" id="edit-mobile" class="form-control">
           </div>
           <div class="form-group">
-            <label>വാട്സ്ആപ്പ് നമ്പർ</label>
+            <label>WhatsApp</label>
             <input type="tel" id="edit-whatsapp" class="form-control">
           </div>
           <div class="form-group">
-            <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
+            <label>Route & Shift</label>
             <select id="edit-route" class="form-control" required>
-              <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
+              <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
+              <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
+              <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
+              <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
+              <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
             </select>
           </div>
 
-          <h4 style="margin: 20px 0 10px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> വില നിരക്കുകൾ (₹)</h4>
+          <h4 style="margin: 20px 0 10px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> Price Rates (₹)</h4>
           <div class="grid-cards" style="margin-bottom: 10px;">
             <div class="form-group">
               <label>ഇടിയപ്പം വില</label>
@@ -1143,9 +1203,9 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closeEditModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-pill" onclick="closeEditModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
         <button class="btn btn-primary btn-pill" onclick="submitStoreUpdate()">
-          <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
+          <i class="fa-solid fa-floppy-disk"></i> Update Store
         </button>
       </div>
     </div>
@@ -1155,59 +1215,59 @@
   <div id="edit-order-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 450px;">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-pen-to-square"></i> ഓർഡർ തിരുത്തുക</h3>
+        <h3><i class="fa-solid fa-pen-to-square"></i> Edit Order</h3>
         <span onclick="closeEditOrderModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
       </div>
       <div class="modal-body">
         <form id="edit-order-form">
           <input type="hidden" id="edit-order-id">
           <div class="form-group">
-            <label>ഡെലിവറി റൂട്ട് ഷിഫ്റ്റ്</label>
+            <label>Route / Shift</label>
             <select id="edit-order-route" class="form-control" required>
-              <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-              <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+              <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
+              <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
+              <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
+              <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
+              <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
+              <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
             </select>
           </div>
           <div class="form-group">
-            <label>ഇടിയപ്പം എണ്ണം</label>
+            <label>ഇടിയപ്പം (Qty)</label>
             <input type="number" id="edit-order-idiyappam" class="form-control" min="0" required>
           </div>
           <div class="form-group">
-            <label>വെള്ളയപ്പം എണ്ണം</label>
+            <label>വെള്ളയപ്പം (Qty)</label>
             <input type="number" id="edit-order-vellayappam" class="form-control" min="0" required>
           </div>
           <div class="form-group">
-            <label>ഇഡ്ഡലി എണ്ണം</label>
+            <label>ഇഡ്ഡലി (Qty)</label>
             <input type="number" id="edit-order-idli" class="form-control" min="0" required>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closeEditOrderModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
+        <button class="btn btn-pill" onclick="closeEditOrderModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
         <button class="btn btn-primary btn-pill" onclick="submitOrderUpdate()">
-          <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
+          <i class="fa-solid fa-floppy-disk"></i> Save Changes
         </button>
       </div>
     </div>
   </div>
 
-  <!-- CUSTOM NOTIFICATION MODAL -->
+  <!-- NOTIFICATION MODAL -->
   <div id="custom-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 450px;">
       <div class="modal-header">
-        <h3 id="modal-title">വിവരങ്ങൾ</h3>
+        <h3 id="modal-title">Notice</h3>
       </div>
       <div class="modal-body" style="text-align: center;">
         <div id="modal-icon-container"></div>
-        <p id="modal-message">സിസ്റ്റം സന്ദേശം.</p>
+        <p id="modal-message">System message.</p>
       </div>
       <div class="modal-footer" style="justify-content: center;">
         <button class="btn btn-primary btn-pill" onclick="closeModal()">
-          <i class="fa-solid fa-check"></i> ശരി (OK)
+          <i class="fa-solid fa-check"></i> OK
         </button>
       </div>
     </div>
@@ -1217,16 +1277,16 @@
   <div id="confirm-modal" class="modal-overlay">
     <div class="modal-card" style="max-width: 450px;">
       <div class="modal-header" style="background: var(--color-error);">
-        <h3 id="confirm-title">ഉറപ്പാക്കുക (Confirm)</h3>
+        <h3 id="confirm-title">Confirm Action</h3>
       </div>
       <div class="modal-body" style="text-align: center;">
         <i class="fa-solid fa-circle-question modal-icon" style="color: var(--color-error); font-size: 2.5rem; margin-bottom: 10px;"></i>
-        <p id="confirm-message">നിങ്ങൾ ഈ പ്രവർത്തനം ചെയ്യാൻ ഉറപ്പാണോ?</p>
+        <p id="confirm-message">Are you sure you want to proceed?</p>
       </div>
       <div class="modal-footer" style="justify-content: center;">
-        <button class="btn btn-pill" onclick="closeConfirmModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക (Cancel)</button>
+        <button class="btn btn-pill" onclick="closeConfirmModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
         <button class="btn btn-pill" id="confirm-action-btn" style="background: var(--color-error); color: white;">
-          <i class="fa-solid fa-check"></i> ഉറപ്പാണ് (Confirm)
+          <i class="fa-solid fa-check"></i> Confirm
         </button>
       </div>
     </div>
@@ -1237,7 +1297,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 🌟 നിശ്ചിത Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBxpPwb6ZFmbAc4KH7VVQwGo0G9d-PJwAM",
       authDomain: "malabar-idiyappam.firebaseapp.com",
@@ -1274,10 +1333,12 @@
     function setDefaultDeliveryDate() {
       const dateInput = document.getElementById('order-delivery-date');
       const prodDateInput = document.getElementById('production-date-filter');
+      const bulkDateInput = document.getElementById('bulk-order-date');
       const today = new Date().toISOString().split('T')[0];
       
       if (dateInput && !dateInput.value) dateInput.value = today;
       if (prodDateInput && !prodDateInput.value) prodDateInput.value = today;
+      if (bulkDateInput && !bulkDateInput.value) bulkDateInput.value = today;
     }
 
     function setMonthPickerDefault() {
@@ -1323,29 +1384,30 @@
     }
 
     function confirmLogout() {
-      showConfirmModal('ലോഗൗട്ട് ചെയ്യുക', 'നിങ്ങൾ സിസ്റ്റത്തിൽ നിന്ന് പുറത്തുകടക്കാൻ ഉറപ്പാണോ?', handleLogout);
+      showConfirmModal('Logout Confirmation', 'Are you sure you want to log out?', handleLogout);
     }
 
     function handleLogout() {
       localStorage.removeItem('snec_authenticated_user');
       sessionStorage.clear();
       checkSessionState();
-      showModal('ലോഗൗട്ട് ചെയ്തു', 'സിസ്റ്റത്തിൽ നിന്നും പുറത്തുകടന്നു.', 'success');
+      showModal('Logged Out', 'You have been logged out successfully.', 'success');
     }
 
     function setupAdvancedKeyboardNav() {
-      const inputs = Array.from(document.querySelectorAll('input, select, textarea'));
-      inputs.forEach((input) => {
-        input.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            if (this.tagName !== 'TEXTAREA' && this.type !== 'submit') {
-              e.preventDefault();
-              const currentIndex = inputs.indexOf(this);
-              const nextInput = inputs[currentIndex + 1];
-              if (nextInput) nextInput.focus();
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          const target = e.target;
+          if (target.matches('.bulk-qty-input') || (target.matches('input') && target.type !== 'submit')) {
+            e.preventDefault();
+            const allInputs = Array.from(document.querySelectorAll('input:not([type=hidden]):not([readonly]), select'));
+            const index = allInputs.indexOf(target);
+            if (index > -1 && allInputs[index + 1]) {
+              allInputs[index + 1].focus();
+              if (allInputs[index + 1].select) allInputs[index + 1].select();
             }
           }
-        });
+        }
       });
     }
 
@@ -1357,7 +1419,9 @@
       document.getElementById(tabId).classList.add('active');
       if (event) event.currentTarget.classList.add('active');
 
-      if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts' || tabId === 'tab-calendar') {
+      if (tabId === 'tab-bulk-orders') {
+        loadBulkOrderSheet();
+      } else if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts' || tabId === 'tab-calendar') {
         fetchProductionMetrics();
       } else if (tabId === 'tab-orders' || tabId === 'tab-stores-dir') {
         loadStoreOptions();
@@ -1370,10 +1434,11 @@
       
       loadStoreOptions();
       fetchProductionMetrics();
+      loadBulkOrderSheet();
 
       setTimeout(() => {
         if (icon) icon.classList.remove('fa-spin');
-        showModal('റീഫ്രഷ് ചെയ്തു', 'വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+        showModal('Refreshed', 'Data updated successfully.', 'success');
       }, 600);
     }
 
@@ -1424,7 +1489,120 @@
         });
 
         const badge = document.getElementById('store-count-badge');
-        if (badge) badge.innerText = `${registeredStoresList.length} കടകൾ`;
+        if (badge) badge.innerText = `${registeredStoresList.length} Stores`;
+        
+        loadBulkOrderSheet();
+      });
+    }
+
+    // BULK ORDER LOGIC
+    function loadBulkOrderSheet() {
+      const bulkTbody = document.querySelector('#bulk-orders-table tbody');
+      if (!bulkTbody) return;
+      bulkTbody.innerHTML = '';
+
+      const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
+
+      if (registeredStoresList.length === 0) {
+        bulkTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No stores registered yet.</td></tr>';
+        return;
+      }
+
+      registeredStoresList.forEach((store) => {
+        // Check if an order already exists for this store on the chosen date
+        const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
+
+        const valIdi = existingOrder ? existingOrder.idiyappam : 0;
+        const valVel = existingOrder ? existingOrder.vellayappam : 0;
+        const valIdl = existingOrder ? existingOrder.idli : 0;
+        const orderDocId = existingOrder ? existingOrder.orderId : '';
+
+        const row = `
+          <tr data-store-id="${store.id}" data-order-id="${orderDocId}">
+            <td><strong>${store.id}</strong></td>
+            <td><strong>${store.storeName}</strong></td>
+            <td><small style="color: #64748b;">${store.route || 'General'}</small></td>
+            <td style="text-align: center;">
+              <input type="number" min="0" class="bulk-qty-input bulk-idi" value="${valIdi}" onfocus="this.select()">
+            </td>
+            <td style="text-align: center;">
+              <input type="number" min="0" class="bulk-qty-input bulk-vel" value="${valVel}" onfocus="this.select()">
+            </td>
+            <td style="text-align: center;">
+              <input type="number" min="0" class="bulk-qty-input bulk-idl" value="${valIdl}" onfocus="this.select()">
+            </td>
+          </tr>
+        `;
+        bulkTbody.innerHTML += row;
+      });
+    }
+
+    function saveBulkOrders() {
+      const selectedDate = document.getElementById('bulk-order-date').value;
+      if (!selectedDate) {
+        showModal('Error', 'Please select a valid delivery date.', 'error');
+        return;
+      }
+
+      const rows = document.querySelectorAll('#bulk-orders-table tbody tr');
+      if (rows.length === 0) return;
+
+      const batch = db.batch();
+      let ordersProcessed = 0;
+
+      rows.forEach(row => {
+        const storeId = row.dataset.storeId;
+        const existingOrderId = row.dataset.orderId;
+        const store = registeredStoresList.find(s => s.id === storeId);
+        if (!store) return;
+
+        const idi = Number(row.querySelector('.bulk-idi').value || 0);
+        const vel = Number(row.querySelector('.bulk-vel').value || 0);
+        const idl = Number(row.querySelector('.bulk-idl').value || 0);
+
+        if (idi > 0 || vel > 0 || idl > 0) {
+          const totalAmount = (idi * (store.priceIdiyappam || 0)) +
+                              (vel * (store.priceVellayappam || 0)) +
+                              (idl * (store.priceIdli || 0));
+
+          const payload = {
+            storeId: store.id,
+            storeName: store.storeName,
+            route: store.route || 'Route 1 - Morning',
+            deliveryDate: selectedDate,
+            idiyappam: idi,
+            vellayappam: vel,
+            idli: idl,
+            totalAmount: totalAmount,
+            paidAmount: 0,
+            balanceDue: totalAmount,
+            deliveryStatus: 'Pending',
+            paymentStatus: 'Pending',
+            timestamp: new Date()
+          };
+
+          if (existingOrderId) {
+            const docRef = db.collection("orders").doc(existingOrderId);
+            batch.update(docRef, {
+              idiyappam: idi,
+              vellayappam: vel,
+              idli: idl,
+              totalAmount: totalAmount,
+              balanceDue: totalAmount
+            });
+          } else {
+            const docRef = db.collection("orders").doc();
+            batch.set(docRef, payload);
+          }
+          ordersProcessed++;
+        }
+      });
+
+      batch.commit().then(() => {
+        showModal('Orders Saved', `${ordersProcessed} store orders successfully recorded.`, 'success');
+        fetchProductionMetrics();
+      }).catch(err => {
+        showModal('Error', err.message, 'error');
       });
     }
 
@@ -1445,7 +1623,7 @@
       );
 
       if (matches.length === 0) {
-        suggestBox.innerHTML = '<div class="suggest-item" style="color: #94a3b8;">കട കണ്ടെത്താനായില്ല</div>';
+        suggestBox.innerHTML = '<div class="suggest-item" style="color: #94a3b8;">Store not found</div>';
         suggestBox.style.display = 'block';
         return;
       }
@@ -1509,7 +1687,6 @@
           calendarMap[oDate].totalOrders += 1;
           calendarMap[oDate].orders.push(order);
 
-          // Calculations for selected date
           if (order.deliveryDate === selectedDate) {
             const idi = Number(order.idiyappam || 0);
             const vel = Number(order.vellayappam || 0);
@@ -1532,7 +1709,6 @@
             deliveryList.push(order);
           }
 
-          // Total Accounts
           const tot = Number(order.totalAmount || 0);
           const paid = Number(order.paidAmount || 0);
           const bal = Number(order.balanceDue || 0);
@@ -1600,7 +1776,7 @@
       }
 
       if (itemsToDisplay.length === 0) {
-        delTbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8;">ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
+        delTbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8;">No orders available.</td></tr>';
         return;
       }
 
@@ -1637,7 +1813,7 @@
       accTbody.innerHTML = '';
 
       if (ledgerList.length === 0) {
-        accTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8;">അക്കൗണ്ട് ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല.</td></tr>';
+        accTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8;">No accounts records found.</td></tr>';
         return;
       }
 
@@ -1654,10 +1830,10 @@
           <td>₹${Number(item.totalAmount || 0).toFixed(2)}</td>
           <td>₹${Number(item.paidAmount || 0).toFixed(2)}</td>
           <td><strong style="color: ${item.balanceDue > 0 ? 'var(--color-error)' : 'green'}">₹${Number(item.balanceDue || 0).toFixed(2)}</strong></td>
-          <td><span style="background:${badgeColor}; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem;">${isFullyPaid ? 'തീർത്തു' : (item.paidAmount > 0 ? 'ഭാഗികം' : 'തരാനുണ്ട്')}</span></td>
+          <td><span style="background:${badgeColor}; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem;">${isFullyPaid ? 'Paid' : (item.paidAmount > 0 ? 'Partial' : 'Due')}</span></td>
           <td style="display: flex; gap: 6px;">
             <button class="btn btn-pill btn-edit" style="padding: 4px 10px; font-size: 0.8rem;" onclick="openPaymentModal('${item.orderId}', ${item.balanceDue})">
-              <i class="fa-solid fa-coins"></i> ഭാഗികം
+              <i class="fa-solid fa-coins"></i> Partial
             </button>
           </td>
         </tr>`;
@@ -1702,7 +1878,7 @@
       const payAmount = Number(document.getElementById('pay-amount').value);
 
       if (!payAmount || payAmount <= 0) {
-        showModal('ശ്രദ്ധിക്കുക', 'കൃത്യമായ തുക രേഖപ്പെടുത്തുക.', 'error');
+        showModal('Attention', 'Please enter a valid amount.', 'error');
         return;
       }
 
@@ -1722,7 +1898,7 @@
             paymentStatus: status
           }).then(() => {
             closePaymentModal();
-            showModal('സേവ് ചെയ്തു', 'പേയ്മെന്റ് വിജയകരമായി രേഖപ്പെടുത്തി.', 'success');
+            showModal('Success', 'Payment recorded successfully.', 'success');
           });
         }
       });
@@ -1744,9 +1920,9 @@
       };
 
       db.collection("stores").doc(storeId).set(storeData).then(() => {
-        showModal('കട രജിസ്റ്റർ ചെയ്തു', 'പുതിയ കട വിജയകരമായി സേവ് ചെയ്തു.', 'success');
+        showModal('Store Saved', 'New store registered successfully.', 'success');
         document.getElementById('store-form').reset();
-      }).catch(err => showModal('പിശക്', err.message, 'error'));
+      }).catch(err => showModal('Error', err.message, 'error'));
     });
 
     // FORM SUBMIT: CREATE ORDER
@@ -1758,7 +1934,7 @@
       const selectedStore = registeredStoresList.find(s => s.id === storeId);
 
       if (!selectedStore) {
-        showModal('ശ്രദ്ധിക്കുക', 'കട നൽകിയിട്ടുള്ള ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക.', 'error');
+        showModal('Attention', 'Please select a valid store from the list.', 'error');
         return;
       }
 
@@ -1791,13 +1967,13 @@
       isSubmittingOrder = true;
       const submitBtn = document.getElementById('submit-order-btn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> സേവ് ചെയ്യുന്നു...';
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
       db.collection("orders").add(orderPayload).then(() => {
         isSubmittingOrder = false;
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക';
-        showModal('ഓർഡർ സമർപ്പിച്ചു', 'ഓർഡർ വിജയകരമായി രേഖപ്പെടുത്തി.', 'success');
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Order';
+        showModal('Success', 'Order created successfully.', 'success');
 
         document.getElementById('order-form').reset();
         document.getElementById('selected-store-id').value = '';
@@ -1808,8 +1984,8 @@
       }).catch(err => {
         isSubmittingOrder = false;
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക';
-        showModal('പിശക്', err.message, 'error');
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Order';
+        showModal('Error', err.message, 'error');
       });
     });
 
@@ -1823,7 +1999,7 @@
         localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: user, storeName: 'Admin Panel' }));
         checkSessionState();
       } else {
-        showModal('ലോഗിൻ പരാജയപ്പെട്ടു', 'ശരിയായ യൂസർനേമും പാസ്‌വേഡും നൽകുക.', 'error');
+        showModal('Login Failed', 'Please enter valid credentials.', 'error');
       }
     });
 
@@ -1866,12 +2042,12 @@
       container.innerHTML = '';
       const keys = Object.keys(packetObject);
       if (keys.length === 0) {
-        container.innerHTML = '<span style="color: #94a3b8;">ഓർഡറുകൾ ഇല്ല</span>';
+        container.innerHTML = '<span style="color: #94a3b8;">No orders</span>';
         return;
       }
       keys.forEach(qty => {
         const count = packetObject[qty];
-        const pill = `<div class="packet-badge">${qty} എണ്ണം &times; ${count} പാക്കറ്റ്</div>`;
+        const pill = `<div class="packet-badge">${qty} Qty &times; ${count} Packets</div>`;
         container.innerHTML += pill;
       });
     }
@@ -1888,7 +2064,7 @@
       if (!container) return;
       container.innerHTML = '';
 
-      const dayHeaders = ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി'];
+      const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       dayHeaders.forEach(dh => {
         container.innerHTML += `<div class="calendar-header">${dh}</div>`;
       });
@@ -1912,7 +2088,7 @@
             ${dayData.idiyappam > 0 ? `<span style="color:#1e3c72;">ഇ: ${dayData.idiyappam}</span><br>` : ''}
             ${dayData.vellayappam > 0 ? `<span style="color:#05c46b;">വെ: ${dayData.vellayappam}</span><br>` : ''}
             ${dayData.idli > 0 ? `<span style="color:#2a5298;">ഇഡ്ഡ: ${dayData.idli}</span>` : ''}
-            ${dayData.totalOrders === 0 ? '<span style="color:#cbd5e1;">ഓർഡറില്ല</span>' : ''}
+            ${dayData.totalOrders === 0 ? '<span style="color:#cbd5e1;">-</span>' : ''}
           </div>
         `;
 
@@ -1923,7 +2099,7 @@
 
     function showCalendarDayDetails(dateStr, dayData) {
       document.getElementById('calendar-day-detail-panel').style.display = 'block';
-      document.getElementById('cal-selected-date-title').innerText = `${dateStr} ലെ ഓർഡർ വിവരങ്ങൾ`;
+      document.getElementById('cal-selected-date-title').innerText = `Orders for ${dateStr}`;
       document.getElementById('cal-day-idiyappam').innerText = dayData.idiyappam;
       document.getElementById('cal-day-vellayappam').innerText = dayData.vellayappam;
       document.getElementById('cal-day-idli').innerText = dayData.idli;
@@ -1933,7 +2109,7 @@
       tbody.innerHTML = '';
 
       if (!dayData.orders || dayData.orders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8;">ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8;">No orders on this date.</td></tr>';
         return;
       }
 
@@ -1997,14 +2173,14 @@
 
       db.collection("stores").doc(id).update(updatePayload).then(() => {
         closeEditModal();
-        showModal('അപ്ഡേറ്റ് ചെയ്തു', 'കടയുടെ വിവരങ്ങൾ മാറ്റി.', 'success');
+        showModal('Updated', 'Store details updated successfully.', 'success');
       });
     }
 
     function confirmDeleteStore(storeId, storeName) {
-      showConfirmModal('കട മായ്ക്കുക', `നിങ്ങൾ കട ${storeId} - ${storeName} ഡിലീറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?`, () => {
+      showConfirmModal('Delete Store', `Are you sure you want to delete Store ${storeId} - ${storeName}?`, () => {
         db.collection("stores").doc(storeId).delete().then(() => {
-          showModal('ഡിലീറ്റ് ചെയ്തു', 'കട ഒഴിവാക്കി.', 'success');
+          showModal('Deleted', 'Store removed.', 'success');
         });
       });
     }
@@ -2033,14 +2209,14 @@
 
       db.collection("orders").doc(orderId).update(payload).then(() => {
         closeEditOrderModal();
-        showModal('അപ്ഡേറ്റ് ചെയ്തു', 'ഓർഡർ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+        showModal('Updated', 'Order details updated.', 'success');
       });
     }
 
     function confirmDeleteOrder(orderId) {
-      showConfirmModal('ഓർഡർ മായ്ക്കുക', `നിങ്ങൾ ഈ ഓർഡർ (#${orderId}) ഡിലീറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?`, () => {
+      showConfirmModal('Delete Order', `Are you sure you want to delete Order #${orderId}?`, () => {
         db.collection("orders").doc(orderId).delete().then(() => {
-          showModal('ഡിലീറ്റ് ചെയ്തു', 'ഓർഡർ ഡിലീറ്റ് ചെയ്തു.', 'success');
+          showModal('Deleted', 'Order removed successfully.', 'success');
         });
       });
     }
@@ -2054,14 +2230,14 @@
         targets = targets.filter(item => item.route === selectedRoute);
       }
 
-      showConfirmModal('എല്ലാം ഡെലിവറി ചെയ്തതായി മാറ്റുക', 'എല്ലാ ഓർഡറുകളും ഡെലിവറി ചെയ്തതായി അടയാളപ്പെടുത്തണോ?', () => {
+      showConfirmModal('Mark All Delivered', 'Are you sure you want to mark all shown orders as delivered?', () => {
         const batch = db.batch();
         targets.forEach(item => {
           const docRef = db.collection("orders").doc(item.orderId);
           batch.update(docRef, { deliveryStatus: 'Delivered' });
         });
         batch.commit().then(() => {
-          showModal('അപ്ഡേറ്റ് ചെയ്തു', 'എല്ലാ ഓർഡറുകളും അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+          showModal('Updated', 'All orders marked as delivered.', 'success');
         });
       });
     }
@@ -2077,37 +2253,37 @@
       let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
       let packetsObj = {};
       let totalQty = 0;
-      let itemNameMalayalam = "";
+      let itemName = "";
 
       if (itemKey === 'idiyappam') {
-        itemNameMalayalam = "ഇടിയപ്പം";
+        itemName = "ഇടിയപ്പം";
         packetsObj = currentMetricsData.idiyappamPackets;
         totalQty = currentMetricsData.totals.idiyappam;
       } else if (itemKey === 'vellayappam') {
-        itemNameMalayalam = "വെള്ളയപ്പം";
+        itemName = "വെള്ളയപ്പം";
         packetsObj = currentMetricsData.vellayappamPackets;
         totalQty = currentMetricsData.totals.vellayappam;
       } else if (itemKey === 'idli') {
-        itemNameMalayalam = "ഇഡ്ഡലി";
+        itemName = "ഇഡ്ഡലി";
         packetsObj = currentMetricsData.idliPackets;
         totalQty = currentMetricsData.totals.idli;
       }
 
-      msg += `*${itemNameMalayalam} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
+      msg += `*${itemName} Packaging Summary*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*Total Requirement: ${totalQty}*\n\n*Breakdown:*\n`;
 
       let hasPackets = false;
       for (let qty in packetsObj) {
         hasPackets = true;
-        msg += ` - ${qty} എണ്ണത്തിന്റെ പാക്കറ്റ്: ${packetsObj[qty]} എണ്ണം\n`;
+        msg += ` - Packet of ${qty}: ${packetsObj[qty]} Nos\n`;
       }
-      if (!hasPackets) msg += ` (ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ഇല്ല)\n`;
+      if (!hasPackets) msg += ` (No orders on this date)\n`;
 
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function shareProductionToWhatsApp() {
       if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totals.idiyappam}\n• വെള്ളയപ്പം: ${currentMetricsData.totals.vellayappam}\n• ഇഡ്ഡലി: ${currentMetricsData.totals.idli}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*Production & Packaging Summary*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*Total Totals:*\n• ഇടിയപ്പം: ${currentMetricsData.totals.idiyappam}\n• വെള്ളയപ്പം: ${currentMetricsData.totals.vellayappam}\n• ഇഡ്ഡലി: ${currentMetricsData.totals.idli}\n\n*Route Summary:*\n`;
       for (let route in currentMetricsData.routeSummary) {
         msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idiyappam} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vellayappam} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idli}\n`;
       }
@@ -2123,12 +2299,12 @@
         filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
       }
 
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*കടകളുടെ ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*Delivery Manifest*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
       if (filteredList.length === 0) {
-        msg += `ഈ റൂട്ടിൽ ഡെലിവറി ഓർഡറുകൾ ഇല്ല.\n`;
+        msg += `No delivery orders on this route.\n`;
       } else {
         filteredList.forEach((item, index) => {
-          msg += `${index + 1}. *${item.storeName}* (കട നമ്പർ: ${item.storeId})\n   ഷിഫ്റ്റ്: ${item.route}\n   സാധനങ്ങൾ: ഇടിയപ്പം: ${item.idiyappam} | വെള്ളയപ്പം: ${item.vellayappam} | ഇഡ്ഡലി: ${item.idli}\n   ബിൽ തുക: ₹${item.totalAmount.toFixed(2)}\n\n`;
+          msg += `${index + 1}. *${item.storeName}* (ID: ${item.storeId})\n   Shift: ${item.route}\n   Items: ഇടിയപ്പം: ${item.idiyappam} | വെള്ളയപ്പം: ${item.vellayappam} | ഇഡ്ഡലി: ${item.idli}\n   Bill: ₹${item.totalAmount.toFixed(2)}\n\n`;
         });
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
