@@ -12,7 +12,7 @@
       --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
       --bg-sidebar: #1e1e2f;
       --text-sidebar: #cbd5e1;
-      --bg-body: #f4f6f9;
+      --bg-body: #f1f5f9;
       
       --color-success: #05c46b;
       --color-error: #fc5c65;
@@ -20,12 +20,12 @@
       
       --radius-pill: 50px;
       --radius-capsule: 30px;
-      --radius-modal: 25px;
-      --radius-panel: 15px;
+      --radius-modal: 20px;
+      --radius-panel: 14px;
       
-      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: all 0.25s ease;
       --shadow-subtle: 0 4px 15px rgba(0, 0, 0, 0.05);
-      --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.12);
+      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
     * {
@@ -38,7 +38,7 @@
 
     body {
       background-color: var(--bg-body);
-      color: #333;
+      color: #1e293b;
       min-height: 100vh;
       display: flex;
       overflow-x: hidden;
@@ -62,69 +62,53 @@
     .auth-card {
       background: #ffffff;
       width: 100%;
-      max-width: 420px;
-      padding: 40px 30px;
+      max-width: 400px;
+      padding: 35px 25px;
       border-radius: var(--radius-capsule);
       box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       text-align: center;
     }
 
     .auth-card h2 {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       color: #1e3c72;
       font-weight: 700;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       text-align: left;
       position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #475569;
     }
 
     .form-control {
       width: 100%;
-      min-height: 44px;
-      padding: 10px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: var(--radius-capsule);
+      min-height: 42px;
+      padding: 8px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
       outline: none;
       font-size: 0.95rem;
+      background: #ffffff;
       transition: var(--transition-base);
     }
 
     .compact-input {
       min-height: 38px !important;
-      padding: 6px 14px !important;
-      width: auto;
+      padding: 4px 10px !important;
     }
 
     .form-control:focus {
       border-color: #2a5298;
-      box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
-    }
-
-    .bulk-qty-input {
-      width: 80px;
-      min-height: 36px;
-      padding: 6px 10px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      text-align: center;
-      outline: none;
-    }
-
-    .bulk-qty-input:focus {
-      border-color: #1e3c72;
-      background-color: #f0fdf4;
+      box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.12);
     }
 
     .suggest-results-box {
@@ -133,9 +117,9 @@
       left: 0;
       right: 0;
       background: #ffffff;
-      border-radius: 15px;
+      border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      max-height: 220px;
+      max-height: 200px;
       overflow-y: auto;
       z-index: 500;
       display: none;
@@ -144,11 +128,10 @@
     }
 
     .suggest-item {
-      padding: 12px 20px;
+      padding: 10px 16px;
       cursor: pointer;
       border-bottom: 1px solid #f1f5f9;
-      transition: var(--transition-base);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .suggest-item:hover {
@@ -158,8 +141,8 @@
     }
 
     .btn {
-      min-height: 42px;
-      padding: 8px 20px;
+      min-height: 40px;
+      padding: 8px 18px;
       border: none;
       cursor: pointer;
       font-weight: 600;
@@ -168,18 +151,19 @@
       justify-content: center;
       transition: var(--transition-base);
       text-decoration: none;
+      font-size: 0.9rem;
     }
 
     .btn-sm {
-      min-height: 36px;
-      padding: 6px 16px;
-      font-size: 0.85rem;
+      min-height: 34px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
     }
 
     .btn-xs {
-      min-height: 30px;
-      padding: 4px 12px;
-      font-size: 0.8rem;
+      min-height: 28px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
     }
 
     .btn:disabled {
@@ -194,7 +178,7 @@
     .btn-primary {
       background: var(--bg-gradient);
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+      box-shadow: 0 4px 10px rgba(30, 60, 114, 0.25);
     }
 
     .btn-secondary {
@@ -203,39 +187,29 @@
     }
 
     .btn-danger-soft {
-      background: #ffe3e3;
-      color: #d63031;
-    }
-
-    .btn-danger-soft:hover {
-      background: #d63031;
-      color: #ffffff;
+      background: #fee2e2;
+      color: #dc2626;
     }
 
     .btn-whatsapp {
       background: #25d366;
       color: #ffffff;
-      padding: 8px 16px;
-      font-size: 0.85rem;
+      padding: 6px 12px;
+      font-size: 0.8rem;
     }
 
     .btn-edit {
       background: var(--color-info);
       color: #ffffff;
-      padding: 6px 12px;
+      padding: 6px 10px;
       font-size: 0.8rem;
     }
 
     .btn-delete {
       background: var(--color-error);
       color: #ffffff;
-      padding: 6px 12px;
+      padding: 6px 10px;
       font-size: 0.8rem;
-    }
-
-    .btn-primary:hover, .btn-pill:hover, .btn-whatsapp:hover, .btn-edit:hover, .btn-delete:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
     }
 
     .btn-block {
@@ -250,10 +224,10 @@
     }
 
     .sidebar {
-      width: 260px;
+      width: 250px;
       background-color: var(--bg-sidebar);
       color: var(--text-sidebar);
-      padding: 30px 20px;
+      padding: 25px 15px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
@@ -265,7 +239,7 @@
       font-size: 1.1rem;
       font-weight: bold;
       color: #fff;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       display: flex;
       align-items: center;
     }
@@ -276,19 +250,19 @@
     }
 
     .nav-item {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
-      padding: 12px 18px;
+      padding: 10px 16px;
       color: var(--text-sidebar);
       text-decoration: none;
       border-radius: var(--radius-pill);
       transition: var(--transition-base);
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .nav-link:hover, .nav-link.active {
@@ -305,21 +279,15 @@
 
     .navbar {
       background: #ffffff;
-      padding: 15px 30px;
+      padding: 12px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: var(--shadow-subtle);
     }
 
-    .header-action-btns {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
     .content-area {
-      padding: 25px 30px;
+      padding: 20px;
       flex-grow: 1;
     }
 
@@ -334,116 +302,129 @@
     .panel-card {
       background: #ffffff;
       border-radius: var(--radius-panel);
-      padding: 25px;
+      padding: 20px;
       box-shadow: var(--shadow-subtle);
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .section-header-flex {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .header-action-group {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .sub-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
+      gap: 10px;
     }
 
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .stat-card {
       background: #ffffff;
-      border-radius: var(--radius-capsule);
-      padding: 20px;
+      border-radius: 14px;
+      padding: 15px;
       box-shadow: var(--shadow-subtle);
-      transition: var(--transition-base);
-      border-left: 6px solid var(--color-info);
+      border-left: 5px solid var(--color-info);
     }
 
     .stat-card h4 {
       color: #64748b;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .stat-card .val {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #1e293b;
     }
 
-    .calendar-grid-wrapper {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(110px, 1fr));
-      gap: 8px;
-      margin-top: 15px;
-      min-width: 700px;
-    }
-
-    .calendar-header {
-      font-weight: 700;
-      text-align: center;
-      color: #475569;
-      padding: 8px;
-      background: #f1f5f9;
-      border-radius: 8px;
-      font-size: 0.85rem;
-    }
-
-    .calendar-day-card {
-      background: #ffffff;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 8px;
-      min-height: 85px;
-      cursor: pointer;
-      transition: var(--transition-base);
+    /* 🌟 Mobile-First Bulk Cards */
+    .bulk-card-list {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
     }
 
-    .calendar-day-card:hover, .calendar-day-card.active {
+    .bulk-store-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: var(--transition-base);
+    }
+
+    .bulk-store-card:focus-within {
       border-color: #2a5298;
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(42, 82, 152, 0.08);
+      background-color: #f8fafc;
     }
 
-    .calendar-day-number {
-      font-weight: 700;
+    .bulk-store-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .store-badge-title {
       font-size: 0.95rem;
-      color: #1e3c72;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .calendar-day-pills {
+    .store-id-tag {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .bulk-inputs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .bulk-input-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bulk-input-col label {
       font-size: 0.75rem;
       font-weight: 600;
-      color: #475569;
-      line-height: 1.3;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .bulk-qty-field {
+      width: 100%;
+      height: 38px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+    }
+
+    .bulk-qty-field:focus {
+      border-color: #2a5298;
+      background-color: #f0fdf4;
     }
 
     .table-container {
@@ -454,15 +435,15 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
-      min-width: 600px;
+      margin-top: 10px;
+      min-width: 550px;
     }
 
     th, td {
-      padding: 12px 14px;
+      padding: 10px 12px;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     th {
@@ -474,18 +455,18 @@
     .packet-pill-box {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       margin-top: 8px;
     }
 
     .packet-badge {
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: var(--radius-pill);
       font-weight: 600;
       color: #1e293b;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .modal-overlay {
@@ -510,41 +491,44 @@
     .modal-card {
       background: #ffffff;
       width: 90%;
-      max-width: 550px;
+      max-width: 500px;
       border-radius: var(--radius-modal);
       overflow: hidden;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      transform: scale(0.9);
-      transition: var(--transition-base);
       max-height: 90vh;
       display: flex;
       flex-direction: column;
     }
 
-    .modal-overlay.active .modal-card {
-      transform: scale(1);
-    }
-
     .modal-header {
       background: var(--bg-gradient);
       color: white;
-      padding: 18px 24px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
     .modal-body {
-      padding: 24px;
+      padding: 20px;
       overflow-y: auto;
     }
 
     .modal-footer {
-      padding: 16px 24px;
+      padding: 12px 20px;
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
+      gap: 8px;
       border-top: 1px solid #e2e8f0;
+    }
+
+    .sticky-bottom-bar {
+      position: sticky;
+      bottom: 10px;
+      margin-top: 15px;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      border-radius: var(--radius-pill);
     }
 
     @media (max-width: 768px) {
@@ -553,48 +537,37 @@
       }
       .sidebar {
         width: 100%;
-        padding: 12px 15px;
+        padding: 8px 12px;
         flex-direction: column;
       }
       .sidebar-brand {
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        font-size: 0.95rem;
       }
       .nav-list {
         display: flex;
         overflow-x: auto;
         gap: 6px;
-        padding-bottom: 5px;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
       }
       .nav-link {
-        padding: 8px 14px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        font-size: 0.75rem;
         white-space: nowrap;
       }
       .content-area {
-        padding: 15px;
+        padding: 12px;
       }
       .navbar {
-        padding: 12px 15px;
+        padding: 10px 14px;
       }
       .panel-card {
-        padding: 15px;
+        padding: 14px;
       }
       .hide-on-mobile {
         display: none;
       }
-      .modal-card {
-        width: 95%;
-      }
-    }
-
-    @media print {
-      body { background: white; }
-      .sidebar, .navbar, .btn, #auth-screen, .modal-overlay { display: none !important; }
-      #app-screen { display: block !important; }
-      .content-area { padding: 0; }
-      .panel-card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; page-break-inside: avoid; }
-      .section-view { display: none !important; }
-      .section-view.print-active { display: block !important; }
     }
   </style>
 </head>
@@ -603,18 +576,18 @@
   <!-- AUTH SCREEN -->
   <div id="auth-screen">
     <div class="auth-card">
-      <i class="fa-solid fa-utensils" style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 15px;"></i>
+      <i class="fa-solid fa-wheat-awn" style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 12px;"></i>
       <h2>മലബാർ ഇടിയപ്പം കമ്പനി</h2>
       <form id="login-form">
         <div class="form-group">
           <label>Username / Store ID</label>
-          <input type="text" id="login-user" class="form-control" placeholder="Enter ID (e.g. admin)" required>
+          <input type="text" id="login-user" class="form-control" placeholder="admin" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="login-pass" class="form-control" placeholder="Enter Password" required>
+          <input type="password" id="login-pass" class="form-control" placeholder="Password" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-pill btn-block" style="margin-top: 10px;">
+        <button type="submit" class="btn btn-primary btn-pill btn-block">
           <i class="fa-solid fa-right-to-bracket"></i> Login
         </button>
       </form>
@@ -661,7 +634,7 @@
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="switchTab('tab-stores-dir', event)">
-              <i class="fa-solid fa-store"></i> Stores Directory
+              <i class="fa-solid fa-store"></i> Stores
             </a>
           </li>
         </ul>
@@ -670,70 +643,65 @@
 
     <div class="main-wrapper">
       <nav class="navbar">
-        <div>
-          <h3 id="user-display">Welcome</h3>
-        </div>
-        <div class="header-action-btns">
-          <button class="btn btn-primary btn-pill btn-sm" id="btn-top-refresh" onclick="refreshDirectoryData()">
-            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> <span class="hide-on-mobile">Refresh</span>
+        <h4 id="user-display" style="color: #1e3c72; font-size: 0.95rem;">Welcome</h4>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary btn-pill btn-sm" onclick="refreshDirectoryData()">
+            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i>
           </button>
-          <button class="btn btn-danger-soft btn-pill btn-sm" onclick="confirmLogout()" title="Logout">
-            <i class="fa-solid fa-power-off"></i> Logout
+          <button class="btn btn-danger-soft btn-pill btn-sm" onclick="confirmLogout()">
+            <i class="fa-solid fa-power-off"></i>
           </button>
         </div>
       </nav>
 
       <main class="content-area">
         
-        <!-- SECTION 0: BULK ORDER ENTRY -->
+        <!-- SECTION 0: BULK ORDER ENTRY (Mobile Cards) -->
         <section id="tab-bulk-orders" class="section-view active">
           <div class="panel-card">
             <div class="section-header-flex">
               <div>
-                <h2><i class="fa-solid fa-table-list"></i> Bulk Daily Order Entry</h2>
-                <small style="color: #64748b;">Enter order quantities for all stores together</small>
+                <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
+                <small style="color: #64748b;">Enter daily quantities store by store</small>
               </div>
-              <div class="header-action-group">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <label style="font-weight: 600; font-size: 0.9rem; color: #475569;">Delivery Date:</label>
-                  <input type="date" id="bulk-order-date" class="form-control compact-input" onchange="loadBulkOrderSheet()">
-                </div>
-                <button class="btn btn-primary btn-pill btn-sm" onclick="saveBulkOrders()">
-                  <i class="fa-solid fa-floppy-disk"></i> Save All Orders
-                </button>
+              <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
+                <i class="fa-solid fa-floppy-disk"></i> Save Orders
+              </button>
+            </div>
+
+            <!-- Filters for Date & Route -->
+            <div class="grid-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label><i class="fa-solid fa-calendar-day"></i> Delivery Date</label>
+                <input type="date" id="bulk-order-date" class="form-control compact-input" onchange="loadBulkOrderSheet()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label><i class="fa-solid fa-filter"></i> Select Route</label>
+                <select id="bulk-route-filter" class="form-control compact-input" onchange="loadBulkOrderSheet()">
+                  <option value="ALL">All Routes</option>
+                  <option value="Route 1 - Morning">Route 1 - Morning</option>
+                  <option value="Route 1 - Evening">Route 1 - Evening</option>
+                  <option value="Route 2 - Morning">Route 2 - Morning</option>
+                  <option value="Route 2 - Evening">Route 2 - Evening</option>
+                  <option value="Route 3 - Morning">Route 3 - Morning</option>
+                  <option value="Route 3 - Evening">Route 3 - Evening</option>
+                </select>
               </div>
             </div>
 
-            <div class="table-container">
-              <table id="bulk-orders-table">
-                <thead>
-                  <tr>
-                    <th style="width: 80px;">Store ID</th>
-                    <th>Store Name</th>
-                    <th>Route / Shift</th>
-                    <th style="text-align: center; width: 110px;">ഇടിയപ്പം</th>
-                    <th style="text-align: center; width: 110px;">വെള്ളയപ്പം</th>
-                    <th style="text-align: center; width: 110px;">ഇഡ്ഡലി</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
+            <!-- Mobile Cards Container -->
+            <div id="bulk-cards-container" class="bulk-card-list"></div>
             
-            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
-              <button class="btn btn-primary btn-pill" onclick="saveBulkOrders()">
-                <i class="fa-solid fa-floppy-disk"></i> Save All Orders
-              </button>
-            </div>
+            <button class="btn btn-primary btn-pill btn-block sticky-bottom-bar" onclick="saveBulkOrders()">
+              <i class="fa-solid fa-floppy-disk"></i> Save All Orders
+            </button>
           </div>
         </section>
 
         <!-- SECTION 1: SINGLE DAILY ORDER ENTRY -->
         <section id="tab-orders" class="section-view">
           <div class="panel-card">
-            <h2 style="margin-bottom: 20px;">
-              <i class="fa-solid fa-file-circle-plus"></i> Single Order Entry
-            </h2>
+            <h2 style="margin-bottom: 15px;"><i class="fa-solid fa-file-circle-plus"></i> Single Order Entry</h2>
             
             <form id="order-form" autocomplete="off">
               <div class="form-group">
@@ -742,14 +710,14 @@
               </div>
 
               <div class="form-group">
-                <label><i class="fa-solid fa-magnifying-glass"></i> Search Store (Name or ID)</label>
-                <input type="text" id="order-store-search" class="form-control" placeholder="Type store name or number..." oninput="handleInstantSuggest()" onfocus="handleInstantSuggest()">
+                <label><i class="fa-solid fa-magnifying-glass"></i> Store Name / ID</label>
+                <input type="text" id="order-store-search" class="form-control" placeholder="Search store..." oninput="handleInstantSuggest()" onfocus="handleInstantSuggest()">
                 <input type="hidden" id="selected-store-id">
                 <div id="suggest-box" class="suggest-results-box"></div>
               </div>
 
               <div class="form-group">
-                <label><i class="fa-solid fa-route"></i> Delivery Route & Shift</label>
+                <label><i class="fa-solid fa-route"></i> Delivery Route</label>
                 <select id="order-route" class="form-control" required>
                   <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
                   <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
@@ -760,22 +728,22 @@
                 </select>
               </div>
 
-              <div class="grid-cards" style="margin-top: 20px;">
+              <div class="grid-cards" style="margin-top: 15px;">
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> ഇടിയപ്പം (Qty)</label>
+                  <label>ഇടിയപ്പം (Qty)</label>
                   <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> വെള്ളയപ്പം (Qty)</label>
+                  <label>വെള്ളയപ്പം (Qty)</label>
                   <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
-                  <label><i class="fa-solid fa-circle-dot"></i> ഇഡ്ഡലി (Qty)</label>
+                  <label>ഇഡ്ഡലി (Qty)</label>
                   <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0" value="0">
                 </div>
               </div>
 
-              <button type="submit" id="submit-order-btn" class="btn btn-primary btn-pill">
+              <button type="submit" id="submit-order-btn" class="btn btn-primary btn-pill btn-block">
                 <i class="fa-solid fa-paper-plane"></i> Submit Order
               </button>
             </form>
@@ -786,73 +754,64 @@
         <section id="tab-production" class="section-view">
           <div class="section-header-flex">
             <h2><i class="fa-solid fa-industry"></i> Production & Packaging</h2>
-            <div class="header-action-group">
-              <input type="date" id="production-date-filter" class="form-control compact-input" onchange="fetchProductionMetrics()">
-              <button class="btn btn-whatsapp btn-pill" onclick="shareProductionToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">Share Summary</span>
-              </button>
-              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-production')">
-                <i class="fa-solid fa-print"></i> <span class="hide-on-mobile">Print</span>
+            <div style="display: flex; gap: 6px;">
+              <input type="date" id="production-date-filter" class="form-control compact-input" style="max-width: 140px;" onchange="fetchProductionMetrics()">
+              <button class="btn btn-whatsapp btn-pill btn-sm" onclick="shareProductionToWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i>
               </button>
             </div>
           </div>
 
           <div class="grid-cards">
             <div class="stat-card">
-              <h4>ആകെ ഇടിയപ്പം</h4>
+              <h4>ഇടിയപ്പം</h4>
               <div class="val" id="total-idiyappam">0</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-success);">
-              <h4>ആകെ വെള്ളയപ്പം</h4>
+              <h4>വെള്ളയപ്പം</h4>
               <div class="val" id="total-vellayappam">0</div>
             </div>
             <div class="stat-card" style="border-color: var(--bg-sidebar);">
-              <h4>ആകെ ഇഡ്ഡലി</h4>
+              <h4>ഇഡ്ഡലി</h4>
               <div class="val" id="total-idli">0</div>
             </div>
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-boxes-packing"></i> Packet Breakdown</h3>
+            <h3><i class="fa-solid fa-boxes-packing"></i> Packaging Breakdown</h3>
             
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <h4 style="color: #475569;">ഇടിയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idiyappam')">
-                  <i class="fa-brands fa-whatsapp"></i> Share
-                </button>
+                <span style="font-weight: 600; font-size: 0.9rem;">ഇടിയപ്പം പാക്കറ്റുകൾ:</span>
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idiyappam')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="idiyappam-packets-list" class="packet-pill-box"></div>
             </div>
 
-            <div style="margin-top: 25px;">
+            <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <h4 style="color: #475569;">വെള്ളയപ്പം പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('vellayappam')">
-                  <i class="fa-brands fa-whatsapp"></i> Share
-                </button>
+                <span style="font-weight: 600; font-size: 0.9rem;">വെള്ളയപ്പം പാക്കറ്റുകൾ:</span>
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('vellayappam')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="vellayappam-packets-list" class="packet-pill-box"></div>
             </div>
 
-            <div style="margin-top: 25px;">
+            <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <h4 style="color: #475569;">ഇഡ്ഡലി പാക്കിംഗ് എണ്ണം:</h4>
-                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idli')">
-                  <i class="fa-brands fa-whatsapp"></i> Share
-                </button>
+                <span style="font-weight: 600; font-size: 0.9rem;">ഇഡ്ഡലി പാക്കറ്റുകൾ:</span>
+                <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idli')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="idli-packets-list" class="packet-pill-box"></div>
             </div>
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-truck-ramp-box"></i> Route-wise Breakdown</h3>
+            <h3><i class="fa-solid fa-truck-ramp-box"></i> Route Totals</h3>
             <div class="table-container">
               <table id="route-table">
                 <thead>
                   <tr>
-                    <th>Route / Shift</th>
+                    <th>Route</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
@@ -867,50 +826,37 @@
         <!-- SECTION 3: DELIVERY SHEET -->
         <section id="tab-delivery" class="section-view">
           <div class="section-header-flex">
-            <h2><i class="fa-solid fa-truck-dispatch"></i> Delivery Manifest</h2>
-            <div class="header-action-group">
-              <button class="btn btn-whatsapp btn-pill" onclick="shareDeliveryToWhatsApp()">
-                <i class="fa-brands fa-whatsapp"></i> <span class="hide-on-mobile">WhatsApp</span>
-              </button>
-              <button class="btn btn-primary btn-pill" onclick="triggerPrint('tab-delivery')">
-                <i class="fa-solid fa-file-pdf"></i> <span class="hide-on-mobile">Print</span>
-              </button>
-            </div>
+            <h2><i class="fa-solid fa-truck-dispatch"></i> Delivery Sheet</h2>
+            <button class="btn btn-whatsapp btn-pill btn-sm" onclick="shareDeliveryToWhatsApp()">
+              <i class="fa-brands fa-whatsapp"></i> Share
+            </button>
           </div>
 
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-              <div class="form-group" style="max-width: 380px; margin-bottom: 0; width: 100%;">
-                <label><i class="fa-solid fa-filter"></i> Filter by Route</label>
-                <select id="delivery-route-filter" class="form-control" onchange="filterDeliveryTable()">
-                  <option value="ALL">-- All Routes --</option>
-                  <option value="Route 1 - Morning">Route 1 - Morning</option>
-                  <option value="Route 1 - Evening">Route 1 - Evening</option>
-                  <option value="Route 2 - Morning">Route 2 - Morning</option>
-                  <option value="Route 2 - Evening">Route 2 - Evening</option>
-                  <option value="Route 3 - Morning">Route 3 - Morning</option>
-                  <option value="Route 3 - Evening">Route 3 - Evening</option>
-                </select>
-              </div>
-
-              <button class="btn btn-pill" style="background: var(--color-success); color: white;" onclick="markAllVisibleDelivered()">
-                <i class="fa-solid fa-check-double"></i> Mark All as Delivered
-              </button>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label>Filter Route</label>
+              <select id="delivery-route-filter" class="form-control compact-input" onchange="filterDeliveryTable()">
+                <option value="ALL">All Routes</option>
+                <option value="Route 1 - Morning">Route 1 - Morning</option>
+                <option value="Route 1 - Evening">Route 1 - Evening</option>
+                <option value="Route 2 - Morning">Route 2 - Morning</option>
+                <option value="Route 2 - Evening">Route 2 - Evening</option>
+                <option value="Route 3 - Morning">Route 3 - Morning</option>
+                <option value="Route 3 - Evening">Route 3 - Evening</option>
+              </select>
             </div>
 
             <div class="table-container">
               <table id="delivery-manifest-table">
                 <thead>
                   <tr>
-                    <th>Delivered?</th>
-                    <th>Date</th>
-                    <th>Store ID</th>
-                    <th>Store Name</th>
+                    <th>Done?</th>
+                    <th>ID</th>
+                    <th>Store</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
                     <th>Total (₹)</th>
-                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -923,67 +869,24 @@
         <section id="tab-calendar" class="section-view">
           <div class="panel-card">
             <div class="section-header-flex">
-              <h2><i class="fa-solid fa-calendar-days"></i> Monthly Orders Calendar</h2>
-              <div class="header-action-group">
-                <input type="month" id="calendar-month-picker" class="form-control compact-input" onchange="renderMonthlyCalendar()">
-              </div>
+              <h2><i class="fa-solid fa-calendar-days"></i> Monthly Calendar</h2>
+              <input type="month" id="calendar-month-picker" class="form-control compact-input" style="max-width: 140px;" onchange="renderMonthlyCalendar()">
             </div>
-
             <div class="calendar-grid-wrapper">
               <div class="calendar-grid" id="calendar-days-container"></div>
-            </div>
-          </div>
-
-          <div class="panel-card" id="calendar-day-detail-panel" style="display: none;">
-            <h3 id="cal-selected-date-title" style="margin-bottom: 15px; color: #1e3c72;"></h3>
-            
-            <div class="grid-cards">
-              <div class="stat-card">
-                <h4>ഇടിയപ്പം</h4>
-                <div class="val" id="cal-day-idiyappam">0</div>
-              </div>
-              <div class="stat-card" style="border-color: var(--color-success);">
-                <h4>വെള്ളയപ്പം</h4>
-                <div class="val" id="cal-day-vellayappam">0</div>
-              </div>
-              <div class="stat-card" style="border-color: var(--bg-sidebar);">
-                <h4>ഇഡ്ഡലി</h4>
-                <div class="val" id="cal-day-idli">0</div>
-              </div>
-            </div>
-
-            <div class="table-container">
-              <table id="calendar-day-orders-table">
-                <thead>
-                  <tr>
-                    <th>Store ID</th>
-                    <th>Store Name</th>
-                    <th>Route</th>
-                    <th>ഇടിയപ്പം</th>
-                    <th>വെള്ളയപ്പം</th>
-                    <th>ഇഡ്ഡലി</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
             </div>
           </div>
         </section>
 
         <!-- SECTION 5: ACCOUNTS -->
         <section id="tab-accounts" class="section-view">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2><i class="fa-solid fa-wallet"></i> Accounts & Collections</h2>
-          </div>
-
           <div class="grid-cards">
             <div class="stat-card">
               <h4>Total Revenue</h4>
               <div class="val" id="acc-total-revenue">₹0.00</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-success);">
-              <h4>Total Collected</h4>
+              <h4>Collected</h4>
               <div class="val" id="acc-total-collected" style="color: var(--color-success);">₹0.00</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-error);">
@@ -994,19 +897,15 @@
 
           <div class="panel-card">
             <h3><i class="fa-solid fa-receipt"></i> Orders Ledger</h3>
-
             <div class="table-container">
               <table id="accounts-ledger-table">
                 <thead>
                   <tr>
-                    <th style="width: 90px; text-align: center;">Paid?</th>
-                    <th>Date</th>
+                    <th>Paid?</th>
                     <th>Store</th>
                     <th>Bill (₹)</th>
-                    <th>Paid (₹)</th>
-                    <th>Balance (₹)</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Due (₹)</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -1018,95 +917,78 @@
         <!-- SECTION 6: STORES DIRECTORY -->
         <section id="tab-stores-dir" class="section-view">
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-              <h2><i class="fa-solid fa-store"></i> Register New Store</h2>
+            <div class="section-header-flex">
+              <h2><i class="fa-solid fa-store"></i> Register Store</h2>
               <button class="btn btn-secondary btn-pill btn-sm" onclick="openImportModal()">
-                <i class="fa-solid fa-file-import"></i> Import from Google Sheet
+                <i class="fa-solid fa-file-import"></i> Import Sheet
               </button>
             </div>
             
             <form id="store-form">
               <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
-                  <label>Store ID / Number</label>
-                  <input type="text" id="reg-store-id" class="form-control" placeholder="e.g. 101" required>
+                  <label>Store ID (Auto)</label>
+                  <input type="text" id="reg-store-id" class="form-control" readonly style="background: #e2e8f0; font-weight: bold;">
                 </div>
                 <div class="form-group">
                   <label>Store Name (കടയുടെ പേര്)</label>
-                  <input type="text" id="reg-store-name" class="form-control" placeholder="e.g. ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
+                  <input type="text" id="reg-store-name" class="form-control" placeholder="കടയുടെ പേര്" required>
                 </div>
               </div>
 
               <div class="grid-cards" style="margin-bottom: 0;">
-                <div class="form-group">
-                  <label>Owner Name</label>
-                  <input type="text" id="reg-owner-name" class="form-control" placeholder="Owner Name">
-                </div>
                 <div class="form-group">
                   <label>Mobile Number</label>
-                  <input type="tel" id="reg-mobile" class="form-control" placeholder="Mobile Number" oninput="autoCopyWhatsapp('reg-mobile', 'reg-whatsapp')">
-                </div>
-              </div>
-
-              <div class="grid-cards" style="margin-bottom: 0;">
-                <div class="form-group">
-                  <label>WhatsApp Number</label>
-                  <input type="tel" id="reg-whatsapp" class="form-control" placeholder="WhatsApp Number">
+                  <input type="tel" id="reg-mobile" class="form-control" placeholder="Mobile Number">
                 </div>
                 <div class="form-group">
-                  <label>Default Route & Shift</label>
+                  <label>Default Route</label>
                   <select id="reg-route" class="form-control" required>
-                    <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
-                    <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
-                    <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
-                    <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
-                    <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
-                    <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
+                    <option value="Route 1 - Morning">Route 1 - Morning</option>
+                    <option value="Route 1 - Evening">Route 1 - Evening</option>
+                    <option value="Route 2 - Morning">Route 2 - Morning</option>
+                    <option value="Route 2 - Evening">Route 2 - Evening</option>
+                    <option value="Route 3 - Morning">Route 3 - Morning</option>
+                    <option value="Route 3 - Evening">Route 3 - Evening</option>
                   </select>
                 </div>
               </div>
 
-              <h4 style="margin: 25px 0 15px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> Fixed Unit Prices</h4>
-              <div class="grid-cards" style="margin-bottom: 20px;">
+              <div class="grid-cards" style="margin-bottom: 15px;">
                 <div class="form-group">
                   <label>ഇടിയപ്പം വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" placeholder="5.00" required>
+                  <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" value="5.00" required>
                 </div>
                 <div class="form-group">
                   <label>വെള്ളയപ്പം വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" placeholder="6.00" required>
+                  <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" value="5.00" required>
                 </div>
                 <div class="form-group">
                   <label>ഇഡ്ഡലി വില (₹)</label>
-                  <input type="number" step="0.01" id="reg-price-idli" class="form-control" placeholder="4.00" required>
+                  <input type="number" step="0.01" id="reg-price-idli" class="form-control" value="5.00" required>
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-primary btn-pill">
-                <i class="fa-solid fa-user-plus"></i> Save Store
+              <button type="submit" class="btn btn-primary btn-pill btn-block">
+                <i class="fa-solid fa-user-plus"></i> Save New Store
               </button>
             </form>
           </div>
 
           <div class="panel-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <h2><i class="fa-solid fa-address-book"></i> Registered Stores</h2>
-                <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 4px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">0 Stores</span>
-              </div>
+            <div class="section-header-flex">
+              <h2><i class="fa-solid fa-address-book"></i> Stores List</h2>
+              <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 3px 12px; border-radius: 50px; font-size: 0.8rem;">0 Stores</span>
             </div>
-            
             <div class="table-container">
               <table id="dashboard-stores-table">
                 <thead>
                   <tr>
-                    <th>Store ID</th>
+                    <th>ID</th>
                     <th>Store Name</th>
-                    <th>Owner</th>
-                    <th>Mobile</th>
                     <th>Route</th>
-                    <th>Price Details (₹)</th>
-                    <th>Actions</th>
+                    <th>Mobile</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -1121,196 +1003,31 @@
 
   <!-- IMPORT GOOGLE SHEET MODAL -->
   <div id="import-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 600px;">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-file-import"></i> Import Stores from Google Sheets</h3>
-        <span onclick="closeImportModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">
-          Open your Google Sheet, select all cells in the <strong>Stores</strong> tab (including header), copy (<code>Ctrl+C</code>), and paste below:
-        </p>
-        <textarea id="import-sheet-data" style="width: 100%; height: 200px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: monospace; font-size: 0.85rem; outline: none;" placeholder="Paste Google Sheet data here..."></textarea>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closeImportModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
-        <button class="btn btn-primary btn-pill" onclick="processImportSheetData()">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Import All Stores
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PARTIAL PAYMENT MODAL -->
-  <div id="payment-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 420px;">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-hand-holding-dollar"></i> Record Payment</h3>
-        <span onclick="closePaymentModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="modal-body">
-        <form id="payment-form">
-          <input type="hidden" id="pay-order-id">
-          <div class="form-group">
-            <label>Balance Due</label>
-            <input type="text" id="pay-balance-due" class="form-control" readonly>
-          </div>
-          <div class="form-group">
-            <label>Amount Paying (₹)</label>
-            <input type="number" step="1" id="pay-amount" class="form-control" placeholder="Enter amount" required>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closePaymentModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
-        <button class="btn btn-primary btn-pill" onclick="submitPaymentRecord()">
-          <i class="fa-solid fa-check"></i> Save Payment
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EDIT STORE MODAL -->
-  <div id="edit-store-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-pen-to-square"></i> Edit Store Details</h3>
-        <span onclick="closeEditModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
+        <h3><i class="fa-solid fa-file-import"></i> Paste Google Sheet Data</h3>
+        <span onclick="closeImportModal()" style="cursor: pointer;"><i class="fa-solid fa-xmark"></i></span>
       </div>
       <div class="modal-body">
-        <form id="edit-store-form">
-          <input type="hidden" id="edit-store-id">
-          <div class="form-group">
-            <label>Store Name (കടയുടെ പേര്)</label>
-            <input type="text" id="edit-store-name" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Owner Name</label>
-            <input type="text" id="edit-owner-name" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Mobile</label>
-            <input type="tel" id="edit-mobile" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>WhatsApp</label>
-            <input type="tel" id="edit-whatsapp" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Route & Shift</label>
-            <select id="edit-route" class="form-control" required>
-              <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
-              <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
-              <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
-              <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
-              <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
-              <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
-            </select>
-          </div>
-
-          <h4 style="margin: 20px 0 10px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> Price Rates (₹)</h4>
-          <div class="grid-cards" style="margin-bottom: 10px;">
-            <div class="form-group">
-              <label>ഇടിയപ്പം വില</label>
-              <input type="number" step="0.01" id="edit-price-idiyappam" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>വെള്ളയപ്പം വില</label>
-              <input type="number" step="0.01" id="edit-price-vellayappam" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>ഇഡ്ഡലി വില</label>
-              <input type="number" step="0.01" id="edit-price-idli" class="form-control" required>
-            </div>
-          </div>
-        </form>
+        <textarea id="import-sheet-data" style="width: 100%; height: 180px; padding: 10px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.85rem;" placeholder="Select and copy your Google Sheet Stores tab and paste here..."></textarea>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closeEditModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
-        <button class="btn btn-primary btn-pill" onclick="submitStoreUpdate()">
-          <i class="fa-solid fa-floppy-disk"></i> Update Store
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EDIT ORDER MODAL -->
-  <div id="edit-order-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 450px;">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-pen-to-square"></i> Edit Order</h3>
-        <span onclick="closeEditOrderModal()" style="cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></span>
-      </div>
-      <div class="modal-body">
-        <form id="edit-order-form">
-          <input type="hidden" id="edit-order-id">
-          <div class="form-group">
-            <label>Route / Shift</label>
-            <select id="edit-order-route" class="form-control" required>
-              <option value="Route 1 - Morning">Route 1 - Morning Shift</option>
-              <option value="Route 1 - Evening">Route 1 - Evening Shift</option>
-              <option value="Route 2 - Morning">Route 2 - Morning Shift</option>
-              <option value="Route 2 - Evening">Route 2 - Evening Shift</option>
-              <option value="Route 3 - Morning">Route 3 - Morning Shift</option>
-              <option value="Route 3 - Evening">Route 3 - Evening Shift</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>ഇടിയപ്പം (Qty)</label>
-            <input type="number" id="edit-order-idiyappam" class="form-control" min="0" required>
-          </div>
-          <div class="form-group">
-            <label>വെള്ളയപ്പം (Qty)</label>
-            <input type="number" id="edit-order-vellayappam" class="form-control" min="0" required>
-          </div>
-          <div class="form-group">
-            <label>ഇഡ്ഡലി (Qty)</label>
-            <input type="number" id="edit-order-idli" class="form-control" min="0" required>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-pill" onclick="closeEditOrderModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
-        <button class="btn btn-primary btn-pill" onclick="submitOrderUpdate()">
-          <i class="fa-solid fa-floppy-disk"></i> Save Changes
-        </button>
+        <button class="btn btn-pill" onclick="closeImportModal()">Cancel</button>
+        <button class="btn btn-primary btn-pill" onclick="processImportSheetData()">Import All</button>
       </div>
     </div>
   </div>
 
   <!-- NOTIFICATION MODAL -->
   <div id="custom-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 450px;">
-      <div class="modal-header">
-        <h3 id="modal-title">Notice</h3>
-      </div>
+    <div class="modal-card" style="max-width: 380px;">
+      <div class="modal-header"><h3 id="modal-title">Notice</h3></div>
       <div class="modal-body" style="text-align: center;">
         <div id="modal-icon-container"></div>
         <p id="modal-message">System message.</p>
       </div>
       <div class="modal-footer" style="justify-content: center;">
-        <button class="btn btn-primary btn-pill" onclick="closeModal()">
-          <i class="fa-solid fa-check"></i> OK
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONFIRMATION DIALOG MODAL -->
-  <div id="confirm-modal" class="modal-overlay">
-    <div class="modal-card" style="max-width: 450px;">
-      <div class="modal-header" style="background: var(--color-error);">
-        <h3 id="confirm-title">Confirm Action</h3>
-      </div>
-      <div class="modal-body" style="text-align: center;">
-        <i class="fa-solid fa-circle-question modal-icon" style="color: var(--color-error); font-size: 2.5rem; margin-bottom: 10px;"></i>
-        <p id="confirm-message">Are you sure you want to proceed?</p>
-      </div>
-      <div class="modal-footer" style="justify-content: center;">
-        <button class="btn btn-pill" onclick="closeConfirmModal()" style="background: #e2e8f0; color: #475569;">Cancel</button>
-        <button class="btn btn-pill" id="confirm-action-btn" style="background: var(--color-error); color: white;">
-          <i class="fa-solid fa-check"></i> Confirm
-        </button>
+        <button class="btn btn-primary btn-pill" onclick="closeModal()">OK</button>
       </div>
     </div>
   </div>
@@ -1336,66 +1053,38 @@
     let registeredStoresList = [];
     let currentOrdersList = [];
     let currentMetricsData = null;
-    let pendingConfirmAction = null;
-    let isSubmittingOrder = false;
 
     document.addEventListener('DOMContentLoaded', () => {
       checkSessionState();
-      setupAdvancedKeyboardNav();
-      setDefaultDeliveryDate();
-      setMonthPickerDefault();
+      setDefaultDates();
       
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('#order-store-search') && !e.target.closest('#suggest-box')) {
-          const suggestBox = document.getElementById('suggest-box');
-          if (suggestBox) suggestBox.style.display = 'none';
+      // Auto jump on enter key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList.contains('bulk-qty-field')) {
+          e.preventDefault();
+          const inputs = Array.from(document.querySelectorAll('.bulk-qty-field'));
+          const idx = inputs.indexOf(e.target);
+          if (idx > -1 && inputs[idx + 1]) {
+            inputs[idx + 1].focus();
+            inputs[idx + 1].select();
+          }
         }
       });
     });
 
-    function setDefaultDeliveryDate() {
-      const dateInput = document.getElementById('order-delivery-date');
-      const prodDateInput = document.getElementById('production-date-filter');
-      const bulkDateInput = document.getElementById('bulk-order-date');
+    function setDefaultDates() {
       const today = new Date().toISOString().split('T')[0];
-      
-      if (dateInput && !dateInput.value) dateInput.value = today;
-      if (prodDateInput && !prodDateInput.value) prodDateInput.value = today;
-      if (bulkDateInput && !bulkDateInput.value) bulkDateInput.value = today;
-    }
-
-    function setMonthPickerDefault() {
+      ['bulk-order-date', 'order-delivery-date', 'production-date-filter'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.value = today;
+      });
       const mPicker = document.getElementById('calendar-month-picker');
-      if (mPicker) {
-        const today = new Date();
-        const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-        mPicker.value = yearMonth;
-      }
-    }
-
-    function autoCopyOwnerName() {
-      const storeName = document.getElementById('reg-store-name').value;
-      const ownerInput = document.getElementById('reg-owner-name');
-      if (ownerInput && (!ownerInput.value || ownerInput.dataset.autofilled === "true")) {
-        ownerInput.value = storeName;
-        ownerInput.dataset.autofilled = "true";
-      }
-    }
-
-    function autoCopyWhatsapp(sourceId, targetId) {
-      const sourceVal = document.getElementById(sourceId).value;
-      const targetInput = document.getElementById(targetId);
-      if (targetInput && (!targetInput.value || targetInput.dataset.autofilled === "true")) {
-        targetInput.value = sourceVal;
-        targetInput.dataset.autofilled = "true";
-      }
+      if (mPicker) mPicker.value = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
     }
 
     function checkSessionState() {
-      const storedUser = localStorage.getItem('snec_authenticated_user');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        document.getElementById('user-display').innerText = `${user.storeName || 'Admin'} (${user.id || 'admin'})`;
+      const user = localStorage.getItem('snec_authenticated_user');
+      if (user) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('app-screen').style.display = 'flex';
         loadStoreOptions();
@@ -1407,109 +1096,69 @@
     }
 
     function confirmLogout() {
-      showConfirmModal('Logout Confirmation', 'Are you sure you want to log out?', handleLogout);
-    }
-
-    function handleLogout() {
       localStorage.removeItem('snec_authenticated_user');
-      sessionStorage.clear();
       checkSessionState();
-      showModal('Logged Out', 'You have been logged out successfully.', 'success');
-    }
-
-    function setupAdvancedKeyboardNav() {
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          const target = e.target;
-          if (target.matches('.bulk-qty-input') || (target.matches('input') && target.type !== 'submit')) {
-            e.preventDefault();
-            const allInputs = Array.from(document.querySelectorAll('input:not([type=hidden]):not([readonly]), select'));
-            const index = allInputs.indexOf(target);
-            if (index > -1 && allInputs[index + 1]) {
-              allInputs[index + 1].focus();
-              if (allInputs[index + 1].select) allInputs[index + 1].select();
-            }
-          }
-        }
-      });
     }
 
     function switchTab(tabId, event) {
       if (event) event.preventDefault();
       document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-      
       document.getElementById(tabId).classList.add('active');
       if (event) event.currentTarget.classList.add('active');
 
-      if (tabId === 'tab-bulk-orders') {
-        loadBulkOrderSheet();
-      } else if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts' || tabId === 'tab-calendar') {
-        fetchProductionMetrics();
-      } else if (tabId === 'tab-orders' || tabId === 'tab-stores-dir') {
-        loadStoreOptions();
-      }
+      if (tabId === 'tab-bulk-orders') loadBulkOrderSheet();
+      if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts') fetchProductionMetrics();
     }
 
     function refreshDirectoryData() {
       const icon = document.getElementById('refresh-icon');
       if (icon) icon.classList.add('fa-spin');
-      
       loadStoreOptions();
       fetchProductionMetrics();
-      loadBulkOrderSheet();
-
       setTimeout(() => {
         if (icon) icon.classList.remove('fa-spin');
-        showModal('Refreshed', 'Data updated successfully.', 'success');
-      }, 600);
+        showModal('Refreshed', 'Data updated!', 'success');
+      }, 500);
     }
 
-    function triggerPrint(sectionId) {
-      const element = document.getElementById(sectionId);
-      element.classList.add('print-active');
-      window.print();
-      element.classList.remove('print-active');
-    }
-
-    // FIRESTORE: STORES LISTENER
+    // 🌟 Load and Sort Stores with Auto Next Store ID
     function loadStoreOptions() {
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
         const tableBody = document.querySelector('#dashboard-stores-table tbody');
         if (tableBody) tableBody.innerHTML = '';
 
+        let maxId = 0;
+
         snapshot.forEach(doc => {
           const store = { id: doc.id, ...doc.data() };
           registeredStoresList.push(store);
 
+          const numId = parseInt(doc.id);
+          if (!isNaN(numId) && numId > maxId) maxId = numId;
+
           if (tableBody) {
-            const row = `<tr>
+            tableBody.innerHTML += `<tr>
               <td><strong>${store.id}</strong></td>
               <td>${store.storeName}</td>
-              <td>${store.ownerName || '-'}</td>
+              <td><small>${store.route || ''}</small></td>
               <td>${store.mobile || '-'}</td>
-              <td><span style="background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">${store.route}</span></td>
               <td>
-                <small style="color: #475569;">
-                  ഇടിയപ്പം: ₹${Number(store.priceIdiyappam || 0).toFixed(2)}<br>
-                  വെള്ളയപ്പം: ₹${Number(store.priceVellayappam || 0).toFixed(2)}<br>
-                  ഇഡ്ഡലി: ₹${Number(store.priceIdli || 0).toFixed(2)}
-                </small>
-              </td>
-              <td style="display: flex; gap: 6px;">
-                <button class="btn btn-edit btn-pill" onclick="openEditStoreModal('${store.id}')">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-                <button class="btn btn-delete btn-pill" onclick="confirmDeleteStore('${store.id}', '${store.storeName}')">
+                <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}')">
                   <i class="fa-solid fa-trash"></i>
                 </button>
-                ${store.whatsapp ? `<a href="https://wa.me/91${store.whatsapp}" target="_blank" class="btn btn-whatsapp btn-pill" style="padding:6px 12px; font-size:0.8rem;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
               </td>
             </tr>`;
-            tableBody.innerHTML += row;
           }
         });
+
+        // Numerical Sorting: 1, 2, 3...
+        registeredStoresList.sort((a, b) => (parseInt(a.id) || 0) - (parseInt(b.id) || 0));
+
+        // Auto-assign next store number
+        const nextIdField = document.getElementById('reg-store-id');
+        if (nextIdField) nextIdField.value = maxId + 1;
 
         const badge = document.getElementById('store-count-badge');
         if (badge) badge.innerText = `${registeredStoresList.length} Stores`;
@@ -1518,143 +1167,83 @@
       });
     }
 
-    // GOOGLE SHEETS IMPORT LOGIC
-    function openImportModal() {
-      document.getElementById('import-sheet-data').value = '';
-      document.getElementById('import-modal').classList.add('active');
-    }
-
-    function closeImportModal() {
-      document.getElementById('import-modal').classList.remove('active');
-    }
-
-    function processImportSheetData() {
-      const rawText = document.getElementById('import-sheet-data').value.trim();
-      if (!rawText) {
-        showModal('Error', 'Please paste data from Google Sheet.', 'error');
-        return;
-      }
-
-      const lines = rawText.split('\n');
-      if (lines.length === 0) return;
-
-      const batch = db.batch();
-      let importedCount = 0;
-
-      lines.forEach((line, index) => {
-        const cols = line.split('\t').map(c => c.trim());
-        if (cols.length < 2) return;
-
-        // Skip header row if present
-        if (cols[0].toLowerCase().includes('store id') || cols[1].toLowerCase().includes('store name')) return;
-
-        const storeId = cols[0];
-        const storeName = cols[1];
-        const ownerName = cols[3] || storeName;
-        const mobile = cols[4] || '';
-        const whatsapp = cols[5] || mobile;
-        const route = cols[6] || 'Route 1 - Morning';
-        const priceIdi = parseFloat(cols[7]) || 5.0;
-        const priceVel = parseFloat(cols[8]) || 5.0;
-        const priceIdl = parseFloat(cols[9]) || 5.0;
-
-        if (storeId && storeName) {
-          const docRef = db.collection("stores").doc(storeId);
-          batch.set(docRef, {
-            storeName: storeName,
-            ownerName: ownerName,
-            mobile: mobile,
-            whatsapp: whatsapp,
-            route: route,
-            priceIdiyappam: priceIdi,
-            priceVellayappam: priceVel,
-            priceIdli: priceIdl
-          });
-          importedCount++;
-        }
-      });
-
-      if (importedCount === 0) {
-        showModal('Attention', 'No valid store rows detected.', 'error');
-        return;
-      }
-
-      batch.commit().then(() => {
-        closeImportModal();
-        showModal('Import Successful', `${importedCount} stores successfully imported from Google Sheet!`, 'success');
-      }).catch(err => {
-        showModal('Error', err.message, 'error');
-      });
-    }
-
-    // BULK ORDER LOGIC
+    // 🌟 Render Mobile-Friendly Bulk Cards
     function loadBulkOrderSheet() {
-      const bulkTbody = document.querySelector('#bulk-orders-table tbody');
-      if (!bulkTbody) return;
-      bulkTbody.innerHTML = '';
+      const container = document.getElementById('bulk-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
 
       const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
+      const selectedRoute = document.getElementById('bulk-route-filter').value;
 
-      if (registeredStoresList.length === 0) {
-        bulkTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No stores registered yet. Use Import or Register to add stores.</td></tr>';
+      let filteredStores = registeredStoresList;
+      if (selectedRoute !== 'ALL') {
+        filteredStores = registeredStoresList.filter(s => s.route === selectedRoute);
+      }
+
+      if (filteredStores.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">No stores found for this route.</div>';
         return;
       }
 
-      registeredStoresList.forEach((store) => {
+      filteredStores.forEach(store => {
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
-
         const valIdi = existingOrder ? existingOrder.idiyappam : 0;
         const valVel = existingOrder ? existingOrder.vellayappam : 0;
         const valIdl = existingOrder ? existingOrder.idli : 0;
         const orderDocId = existingOrder ? existingOrder.orderId : '';
 
-        const row = `
-          <tr data-store-id="${store.id}" data-order-id="${orderDocId}">
-            <td><strong>${store.id}</strong></td>
-            <td><strong>${store.storeName}</strong></td>
-            <td><small style="color: #64748b;">${store.route || 'General'}</small></td>
-            <td style="text-align: center;">
-              <input type="number" min="0" class="bulk-qty-input bulk-idi" value="${valIdi}" onfocus="this.select()">
-            </td>
-            <td style="text-align: center;">
-              <input type="number" min="0" class="bulk-qty-input bulk-vel" value="${valVel}" onfocus="this.select()">
-            </td>
-            <td style="text-align: center;">
-              <input type="number" min="0" class="bulk-qty-input bulk-idl" value="${valIdl}" onfocus="this.select()">
-            </td>
-          </tr>
+        const card = `
+          <div class="bulk-store-card" data-store-id="${store.id}" data-order-id="${orderDocId}">
+            <div class="bulk-store-header">
+              <div class="store-badge-title">
+                <span class="store-id-tag">#${store.id}</span>
+                <span>${store.storeName}</span>
+              </div>
+              <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
+            </div>
+            <div class="bulk-inputs-row">
+              <div class="bulk-input-col">
+                <label>ഇടിയപ്പം</label>
+                <input type="number" min="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
+              </div>
+              <div class="bulk-input-col">
+                <label>വെള്ളയപ്പം</label>
+                <input type="number" min="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
+              </div>
+              <div class="bulk-input-col">
+                <label>ഇഡ്ഡലി</label>
+                <input type="number" min="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
+              </div>
+            </div>
+          </div>
         `;
-        bulkTbody.innerHTML += row;
+        container.innerHTML += card;
       });
     }
 
     function saveBulkOrders() {
       const selectedDate = document.getElementById('bulk-order-date').value;
-      if (!selectedDate) {
-        showModal('Error', 'Please select a valid delivery date.', 'error');
-        return;
-      }
-
-      const rows = document.querySelectorAll('#bulk-orders-table tbody tr');
-      if (rows.length === 0) return;
+      const cards = document.querySelectorAll('.bulk-store-card');
+      if (cards.length === 0) return;
 
       const batch = db.batch();
-      let ordersProcessed = 0;
+      let count = 0;
 
-      rows.forEach(row => {
-        const storeId = row.dataset.storeId;
-        const existingOrderId = row.dataset.orderId;
+      cards.forEach(card => {
+        const storeId = card.dataset.storeId;
+        const existingOrderId = card.dataset.orderId;
         const store = registeredStoresList.find(s => s.id === storeId);
         if (!store) return;
 
-        const idi = Number(row.querySelector('.bulk-idi').value || 0);
-        const vel = Number(row.querySelector('.bulk-vel').value || 0);
-        const idl = Number(row.querySelector('.bulk-idl').value || 0);
+        const idi = Number(card.querySelector('.bulk-idi').value || 0);
+        const vel = Number(card.querySelector('.bulk-vel').value || 0);
+        const idl = Number(card.querySelector('.bulk-idl').value || 0);
 
         if (idi > 0 || vel > 0 || idl > 0) {
-          const totalAmount = (idi * (store.priceIdiyappam || 0)) +
-                              (vel * (store.priceVellayappam || 0)) +
-                              (idl * (store.priceIdli || 0));
+          const totalAmount = (idi * (store.priceIdiyappam || 5)) +
+                              (vel * (store.priceVellayappam || 5)) +
+                              (idl * (store.priceIdli || 5));
 
           const payload = {
             storeId: store.id,
@@ -1673,8 +1262,7 @@
           };
 
           if (existingOrderId) {
-            const docRef = db.collection("orders").doc(existingOrderId);
-            batch.update(docRef, {
+            batch.update(db.collection("orders").doc(existingOrderId), {
               idiyappam: idi,
               vellayappam: vel,
               idli: idl,
@@ -1682,723 +1270,246 @@
               balanceDue: totalAmount
             });
           } else {
-            const docRef = db.collection("orders").doc();
-            batch.set(docRef, payload);
+            batch.set(db.collection("orders").doc(), payload);
           }
-          ordersProcessed++;
+          count++;
         }
       });
 
       batch.commit().then(() => {
-        showModal('Orders Saved', `${ordersProcessed} store orders successfully recorded.`, 'success');
+        showModal('Saved', `${count} orders saved successfully!`, 'success');
         fetchProductionMetrics();
-      }).catch(err => {
-        showModal('Error', err.message, 'error');
       });
     }
 
+    // Single order autocomplete
     function handleInstantSuggest() {
-      const query = document.getElementById('order-store-search').value.toLowerCase().trim();
-      const suggestBox = document.getElementById('suggest-box');
-      suggestBox.innerHTML = '';
+      const q = document.getElementById('order-store-search').value.toLowerCase().trim();
+      const box = document.getElementById('suggest-box');
+      box.innerHTML = '';
 
-      if (query.length === 0) {
-        suggestBox.style.display = 'none';
-        return;
-      }
+      if (!q) { box.style.display = 'none'; return; }
 
-      const matches = registeredStoresList.filter(s => 
-        (s.id && s.id.toLowerCase().includes(query)) ||
-        (s.storeName && s.storeName.toLowerCase().includes(query)) ||
-        (s.mobile && s.mobile.toLowerCase().includes(query))
-      );
-
+      const matches = registeredStoresList.filter(s => s.id.includes(q) || s.storeName.toLowerCase().includes(q));
       if (matches.length === 0) {
-        suggestBox.innerHTML = '<div class="suggest-item" style="color: #94a3b8;">Store not found</div>';
-        suggestBox.style.display = 'block';
+        box.innerHTML = '<div class="suggest-item" style="color:#94a3b8;">Store not found</div>';
+        box.style.display = 'block';
         return;
       }
 
-      matches.forEach(store => {
-        const item = document.createElement('div');
-        item.className = 'suggest-item';
-        item.innerText = `${store.id} - ${store.storeName} (${store.mobile || ''})`;
-        item.onclick = () => selectStoreFromSuggest(store);
-        suggestBox.appendChild(item);
+      matches.forEach(s => {
+        const el = document.createElement('div');
+        el.className = 'suggest-item';
+        el.innerText = `${s.id} - ${s.storeName}`;
+        el.onclick = () => {
+          document.getElementById('order-store-search').value = `${s.id} - ${s.storeName}`;
+          document.getElementById('selected-store-id').value = s.id;
+          if (s.route) document.getElementById('order-route').value = s.route;
+          box.style.display = 'none';
+        };
+        box.appendChild(el);
       });
-
-      suggestBox.style.display = 'block';
+      box.style.display = 'block';
     }
 
-    function selectStoreFromSuggest(store) {
-      document.getElementById('order-store-search').value = `${store.id} - ${store.storeName}`;
-      document.getElementById('selected-store-id').value = store.id;
-      
-      const routeSelect = document.getElementById('order-route');
-      if (routeSelect && store.route) {
-        routeSelect.value = store.route;
-      }
-      document.getElementById('suggest-box').style.display = 'none';
-    }
-
-    // FIRESTORE: ORDERS & METRICS
+    // Orders & Metrics
     function fetchProductionMetrics() {
-      const prodFilterEl = document.getElementById('production-date-filter');
-      const selectedDate = prodFilterEl ? prodFilterEl.value : new Date().toISOString().split('T')[0];
+      const selectedDate = document.getElementById('production-date-filter').value || new Date().toISOString().split('T')[0];
 
       db.collection("orders").onSnapshot(snapshot => {
-        let totalIdiyappam = 0;
-        let totalVellayappam = 0;
-        let totalIdli = 0;
-        let totalRevenue = 0;
-        let totalCollected = 0;
-        let totalPending = 0;
-
-        let idiyappamPackets = {};
-        let vellayappamPackets = {};
-        let idliPackets = {};
-        let routeSummary = {};
-        let deliveryList = [];
-        let accountsLedger = [];
-        let calendarMap = {};
+        let totalIdi = 0, totalVel = 0, totalIdl = 0;
+        let totalRev = 0, totalPaid = 0, totalPending = 0;
+        let idiyappamPackets = {}, vellayappamPackets = {}, idliPackets = {}, routeSummary = {};
+        let deliveryList = [], ledgerList = [];
 
         currentOrdersList = [];
 
         snapshot.forEach(doc => {
-          const order = { orderId: doc.id, ...doc.data() };
-          currentOrdersList.push(order);
+          const o = { orderId: doc.id, ...doc.data() };
+          currentOrdersList.push(o);
 
-          const oDate = order.deliveryDate;
-          if (!calendarMap[oDate]) {
-            calendarMap[oDate] = { idiyappam: 0, vellayappam: 0, idli: 0, totalOrders: 0, orders: [] };
-          }
-          calendarMap[oDate].idiyappam += Number(order.idiyappam || 0);
-          calendarMap[oDate].vellayappam += Number(order.vellayappam || 0);
-          calendarMap[oDate].idli += Number(order.idli || 0);
-          calendarMap[oDate].totalOrders += 1;
-          calendarMap[oDate].orders.push(order);
-
-          if (order.deliveryDate === selectedDate) {
-            const idi = Number(order.idiyappam || 0);
-            const vel = Number(order.vellayappam || 0);
-            const idl = Number(order.idli || 0);
-
-            totalIdiyappam += idi;
-            totalVellayappam += vel;
-            totalIdli += idl;
+          if (o.deliveryDate === selectedDate) {
+            const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
+            totalIdi += idi; totalVel += vel; totalIdl += idl;
 
             if (idi > 0) idiyappamPackets[idi] = (idiyappamPackets[idi] || 0) + 1;
             if (vel > 0) vellayappamPackets[vel] = (vellayappamPackets[vel] || 0) + 1;
             if (idl > 0) idliPackets[idl] = (idliPackets[idl] || 0) + 1;
 
-            const r = order.route || 'General';
-            if (!routeSummary[r]) routeSummary[r] = { idiyappam: 0, vellayappam: 0, idli: 0 };
-            routeSummary[r].idiyappam += idi;
-            routeSummary[r].vellayappam += vel;
-            routeSummary[r].idli += idl;
+            const r = o.route || 'General';
+            if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
+            routeSummary[r].idi += idi; routeSummary[r].vel += vel; routeSummary[r].idl += idl;
 
-            deliveryList.push(order);
+            deliveryList.push(o);
           }
 
-          const tot = Number(order.totalAmount || 0);
-          const paid = Number(order.paidAmount || 0);
-          const bal = Number(order.balanceDue || 0);
-
-          totalRevenue += tot;
-          totalCollected += paid;
-          totalPending += bal;
-
-          accountsLedger.push(order);
+          totalRev += Number(o.totalAmount || 0);
+          totalPaid += Number(o.paidAmount || 0);
+          totalPending += Number(o.balanceDue || 0);
+          ledgerList.push(o);
         });
 
-        currentMetricsData = {
-          selectedDate,
-          totals: { idiyappam: totalIdiyappam, vellayappam: totalVellayappam, idli: totalIdli, totalRevenue, totalCollected, totalPending },
-          idiyappamPackets,
-          vellayappamPackets,
-          idliPackets,
-          routeSummary,
-          deliveryList,
-          accountsLedger,
-          calendarMap
-        };
+        currentMetricsData = { deliveryList };
 
-        document.getElementById('total-idiyappam').innerText = totalIdiyappam;
-        document.getElementById('total-vellayappam').innerText = totalVellayappam;
-        document.getElementById('total-idli').innerText = totalIdli;
+        document.getElementById('total-idiyappam').innerText = totalIdi;
+        document.getElementById('total-vellayappam').innerText = totalVel;
+        document.getElementById('total-idli').innerText = totalIdl;
 
-        document.getElementById('acc-total-revenue').innerText = `₹${totalRevenue.toFixed(2)}`;
-        document.getElementById('acc-total-collected').innerText = `₹${totalCollected.toFixed(2)}`;
+        document.getElementById('acc-total-revenue').innerText = `₹${totalRev.toFixed(2)}`;
+        document.getElementById('acc-total-collected').innerText = `₹${totalPaid.toFixed(2)}`;
         document.getElementById('acc-total-pending').innerText = `₹${totalPending.toFixed(2)}`;
 
         renderPacketPills('idiyappam-packets-list', idiyappamPackets);
         renderPacketPills('vellayappam-packets-list', vellayappamPackets);
         renderPacketPills('idli-packets-list', idliPackets);
 
-        const tbody = document.querySelector('#route-table tbody');
-        if (tbody) {
-          tbody.innerHTML = '';
-          for (let route in routeSummary) {
-            tbody.innerHTML += `<tr>
-              <td><strong>${route}</strong></td>
-              <td>${routeSummary[route].idiyappam}</td>
-              <td>${routeSummary[route].vellayappam}</td>
-              <td>${routeSummary[route].idli}</td>
-            </tr>`;
+        const routeTbody = document.querySelector('#route-table tbody');
+        if (routeTbody) {
+          routeTbody.innerHTML = '';
+          for (let r in routeSummary) {
+            routeTbody.innerHTML += `<tr><td><strong>${r}</strong></td><td>${routeSummary[r].idi}</td><td>${routeSummary[r].vel}</td><td>${routeSummary[r].idl}</td></tr>`;
           }
         }
 
-        const currentFilter = document.getElementById('delivery-route-filter') ? document.getElementById('delivery-route-filter').value : 'ALL';
-        renderDeliveryTable(deliveryList, currentFilter);
-        renderAccountsLedger(accountsLedger);
-        renderMonthlyCalendar();
+        renderDeliveryTable(deliveryList);
+        renderAccountsLedger(ledgerList);
       });
     }
 
-    function renderDeliveryTable(deliveryList, filterRoute = 'ALL') {
-      const delTbody = document.querySelector('#delivery-manifest-table tbody');
-      if (!delTbody) return;
-      delTbody.innerHTML = '';
+    function renderPacketPills(id, obj) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = '';
+      const keys = Object.keys(obj);
+      if (keys.length === 0) { el.innerHTML = '<span style="color:#94a3b8; font-size:0.8rem;">No orders</span>'; return; }
+      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} Qty &times; ${obj[k]} Packets</div>`);
+    }
 
-      let itemsToDisplay = deliveryList;
-      if (filterRoute !== 'ALL') {
-        itemsToDisplay = deliveryList.filter(item => item.route === filterRoute);
-      }
-
-      if (itemsToDisplay.length === 0) {
-        delTbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8;">No orders available.</td></tr>';
-        return;
-      }
-
-      itemsToDisplay.forEach(item => {
-        const isDelivered = item.deliveryStatus === 'Delivered';
-        const escapedRoute = String(item.route || '').replace(/'/g, "\\'");
-        const dRow = `<tr>
-          <td>
-            <input type="checkbox" style="width:20px; height:20px; cursor:pointer;" ${isDelivered ? 'checked' : ''} onchange="toggleDeliveryCheck('${item.orderId}', this.checked)">
-          </td>
-          <td><strong>${item.deliveryDate}</strong></td>
-          <td><strong>${item.storeId}</strong></td>
+    function renderDeliveryTable(list) {
+      const tbody = document.querySelector('#delivery-manifest-table tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      list.forEach(item => {
+        tbody.innerHTML += `<tr>
+          <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
+          <td><strong>#${item.storeId}</strong></td>
           <td>${item.storeName}</td>
           <td>${item.idiyappam}</td>
           <td>${item.vellayappam}</td>
           <td>${item.idli}</td>
-          <td><strong>₹${Number(item.totalAmount || 0).toFixed(2)}</strong></td>
-          <td style="display: flex; gap: 6px;">
-            <button class="btn btn-edit btn-pill" onclick="openEditOrderModal('${item.orderId}', ${item.idiyappam}, ${item.vellayappam}, ${item.idli}, '${escapedRoute}')">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="btn btn-delete btn-pill" onclick="confirmDeleteOrder('${item.orderId}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
+          <td><strong>₹${item.totalAmount}</strong></td>
         </tr>`;
-        delTbody.innerHTML += dRow;
       });
     }
 
-    function renderAccountsLedger(ledgerList) {
-      const accTbody = document.querySelector('#accounts-ledger-table tbody');
-      if (!accTbody) return;
-      accTbody.innerHTML = '';
-
-      if (ledgerList.length === 0) {
-        accTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8;">No accounts records found.</td></tr>';
-        return;
-      }
-
-      ledgerList.forEach(item => {
-        const isFullyPaid = item.paymentStatus === 'Paid';
-        const badgeColor = isFullyPaid ? 'var(--color-success)' : (item.paidAmount > 0 ? 'var(--color-info)' : 'var(--color-error)');
-
-        const row = `<tr>
-          <td style="text-align: center;">
-            <input type="checkbox" style="width:22px; height:22px; cursor:pointer;" ${isFullyPaid ? 'checked' : ''} onchange="toggleAccountPaidCheckbox('${item.orderId}', this.checked, ${item.totalAmount})">
-          </td>
-          <td>${item.deliveryDate}</td>
-          <td><strong>[${item.storeId}] ${item.storeName}</strong></td>
-          <td>₹${Number(item.totalAmount || 0).toFixed(2)}</td>
-          <td>₹${Number(item.paidAmount || 0).toFixed(2)}</td>
-          <td><strong style="color: ${item.balanceDue > 0 ? 'var(--color-error)' : 'green'}">₹${Number(item.balanceDue || 0).toFixed(2)}</strong></td>
-          <td><span style="background:${badgeColor}; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem;">${isFullyPaid ? 'Paid' : (item.paidAmount > 0 ? 'Partial' : 'Due')}</span></td>
-          <td style="display: flex; gap: 6px;">
-            <button class="btn btn-pill btn-edit" style="padding: 4px 10px; font-size: 0.8rem;" onclick="openPaymentModal('${item.orderId}', ${item.balanceDue})">
-              <i class="fa-solid fa-coins"></i> Partial
-            </button>
-          </td>
+    function renderAccountsLedger(list) {
+      const tbody = document.querySelector('#accounts-ledger-table tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      list.forEach(item => {
+        tbody.innerHTML += `<tr>
+          <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
+          <td>[${item.storeId}] ${item.storeName}</td>
+          <td>₹${item.totalAmount}</td>
+          <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
+          <td><span style="font-size:0.75rem;">${item.paymentStatus}</span></td>
         </tr>`;
-        accTbody.innerHTML += row;
       });
     }
 
-    function toggleDeliveryCheck(orderId, isChecked) {
-      const status = isChecked ? 'Delivered' : 'Pending';
-      db.collection("orders").doc(orderId).update({ deliveryStatus: status });
+    function toggleDelivery(id, done) {
+      db.collection("orders").doc(id).update({ deliveryStatus: done ? 'Delivered' : 'Pending' });
     }
 
-    function toggleAccountPaidCheckbox(orderId, isChecked, totalAmount) {
-      if (isChecked) {
-        db.collection("orders").doc(orderId).update({
-          paidAmount: Number(totalAmount),
-          balanceDue: 0,
-          paymentStatus: 'Paid'
-        });
-      } else {
-        db.collection("orders").doc(orderId).update({
-          paidAmount: 0,
-          balanceDue: Number(totalAmount),
-          paymentStatus: 'Pending'
-        });
-      }
-    }
-
-    function openPaymentModal(orderId, balanceDue) {
-      document.getElementById('pay-order-id').value = orderId;
-      document.getElementById('pay-balance-due').value = `₹${Number(balanceDue).toFixed(2)}`;
-      document.getElementById('pay-amount').value = balanceDue;
-      document.getElementById('payment-modal').classList.add('active');
-    }
-
-    function closePaymentModal() {
-      document.getElementById('payment-modal').classList.remove('active');
-    }
-
-    function submitPaymentRecord() {
-      const orderId = document.getElementById('pay-order-id').value;
-      const payAmount = Number(document.getElementById('pay-amount').value);
-
-      if (!payAmount || payAmount <= 0) {
-        showModal('Attention', 'Please enter a valid amount.', 'error');
-        return;
-      }
-
-      const orderRef = db.collection("orders").doc(orderId);
-      orderRef.get().then(doc => {
-        if (doc.exists) {
-          const data = doc.data();
-          const currentPaid = Number(data.paidAmount || 0);
-          const total = Number(data.totalAmount || 0);
-          const newPaid = currentPaid + payAmount;
-          const newBalance = Math.max(0, total - newPaid);
-          const status = newBalance === 0 ? 'Paid' : 'Partial';
-
-          orderRef.update({
-            paidAmount: newPaid,
-            balanceDue: newBalance,
-            paymentStatus: status
-          }).then(() => {
-            closePaymentModal();
-            showModal('Success', 'Payment recorded successfully.', 'success');
-          });
-        }
+    function togglePaid(id, paid, total) {
+      db.collection("orders").doc(id).update({
+        paidAmount: paid ? total : 0,
+        balanceDue: paid ? 0 : total,
+        paymentStatus: paid ? 'Paid' : 'Pending'
       });
     }
 
-    // FORM SUBMIT: REGISTER STORE
-    document.getElementById('store-form').addEventListener('submit', function(e) {
+    // Register Store
+    document.getElementById('store-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const storeId = document.getElementById('reg-store-id').value.trim();
-      const storeData = {
+      const storeId = document.getElementById('reg-store-id').value;
+      const data = {
         storeName: document.getElementById('reg-store-name').value,
-        ownerName: document.getElementById('reg-owner-name').value,
         mobile: document.getElementById('reg-mobile').value,
-        whatsapp: document.getElementById('reg-whatsapp').value,
         route: document.getElementById('reg-route').value,
         priceIdiyappam: Number(document.getElementById('reg-price-idiyappam').value),
         priceVellayappam: Number(document.getElementById('reg-price-vellayappam').value),
         priceIdli: Number(document.getElementById('reg-price-idli').value)
       };
 
-      db.collection("stores").doc(storeId).set(storeData).then(() => {
-        showModal('Store Saved', 'New store registered successfully.', 'success');
+      db.collection("stores").doc(storeId).set(data).then(() => {
+        showModal('Store Saved', `Store #${storeId} registered successfully!`, 'success');
         document.getElementById('store-form').reset();
-      }).catch(err => showModal('Error', err.message, 'error'));
-    });
-
-    // FORM SUBMIT: CREATE ORDER
-    document.getElementById('order-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (isSubmittingOrder) return;
-
-      const storeId = document.getElementById('selected-store-id').value;
-      const selectedStore = registeredStoresList.find(s => s.id === storeId);
-
-      if (!selectedStore) {
-        showModal('Attention', 'Please select a valid store from the list.', 'error');
-        return;
-      }
-
-      const lockedDeliveryDate = document.getElementById('order-delivery-date').value;
-      const lockedRoute = document.getElementById('order-route').value;
-      const qtyIdiyappam = Number(document.getElementById('qty-idiyappam').value || 0);
-      const qtyVellayappam = Number(document.getElementById('qty-vellayappam').value || 0);
-      const qtyIdli = Number(document.getElementById('qty-idli').value || 0);
-
-      const totalAmount = (qtyIdiyappam * (selectedStore.priceIdiyappam || 0)) +
-                          (qtyVellayappam * (selectedStore.priceVellayappam || 0)) +
-                          (qtyIdli * (selectedStore.priceIdli || 0));
-
-      const orderPayload = {
-        storeId: selectedStore.id,
-        storeName: selectedStore.storeName,
-        route: lockedRoute,
-        deliveryDate: lockedDeliveryDate,
-        idiyappam: qtyIdiyappam,
-        vellayappam: qtyVellayappam,
-        idli: qtyIdli,
-        totalAmount: totalAmount,
-        paidAmount: 0,
-        balanceDue: totalAmount,
-        deliveryStatus: 'Pending',
-        paymentStatus: 'Pending',
-        timestamp: new Date()
-      };
-
-      isSubmittingOrder = true;
-      const submitBtn = document.getElementById('submit-order-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
-      db.collection("orders").add(orderPayload).then(() => {
-        isSubmittingOrder = false;
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Order';
-        showModal('Success', 'Order created successfully.', 'success');
-
-        document.getElementById('order-form').reset();
-        document.getElementById('selected-store-id').value = '';
-        document.getElementById('order-store-search').value = '';
-        document.getElementById('order-delivery-date').value = lockedDeliveryDate;
-        document.getElementById('order-route').value = lockedRoute;
-        document.getElementById('order-store-search').focus();
-      }).catch(err => {
-        isSubmittingOrder = false;
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Order';
-        showModal('Error', err.message, 'error');
       });
     });
 
-    // LOGIN FORM SUBMISSION
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const user = document.getElementById('login-user').value.trim();
-      const pass = document.getElementById('login-pass').value.trim();
+    function deleteStore(id) {
+      if (confirm(`Delete Store #${id}?`)) {
+        db.collection("stores").doc(id).delete();
+      }
+    }
 
-      if ((user === "admin" || user === "101") && pass.length >= 4) {
-        localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: user, storeName: 'Admin Panel' }));
+    // Google Sheets Import
+    function openImportModal() { document.getElementById('import-modal').classList.add('active'); }
+    function closeImportModal() { document.getElementById('import-modal').classList.remove('active'); }
+
+    function processImportSheetData() {
+      const raw = document.getElementById('import-sheet-data').value.trim();
+      const lines = raw.split('\n');
+      const batch = db.batch();
+      let count = 0;
+
+      lines.forEach(line => {
+        const cols = line.split('\t').map(c => c.trim());
+        if (cols.length < 2 || cols[0].toLowerCase().includes('store id')) return;
+
+        const storeId = cols[0];
+        const storeName = cols[1];
+        if (storeId && storeName) {
+          batch.set(db.collection("stores").doc(storeId), {
+            storeName: storeName,
+            ownerName: cols[3] || storeName,
+            mobile: cols[4] || '',
+            whatsapp: cols[5] || cols[4] || '',
+            route: cols[6] || 'Route 1 - Morning',
+            priceIdiyappam: parseFloat(cols[7]) || 5.0,
+            priceVellayappam: parseFloat(cols[8]) || 5.0,
+            priceIdli: parseFloat(cols[9]) || 5.0
+          });
+          count++;
+        }
+      });
+
+      batch.commit().then(() => {
+        closeImportModal();
+        showModal('Import Complete', `${count} stores imported!`, 'success');
+      });
+    }
+
+    // Login Form
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('login-user').value.trim();
+      const p = document.getElementById('login-pass').value.trim();
+      if ((u === 'admin' || u === '101') && p.length >= 4) {
+        localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: u }));
         checkSessionState();
       } else {
-        showModal('Login Failed', 'Please enter valid credentials.', 'error');
+        showModal('Error', 'Invalid login credentials', 'error');
       }
     });
 
-    function showModal(title, message, type = 'info') {
+    function showModal(title, msg, type = 'info') {
       document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-message').innerText = message;
-      const iconContainer = document.getElementById('modal-icon-container');
-      if (type === 'success') {
-        iconContainer.innerHTML = '<i class="fa-solid fa-circle-check modal-icon success" style="color:var(--color-success); font-size:2.5rem; margin-bottom:10px;"></i>';
-      } else if (type === 'error') {
-        iconContainer.innerHTML = '<i class="fa-solid fa-circle-exclamation modal-icon error" style="color:var(--color-error); font-size:2.5rem; margin-bottom:10px;"></i>';
-      } else {
-        iconContainer.innerHTML = '<i class="fa-solid fa-circle-info modal-icon" style="color: var(--color-info); font-size:2.5rem; margin-bottom:10px;"></i>';
-      }
+      document.getElementById('modal-message').innerText = msg;
       document.getElementById('custom-modal').classList.add('active');
     }
-
-    function closeModal() {
-      document.getElementById('custom-modal').classList.remove('active');
-    }
-
-    function showConfirmModal(title, message, onConfirm) {
-      document.getElementById('confirm-title').innerText = title;
-      document.getElementById('confirm-message').innerText = message;
-      pendingConfirmAction = onConfirm;
-      document.getElementById('confirm-action-btn').onclick = () => {
-        if (pendingConfirmAction) pendingConfirmAction();
-        closeConfirmModal();
-      };
-      document.getElementById('confirm-modal').classList.add('active');
-    }
-
-    function closeConfirmModal() {
-      document.getElementById('confirm-modal').classList.remove('active');
-    }
-
-    function renderPacketPills(containerId, packetObject) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      container.innerHTML = '';
-      const keys = Object.keys(packetObject);
-      if (keys.length === 0) {
-        container.innerHTML = '<span style="color: #94a3b8;">No orders</span>';
-        return;
-      }
-      keys.forEach(qty => {
-        const count = packetObject[qty];
-        const pill = `<div class="packet-badge">${qty} Qty &times; ${count} Packets</div>`;
-        container.innerHTML += pill;
-      });
-    }
-
-    function renderMonthlyCalendar() {
-      if (!currentMetricsData || !currentMetricsData.calendarMap) return;
-
-      const mPickerVal = document.getElementById('calendar-month-picker').value;
-      if (!mPickerVal) return;
-
-      const [year, month] = mPickerVal.split('-').map(Number);
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const container = document.getElementById('calendar-days-container');
-      if (!container) return;
-      container.innerHTML = '';
-
-      const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      dayHeaders.forEach(dh => {
-        container.innerHTML += `<div class="calendar-header">${dh}</div>`;
-      });
-
-      const firstDayIndex = new Date(year, month - 1, 1).getDay();
-      for (let i = 0; i < firstDayIndex; i++) {
-        container.innerHTML += `<div style="background: transparent;"></div>`;
-      }
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const dayData = currentMetricsData.calendarMap[dateStr] || { idiyappam: 0, vellayappam: 0, idli: 0, totalOrders: 0, orders: [] };
-
-        const card = document.createElement('div');
-        card.className = 'calendar-day-card';
-        if (dayData.totalOrders > 0) card.style.borderColor = 'var(--color-info)';
-
-        card.innerHTML = `
-          <div class="calendar-day-number">${day}</div>
-          <div class="calendar-day-pills">
-            ${dayData.idiyappam > 0 ? `<span style="color:#1e3c72;">ഇ: ${dayData.idiyappam}</span><br>` : ''}
-            ${dayData.vellayappam > 0 ? `<span style="color:#05c46b;">വെ: ${dayData.vellayappam}</span><br>` : ''}
-            ${dayData.idli > 0 ? `<span style="color:#2a5298;">ഇഡ്ഡ: ${dayData.idli}</span>` : ''}
-            ${dayData.totalOrders === 0 ? '<span style="color:#cbd5e1;">-</span>' : ''}
-          </div>
-        `;
-
-        card.onclick = () => showCalendarDayDetails(dateStr, dayData);
-        container.appendChild(card);
-      }
-    }
-
-    function showCalendarDayDetails(dateStr, dayData) {
-      document.getElementById('calendar-day-detail-panel').style.display = 'block';
-      document.getElementById('cal-selected-date-title').innerText = `Orders for ${dateStr}`;
-      document.getElementById('cal-day-idiyappam').innerText = dayData.idiyappam;
-      document.getElementById('cal-day-vellayappam').innerText = dayData.vellayappam;
-      document.getElementById('cal-day-idli').innerText = dayData.idli;
-
-      const tbody = document.querySelector('#calendar-day-orders-table tbody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      if (!dayData.orders || dayData.orders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8;">No orders on this date.</td></tr>';
-        return;
-      }
-
-      dayData.orders.forEach(o => {
-        const escapedRoute = String(o.route || '').replace(/'/g, "\\'");
-        const row = `<tr>
-          <td><strong>${o.storeId}</strong></td>
-          <td>${o.storeName}</td>
-          <td>${o.route}</td>
-          <td>${o.idiyappam}</td>
-          <td>${o.vellayappam}</td>
-          <td>${o.idli}</td>
-          <td style="display: flex; gap: 6px;">
-            <button class="btn btn-edit btn-pill" onclick="openEditOrderModal('${o.orderId}', ${o.idiyappam}, ${o.vellayappam}, ${o.idli}, '${escapedRoute}')">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="btn btn-delete btn-pill" onclick="confirmDeleteOrder('${o.orderId}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>`;
-        tbody.innerHTML += row;
-      });
-
-      document.getElementById('calendar-day-detail-panel').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function openEditStoreModal(storeId) {
-      const store = registeredStoresList.find(s => s.id === storeId);
-      if (!store) return;
-
-      document.getElementById('edit-store-id').value = store.id;
-      document.getElementById('edit-store-name').value = store.storeName;
-      document.getElementById('edit-owner-name').value = store.ownerName || '';
-      document.getElementById('edit-mobile').value = store.mobile || '';
-      document.getElementById('edit-whatsapp').value = store.whatsapp || '';
-      document.getElementById('edit-route').value = store.route || 'Route 1 - Morning';
-      document.getElementById('edit-price-idiyappam').value = store.priceIdiyappam || 0;
-      document.getElementById('edit-price-vellayappam').value = store.priceVellayappam || 0;
-      document.getElementById('edit-price-idli').value = store.priceIdli || 0;
-
-      document.getElementById('edit-store-modal').classList.add('active');
-    }
-
-    function closeEditModal() {
-      document.getElementById('edit-store-modal').classList.remove('active');
-    }
-
-    function submitStoreUpdate() {
-      const id = document.getElementById('edit-store-id').value;
-      const updatePayload = {
-        storeName: document.getElementById('edit-store-name').value,
-        ownerName: document.getElementById('edit-owner-name').value,
-        mobile: document.getElementById('edit-mobile').value,
-        whatsapp: document.getElementById('edit-whatsapp').value,
-        route: document.getElementById('edit-route').value,
-        priceIdiyappam: Number(document.getElementById('edit-price-idiyappam').value),
-        priceVellayappam: Number(document.getElementById('edit-price-vellayappam').value),
-        priceIdli: Number(document.getElementById('edit-price-idli').value)
-      };
-
-      db.collection("stores").doc(id).update(updatePayload).then(() => {
-        closeEditModal();
-        showModal('Updated', 'Store details updated successfully.', 'success');
-      });
-    }
-
-    function confirmDeleteStore(storeId, storeName) {
-      showConfirmModal('Delete Store', `Are you sure you want to delete Store ${storeId} - ${storeName}?`, () => {
-        db.collection("stores").doc(storeId).delete().then(() => {
-          showModal('Deleted', 'Store removed.', 'success');
-        });
-      });
-    }
-
-    function openEditOrderModal(orderId, idiyappam, vellayappam, idli, route = "Route 1 - Morning") {
-      document.getElementById('edit-order-id').value = orderId;
-      document.getElementById('edit-order-route').value = route;
-      document.getElementById('edit-order-idiyappam').value = idiyappam;
-      document.getElementById('edit-order-vellayappam').value = vellayappam;
-      document.getElementById('edit-order-idli').value = idli;
-      document.getElementById('edit-order-modal').classList.add('active');
-    }
-
-    function closeEditOrderModal() {
-      document.getElementById('edit-order-modal').classList.remove('active');
-    }
-
-    function submitOrderUpdate() {
-      const orderId = document.getElementById('edit-order-id').value;
-      const payload = {
-        route: document.getElementById('edit-order-route').value,
-        idiyappam: Number(document.getElementById('edit-order-idiyappam').value),
-        vellayappam: Number(document.getElementById('edit-order-vellayappam').value),
-        idli: Number(document.getElementById('edit-order-idli').value)
-      };
-
-      db.collection("orders").doc(orderId).update(payload).then(() => {
-        closeEditOrderModal();
-        showModal('Updated', 'Order details updated.', 'success');
-      });
-    }
-
-    function confirmDeleteOrder(orderId) {
-      showConfirmModal('Delete Order', `Are you sure you want to delete Order #${orderId}?`, () => {
-        db.collection("orders").doc(orderId).delete().then(() => {
-          showModal('Deleted', 'Order removed successfully.', 'success');
-        });
-      });
-    }
-
-    function markAllVisibleDelivered() {
-      if (!currentMetricsData || !currentMetricsData.deliveryList) return;
-      const selectedRoute = document.getElementById('delivery-route-filter').value;
-      
-      let targets = currentMetricsData.deliveryList;
-      if (selectedRoute !== 'ALL') {
-        targets = targets.filter(item => item.route === selectedRoute);
-      }
-
-      showConfirmModal('Mark All Delivered', 'Are you sure you want to mark all shown orders as delivered?', () => {
-        const batch = db.batch();
-        targets.forEach(item => {
-          const docRef = db.collection("orders").doc(item.orderId);
-          batch.update(docRef, { deliveryStatus: 'Delivered' });
-        });
-        batch.commit().then(() => {
-          showModal('Updated', 'All orders marked as delivered.', 'success');
-        });
-      });
-    }
-
-    function filterDeliveryTable() {
-      if (!currentMetricsData) return;
-      const currentFilter = document.getElementById('delivery-route-filter').value;
-      renderDeliveryTable(currentMetricsData.deliveryList, currentFilter);
-    }
-
-    function shareSingleItemWhatsApp(itemKey) {
-      if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
-      let packetsObj = {};
-      let totalQty = 0;
-      let itemName = "";
-
-      if (itemKey === 'idiyappam') {
-        itemName = "ഇടിയപ്പം";
-        packetsObj = currentMetricsData.idiyappamPackets;
-        totalQty = currentMetricsData.totals.idiyappam;
-      } else if (itemKey === 'vellayappam') {
-        itemName = "വെള്ളയപ്പം";
-        packetsObj = currentMetricsData.vellayappamPackets;
-        totalQty = currentMetricsData.totals.vellayappam;
-      } else if (itemKey === 'idli') {
-        itemName = "ഇഡ്ഡലി";
-        packetsObj = currentMetricsData.idliPackets;
-        totalQty = currentMetricsData.totals.idli;
-      }
-
-      msg += `*${itemName} Packaging Summary*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*Total Requirement: ${totalQty}*\n\n*Breakdown:*\n`;
-
-      let hasPackets = false;
-      for (let qty in packetsObj) {
-        hasPackets = true;
-        msg += ` - Packet of ${qty}: ${packetsObj[qty]} Nos\n`;
-      }
-      if (!hasPackets) msg += ` (No orders on this date)\n`;
-
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    function shareProductionToWhatsApp() {
-      if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*Production & Packaging Summary*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*Total Totals:*\n• ഇടിയപ്പം: ${currentMetricsData.totals.idiyappam}\n• വെള്ളയപ്പം: ${currentMetricsData.totals.vellayappam}\n• ഇഡ്ഡലി: ${currentMetricsData.totals.idli}\n\n*Route Summary:*\n`;
-      for (let route in currentMetricsData.routeSummary) {
-        msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idiyappam} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vellayappam} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idli}\n`;
-      }
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    function shareDeliveryToWhatsApp() {
-      if (!currentMetricsData || !currentMetricsData.deliveryList) return;
-      const selectedRoute = document.getElementById('delivery-route-filter').value;
-      let filteredList = currentMetricsData.deliveryList;
-
-      if (selectedRoute !== 'ALL') {
-        filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
-      }
-
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*Delivery Manifest*\n*Date: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
-      if (filteredList.length === 0) {
-        msg += `No delivery orders on this route.\n`;
-      } else {
-        filteredList.forEach((item, index) => {
-          msg += `${index + 1}. *${item.storeName}* (ID: ${item.storeId})\n   Shift: ${item.route}\n   Items: ഇടിയപ്പം: ${item.idiyappam} | വെള്ളയപ്പം: ${item.vellayappam} | ഇഡ്ഡലി: ${item.idli}\n   Bill: ₹${item.totalAmount.toFixed(2)}\n\n`;
-        });
-      }
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-    }
+    function closeModal() { document.getElementById('custom-modal').classList.remove('active'); }
   </script>
 </body>
 </html>
