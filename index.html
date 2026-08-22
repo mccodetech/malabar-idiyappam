@@ -5,7 +5,588 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>മലബാർ ഇടിയപ്പം കമ്പനി</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    :root {
+      --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      --bg-sidebar: #1e1e2f;
+      --text-sidebar: #cbd5e1;
+      --bg-body: #f4f6f9;
+      
+      --color-success: #05c46b;
+      --color-error: #fc5c65;
+      --color-info: #4b7bec;
+      
+      --radius-pill: 50px;
+      --radius-capsule: 30px;
+      --radius-modal: 25px;
+      --radius-panel: 15px;
+      
+      --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-subtle: 0 4px 15px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-main);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    .fa-solid, .fas, .fa-brands {
+      margin-right: 6px;
+    }
+
+    #auth-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .auth-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 40px 30px;
+      border-radius: var(--radius-capsule);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .auth-card h2 {
+      margin-bottom: 25px;
+      color: #1e3c72;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .input-with-btn {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-control {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-capsule);
+      outline: none;
+      font-size: 0.95rem;
+      transition: var(--transition-base);
+    }
+
+    .compact-input {
+      min-height: 40px !important;
+      padding: 6px 14px !important;
+      width: auto;
+    }
+
+    .form-control:focus {
+      border-color: #2a5298;
+      box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+    }
+
+    .suggest-results-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 500;
+      display: none;
+      border: 1px solid #e2e8f0;
+      margin-top: 5px;
+    }
+
+    .suggest-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      transition: var(--transition-base);
+      font-size: 0.95rem;
+    }
+
+    .suggest-item:hover {
+      background: #f1f5f9;
+      color: #1e3c72;
+      font-weight: 600;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 22px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-base);
+      text-decoration: none;
+    }
+
+    .btn-sm {
+      min-height: 36px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+    }
+
+    .btn-xs {
+      min-height: 30px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-pill {
+      border-radius: var(--radius-pill);
+    }
+
+    .btn-primary {
+      background: var(--bg-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+    }
+
+    .btn-danger-soft {
+      background: #ffe3e3;
+      color: #d63031;
+    }
+
+    .btn-danger-soft:hover {
+      background: #d63031;
+      color: #ffffff;
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: #ffffff;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    .btn-edit {
+      background: var(--color-info);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-delete {
+      background: var(--color-error);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-contact-picker {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 0 16px;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover, .btn-pill:hover, .btn-whatsapp:hover, .btn-edit:hover, .btn-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    #app-screen {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      color: var(--text-sidebar);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      justify-content: space-between;
+      transition: var(--transition-base);
+    }
+
+    .sidebar-brand {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-list {
+      list-style: none;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      margin-bottom: 10px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: var(--text-sidebar);
+      text-decoration: none;
+      border-radius: var(--radius-pill);
+      transition: var(--transition-base);
+      font-weight: 500;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: var(--bg-gradient);
+      color: #ffffff;
+    }
+
+    .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .navbar {
+      background: #ffffff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .header-action-btns {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .content-area {
+      padding: 30px;
+      flex-grow: 1;
+    }
+
+    .section-view {
+      display: none;
+    }
+
+    .section-view.active {
+      display: block;
+    }
+
+    .panel-card {
+      background: #ffffff;
+      border-radius: var(--radius-panel);
+      padding: 25px;
+      box-shadow: var(--shadow-subtle);
+      margin-bottom: 25px;
+    }
+
+    .section-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-action-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sub-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border-radius: var(--radius-capsule);
+      padding: 20px;
+      box-shadow: var(--shadow-subtle);
+      transition: var(--transition-base);
+      border-left: 6px solid var(--color-info);
+    }
+
+    .stat-card h4 {
+      color: #64748b;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .calendar-grid-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(110px, 1fr));
+      gap: 8px;
+      margin-top: 15px;
+      min-width: 700px;
+    }
+
+    .calendar-header {
+      font-weight: 700;
+      text-align: center;
+      color: #475569;
+      padding: 8px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+
+    .calendar-day-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px;
+      min-height: 85px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calendar-day-card:hover, .calendar-day-card.active {
+      border-color: #2a5298;
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .calendar-day-number {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1e3c72;
+    }
+
+    .calendar-day-pills {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #475569;
+      line-height: 1.3;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .packet-pill-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .packet-badge {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 0.85rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-base);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 90%;
+      max-width: 550px;
+      border-radius: var(--radius-modal);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      transform: scale(0.9);
+      transition: var(--transition-base);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      background: var(--bg-gradient);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+      #app-screen {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        padding: 12px 15px;
+        flex-direction: column;
+      }
+      .sidebar-brand {
+        margin-bottom: 10px;
+      }
+      .nav-list {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+        padding-bottom: 5px;
+      }
+      .nav-link {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+      .content-area {
+        padding: 15px;
+      }
+      .navbar {
+        padding: 12px 15px;
+      }
+      .panel-card {
+        padding: 15px;
+      }
+      .hide-on-mobile {
+        display: none;
+      }
+      .modal-card {
+        width: 95%;
+      }
+    }
+
+    @media print {
+      body { background: white; }
+      .sidebar, .navbar, .btn, #auth-screen, .modal-overlay { display: none !important; }
+      #app-screen { display: block !important; }
+      .content-area { padding: 0; }
+      .panel-card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; page-break-inside: avoid; }
+      .section-view { display: none !important; }
+      .section-view.print-active { display: block !important; }
+    }
+  </style>
 </head>
 <body>
 
@@ -17,7 +598,7 @@
       <form id="login-form">
         <div class="form-group">
           <label>കട നമ്പർ / യൂസർനേം</label>
-          <input type="text" id="login-user" class="form-control" placeholder="കട നമ്പർ (e.g. 101) അല്ലെങ്കിൽ admin" required>
+          <input type="text" id="login-user" class="form-control" placeholder="കട നമ്പർ അല്ലെങ്കിൽ admin" required>
         </div>
         <div class="form-group">
           <label>പാസ്‌വേഡ്</label>
@@ -68,17 +649,11 @@
               <i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് (Accounts)
             </a>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link" onclick="switchTab('tab-settings', event)">
-              <i class="fa-solid fa-gear"></i> സിസ്റ്റം സെറ്റിംഗ്സ്
-            </a>
-          </li>
         </ul>
       </div>
     </aside>
 
     <div class="main-wrapper">
-      <!-- HEADER WITH SMALL LOGOUT BUTTON -->
       <nav class="navbar">
         <div>
           <h3 id="user-display">സ്വാഗതം</h3>
@@ -94,77 +669,73 @@
       </nav>
 
       <main class="content-area">
-        
         <!-- SECTION 1: STORES DIRECTORY & REGISTRATION -->
         <section id="tab-stores-dir" class="section-view active">
           <div class="panel-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h2><i class="fa-solid fa-store-slash"></i> പുതിയ കട രജിസ്റ്റർ ചെയ്യുക</h2>
+              <h2><i class="fa-solid fa-store"></i> പുതിയ കട രജിസ്റ്റർ ചെയ്യുക</h2>
             </div>
             
             <form id="store-form">
               <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
-                  <label>കടയുടെ പേര്</label>
-                  <input type="text" id="reg-store-name" class="form-control" placeholder="ഉദാഹരണത്തിന്: ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
+                  <label>കട നമ്പർ (Store ID)</label>
+                  <input type="text" id="reg-store-id" class="form-control" placeholder="e.g. 101" required>
                 </div>
                 <div class="form-group">
-                  <label>ഉടമയുടെ പേര്</label>
-                  <input type="text" id="reg-owner-name" class="form-control" placeholder="ഉടമയുടെ പേര്">
+                  <label>കടയുടെ പേര്</label>
+                  <input type="text" id="reg-store-name" class="form-control" placeholder="ഗ്രീൻ ബേക്കറി" oninput="autoCopyOwnerName()" required>
                 </div>
               </div>
 
               <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
-                  <label>മൊബൈൽ നമ്പർ (ഓപ്ഷണൽ)</label>
+                  <label>ഉടമയുടെ പേര്</label>
+                  <input type="text" id="reg-owner-name" class="form-control" placeholder="ഉടമയുടെ പേര്">
+                </div>
+                <div class="form-group">
+                  <label>മൊബൈൽ നമ്പർ</label>
                   <div class="input-with-btn">
                     <input type="tel" id="reg-mobile" class="form-control" placeholder="മൊബൈൽ നമ്പർ" oninput="autoCopyWhatsapp('reg-mobile', 'reg-whatsapp')">
-                    <button type="button" class="btn btn-pill btn-contact-picker" onclick="pickContactNumber('reg-mobile', 'reg-whatsapp')">
-                      <i class="fa-solid fa-address-book"></i> കോൺടാക്റ്റ്
-                    </button>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label>വാട്സ്ആപ്പ് നമ്പർ (ബില്ലുകൾ അയക്കാൻ)</label>
-                  <div class="input-with-btn">
-                    <input type="tel" id="reg-whatsapp" class="form-control" placeholder="വാട്സ്ആപ്പ് നമ്പർ">
-                    <button type="button" class="btn btn-pill btn-contact-picker" onclick="pickContactNumber('reg-whatsapp')">
-                      <i class="fa-solid fa-address-book"></i> കോൺടാക്റ്റ്
-                    </button>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
-                <select id="reg-route" class="form-control" required>
-                  <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
-                  <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
-                </select>
+              <div class="grid-cards" style="margin-bottom: 0;">
+                <div class="form-group">
+                  <label>വാട്സ്ആപ്പ് നമ്പർ</label>
+                  <input type="tel" id="reg-whatsapp" class="form-control" placeholder="വാട്സ്ആപ്പ് നമ്പർ">
+                </div>
+                <div class="form-group">
+                  <label>ഡെലിവറി റൂട്ട് & ഷിഫ്റ്റ്</label>
+                  <select id="reg-route" class="form-control" required>
+                    <option value="Route 1 - Morning">Route 1 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                    <option value="Route 1 - Evening">Route 1 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                    <option value="Route 2 - Morning">Route 2 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                    <option value="Route 2 - Evening">Route 2 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                    <option value="Route 3 - Morning">Route 3 - മോർണിംഗ് ഷിഫ്റ്റ്</option>
+                    <option value="Route 3 - Evening">Route 3 - ഈവനിംഗ് ഷിഫ്റ്റ്</option>
+                  </select>
+                </div>
               </div>
 
               <h4 style="margin: 25px 0 15px 0; color: #1e3c72;"><i class="fa-solid fa-tags"></i> സാധനങ്ങളുടെ വില നിശ്ചയിക്കുക (Fixed Item Prices)</h4>
               <div class="grid-cards" style="margin-bottom: 20px;">
                 <div class="form-group">
-                  <label>ഇടിയപ്പം വില (₹ / നിരക്ക്)</label>
+                  <label>ഇടിയപ്പം വില (₹)</label>
                   <input type="number" step="0.01" id="reg-price-idiyappam" class="form-control" placeholder="5.00" required>
                 </div>
                 <div class="form-group">
-                  <label>വെള്ളയപ്പം വില (₹ / നിരക്ക്)</label>
+                  <label>വെള്ളയപ്പം വില (₹)</label>
                   <input type="number" step="0.01" id="reg-price-vellayappam" class="form-control" placeholder="6.00" required>
                 </div>
                 <div class="form-group">
-                  <label>ഇഡ്ഡലി വില (₹ / നിരക്ക്)</label>
+                  <label>ഇഡ്ഡലി വില (₹)</label>
                   <input type="number" step="0.01" id="reg-price-idli" class="form-control" placeholder="4.00" required>
                 </div>
               </div>
 
-              <button type="button" class="btn btn-primary btn-pill" onclick="confirmFormSubmit('store-form', 'കട രജിസ്ട്രേഷൻ വീണ്ടും പരിശോധിച്ച് ഉറപ്പുവരുത്തുക. തുടരണമോ?')">
+              <button type="submit" class="btn btn-primary btn-pill">
                 <i class="fa-solid fa-user-plus"></i> കട സേവ് ചെയ്യുക
               </button>
             </form>
@@ -232,15 +803,15 @@
               <div class="grid-cards" style="margin-top: 20px;">
                 <div class="form-group">
                   <label><i class="fa-solid fa-circle-dot"></i> ഇടിയപ്പം (എണ്ണം)</label>
-                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0">
+                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
                   <label><i class="fa-solid fa-circle-dot"></i> വെള്ളയപ്പം (എണ്ണം)</label>
-                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0">
+                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0" value="0">
                 </div>
                 <div class="form-group">
                   <label><i class="fa-solid fa-circle-dot"></i> ഇഡ്ഡലി (എണ്ണം)</label>
-                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0">
+                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0" value="0">
                 </div>
               </div>
 
@@ -333,7 +904,7 @@
           </div>
         </section>
 
-        <!-- SECTION 4: INTERACTIVE CALENDAR MONTHLY OVERVIEW -->
+        <!-- SECTION 4: INTERACTIVE CALENDAR -->
         <section id="tab-calendar" class="section-view">
           <div class="panel-card">
             <div class="section-header-flex">
@@ -385,7 +956,7 @@
           </div>
         </section>
 
-        <!-- SECTION 5: DELIVERY MANIFEST -->
+        <!-- SECTION 5: DELIVERY SHEET -->
         <section id="tab-delivery" class="section-view">
           <div class="section-header-flex">
             <h2><i class="fa-solid fa-truck-dispatch"></i> കടകൾ തിരിച്ചുള്ള ഡെലിവറി ഷീറ്റ്</h2>
@@ -440,7 +1011,7 @@
           </div>
         </section>
 
-        <!-- SECTION 6: ACCOUNTS & COLLECTIONS LEDGER VIEW -->
+        <!-- SECTION 6: ACCOUNTS VIEW -->
         <section id="tab-accounts" class="section-view">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2><i class="fa-solid fa-wallet"></i> അക്കൗണ്ട്സ് & കളക്ഷൻ</h2>
@@ -483,27 +1054,6 @@
             </div>
           </div>
         </section>
-
-        <!-- SECTION 7: SYSTEM SETTINGS -->
-        <section id="tab-settings" class="section-view">
-          <div class="panel-card">
-            <h2 style="margin-bottom: 20px;"><i class="fa-solid fa-sliders"></i> സിസ്റ്റം സെറ്റിംഗ്സ്</h2>
-            <form id="settings-form">
-              <div class="form-group">
-                <label>Target Google Sheet ID</label>
-                <input type="text" id="set-sheet-id" class="form-control" value="1yX_lmhnfbI7o5IZuE__oHxjnVhlPjqVjSo-wdPlYfEM" required>
-              </div>
-              <div class="form-group">
-                <label>ആപ്ലിക്കേഷൻ പേര്</label>
-                <input type="text" id="set-app-title" class="form-control" value="മലബാർ ഇടിയപ്പം കമ്പനി" required>
-              </div>
-              <button type="button" class="btn btn-primary btn-pill" onclick="confirmFormSubmit('settings-form', 'സെറ്റിംഗ്സ് മാറ്റങ്ങൾ സൂക്ഷിക്കാൻ ഉറപ്പാണോ?')">
-                <i class="fa-solid fa-floppy-disk"></i> മാറ്റങ്ങൾ സേവ് ചെയ്യുക
-              </button>
-            </form>
-          </div>
-        </section>
-
       </main>
     </div>
   </div>
@@ -557,7 +1107,7 @@
           </div>
           <div class="form-group">
             <label>മൊബൈൽ നമ്പർ</label>
-            <input type="tel" id="edit-mobile" class="form-control" oninput="autoCopyWhatsapp('edit-mobile', 'edit-whatsapp')">
+            <input type="tel" id="edit-mobile" class="form-control">
           </div>
           <div class="form-group">
             <label>വാട്സ്ആപ്പ് നമ്പർ</label>
@@ -594,7 +1144,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-pill" onclick="closeEditModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
-        <button class="btn btn-primary btn-pill" onclick="confirmActionModal('കടയുടെ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?', submitStoreUpdate)">
+        <button class="btn btn-primary btn-pill" onclick="submitStoreUpdate()">
           <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
         </button>
       </div>
@@ -638,7 +1188,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-pill" onclick="closeEditOrderModal()" style="background: #e2e8f0; color: #475569;">രദ്ദാക്കുക</button>
-        <button class="btn btn-primary btn-pill" onclick="confirmActionModal('ഓർഡർ തിരുത്തലുകൾ സേവ് ചെയ്യാൻ ഉറപ്പാണോ?', submitOrderUpdate)">
+        <button class="btn btn-primary btn-pill" onclick="submitOrderUpdate()">
           <i class="fa-solid fa-floppy-disk"></i> സേവ് ചെയ്യുക
         </button>
       </div>
@@ -670,7 +1220,7 @@
         <h3 id="confirm-title">ഉറപ്പാക്കുക (Confirm)</h3>
       </div>
       <div class="modal-body" style="text-align: center;">
-        <i class="fa-solid fa-circle-question modal-icon" style="color: var(--color-error);"></i>
+        <i class="fa-solid fa-circle-question modal-icon" style="color: var(--color-error); font-size: 2.5rem; margin-bottom: 10px;"></i>
         <p id="confirm-message">നിങ്ങൾ ഈ പ്രവർത്തനം ചെയ്യാൻ ഉറപ്പാണോ?</p>
       </div>
       <div class="modal-footer" style="justify-content: center;">
@@ -682,6 +1232,845 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- FIREBASE SDK COMPAT -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // 🌟 ഫയർബേസ് കൺസോളിൽ നിന്നും ലഭിച്ച ശരിയായ API KEY നൽകുക
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "malabar-idiyappam.firebaseapp.com",
+      projectId: "malabar-idiyappam",
+      storageBucket: "malabar-idiyappam.appspot.com",
+      messagingSenderId: "246016481020",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let registeredStoresList = [];
+    let currentOrdersList = [];
+    let currentMetricsData = null;
+    let pendingConfirmAction = null;
+    let isSubmittingOrder = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkSessionState();
+      setupAdvancedKeyboardNav();
+      setDefaultDeliveryDate();
+      setMonthPickerDefault();
+      
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#order-store-search') && !e.target.closest('#suggest-box')) {
+          const suggestBox = document.getElementById('suggest-box');
+          if (suggestBox) suggestBox.style.display = 'none';
+        }
+      });
+    });
+
+    function setDefaultDeliveryDate() {
+      const dateInput = document.getElementById('order-delivery-date');
+      const prodDateInput = document.getElementById('production-date-filter');
+      const today = new Date().toISOString().split('T')[0];
+      
+      if (dateInput && !dateInput.value) dateInput.value = today;
+      if (prodDateInput && !prodDateInput.value) prodDateInput.value = today;
+    }
+
+    function setMonthPickerDefault() {
+      const mPicker = document.getElementById('calendar-month-picker');
+      if (mPicker) {
+        const today = new Date();
+        const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        mPicker.value = yearMonth;
+      }
+    }
+
+    function autoCopyOwnerName() {
+      const storeName = document.getElementById('reg-store-name').value;
+      const ownerInput = document.getElementById('reg-owner-name');
+      if (ownerInput && (!ownerInput.value || ownerInput.dataset.autofilled === "true")) {
+        ownerInput.value = storeName;
+        ownerInput.dataset.autofilled = "true";
+      }
+    }
+
+    function autoCopyWhatsapp(sourceId, targetId) {
+      const sourceVal = document.getElementById(sourceId).value;
+      const targetInput = document.getElementById(targetId);
+      if (targetInput && (!targetInput.value || targetInput.dataset.autofilled === "true")) {
+        targetInput.value = sourceVal;
+        targetInput.dataset.autofilled = "true";
+      }
+    }
+
+    function checkSessionState() {
+      const storedUser = localStorage.getItem('snec_authenticated_user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        document.getElementById('user-display').innerText = `${user.storeName || 'Admin'} (${user.id || 'admin'})`;
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'flex';
+        loadStoreOptions();
+        fetchProductionMetrics();
+      } else {
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('app-screen').style.display = 'none';
+      }
+    }
+
+    function confirmLogout() {
+      showConfirmModal('ലോഗൗട്ട് ചെയ്യുക', 'നിങ്ങൾ സിസ്റ്റത്തിൽ നിന്ന് പുറത്തുകടക്കാൻ ഉറപ്പാണോ?', handleLogout);
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('snec_authenticated_user');
+      sessionStorage.clear();
+      checkSessionState();
+      showModal('ലോഗൗട്ട് ചെയ്തു', 'സിസ്റ്റത്തിൽ നിന്നും പുറത്തുകടന്നു.', 'success');
+    }
+
+    function setupAdvancedKeyboardNav() {
+      const inputs = Array.from(document.querySelectorAll('input, select, textarea'));
+      inputs.forEach((input) => {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            if (this.tagName !== 'TEXTAREA' && this.type !== 'submit') {
+              e.preventDefault();
+              const currentIndex = inputs.indexOf(this);
+              const nextInput = inputs[currentIndex + 1];
+              if (nextInput) nextInput.focus();
+            }
+          }
+        });
+      });
+    }
+
+    function switchTab(tabId, event) {
+      if (event) event.preventDefault();
+      document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      if (event) event.currentTarget.classList.add('active');
+
+      if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts' || tabId === 'tab-calendar') {
+        fetchProductionMetrics();
+      } else if (tabId === 'tab-orders' || tabId === 'tab-stores-dir') {
+        loadStoreOptions();
+      }
+    }
+
+    function refreshDirectoryData() {
+      const icon = document.getElementById('refresh-icon');
+      if (icon) icon.classList.add('fa-spin');
+      
+      loadStoreOptions();
+      fetchProductionMetrics();
+
+      setTimeout(() => {
+        if (icon) icon.classList.remove('fa-spin');
+        showModal('റീഫ്രഷ് ചെയ്തു', 'വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+      }, 600);
+    }
+
+    function triggerPrint(sectionId) {
+      const element = document.getElementById(sectionId);
+      element.classList.add('print-active');
+      window.print();
+      element.classList.remove('print-active');
+    }
+
+    // FIRESTORE: STORES LISTENER
+    function loadStoreOptions() {
+      db.collection("stores").onSnapshot(snapshot => {
+        registeredStoresList = [];
+        const tableBody = document.querySelector('#dashboard-stores-table tbody');
+        if (tableBody) tableBody.innerHTML = '';
+
+        snapshot.forEach(doc => {
+          const store = { id: doc.id, ...doc.data() };
+          registeredStoresList.push(store);
+
+          if (tableBody) {
+            const row = `<tr>
+              <td><strong>${store.id}</strong></td>
+              <td>${store.storeName}</td>
+              <td>${store.ownerName || '-'}</td>
+              <td>${store.mobile || '-'}</td>
+              <td><span style="background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">${store.route}</span></td>
+              <td>
+                <small style="color: #475569;">
+                  ഇടിയപ്പം: ₹${Number(store.priceIdiyappam || 0).toFixed(2)}<br>
+                  വെള്ളയപ്പം: ₹${Number(store.priceVellayappam || 0).toFixed(2)}<br>
+                  ഇഡ്ഡലി: ₹${Number(store.priceIdli || 0).toFixed(2)}
+                </small>
+              </td>
+              <td style="display: flex; gap: 6px;">
+                <button class="btn btn-edit btn-pill" onclick="openEditStoreModal('${store.id}')">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-delete btn-pill" onclick="confirmDeleteStore('${store.id}', '${store.storeName}')">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                ${store.whatsapp ? `<a href="https://wa.me/91${store.whatsapp}" target="_blank" class="btn btn-whatsapp btn-pill" style="padding:6px 12px; font-size:0.8rem;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+              </td>
+            </tr>`;
+            tableBody.innerHTML += row;
+          }
+        });
+
+        const badge = document.getElementById('store-count-badge');
+        if (badge) badge.innerText = `${registeredStoresList.length} കടകൾ`;
+      });
+    }
+
+    function handleInstantSuggest() {
+      const query = document.getElementById('order-store-search').value.toLowerCase().trim();
+      const suggestBox = document.getElementById('suggest-box');
+      suggestBox.innerHTML = '';
+
+      if (query.length === 0) {
+        suggestBox.style.display = 'none';
+        return;
+      }
+
+      const matches = registeredStoresList.filter(s => 
+        (s.id && s.id.toLowerCase().includes(query)) ||
+        (s.storeName && s.storeName.toLowerCase().includes(query)) ||
+        (s.mobile && s.mobile.toLowerCase().includes(query))
+      );
+
+      if (matches.length === 0) {
+        suggestBox.innerHTML = '<div class="suggest-item" style="color: #94a3b8;">കട കണ്ടെത്താനായില്ല</div>';
+        suggestBox.style.display = 'block';
+        return;
+      }
+
+      matches.forEach(store => {
+        const item = document.createElement('div');
+        item.className = 'suggest-item';
+        item.innerText = `${store.id} - ${store.storeName} (${store.mobile || ''})`;
+        item.onclick = () => selectStoreFromSuggest(store);
+        suggestBox.appendChild(item);
+      });
+
+      suggestBox.style.display = 'block';
+    }
+
+    function selectStoreFromSuggest(store) {
+      document.getElementById('order-store-search').value = `${store.id} - ${store.storeName}`;
+      document.getElementById('selected-store-id').value = store.id;
+      
+      const routeSelect = document.getElementById('order-route');
+      if (routeSelect && store.route) {
+        routeSelect.value = store.route;
+      }
+      document.getElementById('suggest-box').style.display = 'none';
+    }
+
+    // FIRESTORE: ORDERS & METRICS
+    function fetchProductionMetrics() {
+      const prodFilterEl = document.getElementById('production-date-filter');
+      const selectedDate = prodFilterEl ? prodFilterEl.value : new Date().toISOString().split('T')[0];
+
+      db.collection("orders").onSnapshot(snapshot => {
+        let totalIdiyappam = 0;
+        let totalVellayappam = 0;
+        let totalIdli = 0;
+        let totalRevenue = 0;
+        let totalCollected = 0;
+        let totalPending = 0;
+
+        let idiyappamPackets = {};
+        let vellayappamPackets = {};
+        let idliPackets = {};
+        let routeSummary = {};
+        let deliveryList = [];
+        let accountsLedger = [];
+        let calendarMap = {};
+
+        currentOrdersList = [];
+
+        snapshot.forEach(doc => {
+          const order = { orderId: doc.id, ...doc.data() };
+          currentOrdersList.push(order);
+
+          const oDate = order.deliveryDate;
+          if (!calendarMap[oDate]) {
+            calendarMap[oDate] = { idiyappam: 0, vellayappam: 0, idli: 0, totalOrders: 0, orders: [] };
+          }
+          calendarMap[oDate].idiyappam += Number(order.idiyappam || 0);
+          calendarMap[oDate].vellayappam += Number(order.vellayappam || 0);
+          calendarMap[oDate].idli += Number(order.idli || 0);
+          calendarMap[oDate].totalOrders += 1;
+          calendarMap[oDate].orders.push(order);
+
+          // Calculations for selected date
+          if (order.deliveryDate === selectedDate) {
+            const idi = Number(order.idiyappam || 0);
+            const vel = Number(order.vellayappam || 0);
+            const idl = Number(order.idli || 0);
+
+            totalIdiyappam += idi;
+            totalVellayappam += vel;
+            totalIdli += idl;
+
+            if (idi > 0) idiyappamPackets[idi] = (idiyappamPackets[idi] || 0) + 1;
+            if (vel > 0) vellayappamPackets[vel] = (vellayappamPackets[vel] || 0) + 1;
+            if (idl > 0) idliPackets[idl] = (idliPackets[idl] || 0) + 1;
+
+            const r = order.route || 'General';
+            if (!routeSummary[r]) routeSummary[r] = { idiyappam: 0, vellayappam: 0, idli: 0 };
+            routeSummary[r].idiyappam += idi;
+            routeSummary[r].vellayappam += vel;
+            routeSummary[r].idli += idl;
+
+            deliveryList.push(order);
+          }
+
+          // Total Accounts
+          const tot = Number(order.totalAmount || 0);
+          const paid = Number(order.paidAmount || 0);
+          const bal = Number(order.balanceDue || 0);
+
+          totalRevenue += tot;
+          totalCollected += paid;
+          totalPending += bal;
+
+          accountsLedger.push(order);
+        });
+
+        currentMetricsData = {
+          selectedDate,
+          totals: { idiyappam: totalIdiyappam, vellayappam: totalVellayappam, idli: totalIdli, totalRevenue, totalCollected, totalPending },
+          idiyappamPackets,
+          vellayappamPackets,
+          idliPackets,
+          routeSummary,
+          deliveryList,
+          accountsLedger,
+          calendarMap
+        };
+
+        // Render UI
+        document.getElementById('total-idiyappam').innerText = totalIdiyappam;
+        document.getElementById('total-vellayappam').innerText = totalVellayappam;
+        document.getElementById('total-idli').innerText = totalIdli;
+
+        document.getElementById('acc-total-revenue').innerText = `₹${totalRevenue.toFixed(2)}`;
+        document.getElementById('acc-total-collected').innerText = `₹${totalCollected.toFixed(2)}`;
+        document.getElementById('acc-total-pending').innerText = `₹${totalPending.toFixed(2)}`;
+
+        renderPacketPills('idiyappam-packets-list', idiyappamPackets);
+        renderPacketPills('vellayappam-packets-list', vellayappamPackets);
+        renderPacketPills('idli-packets-list', idliPackets);
+
+        const tbody = document.querySelector('#route-table tbody');
+        if (tbody) {
+          tbody.innerHTML = '';
+          for (let route in routeSummary) {
+            tbody.innerHTML += `<tr>
+              <td><strong>${route}</strong></td>
+              <td>${routeSummary[route].idiyappam}</td>
+              <td>${routeSummary[route].vellayappam}</td>
+              <td>${routeSummary[route].idli}</td>
+            </tr>`;
+          }
+        }
+
+        const currentFilter = document.getElementById('delivery-route-filter') ? document.getElementById('delivery-route-filter').value : 'ALL';
+        renderDeliveryTable(deliveryList, currentFilter);
+        renderAccountsLedger(accountsLedger);
+        renderMonthlyCalendar();
+      });
+    }
+
+    function renderDeliveryTable(deliveryList, filterRoute = 'ALL') {
+      const delTbody = document.querySelector('#delivery-manifest-table tbody');
+      if (!delTbody) return;
+      delTbody.innerHTML = '';
+
+      let itemsToDisplay = deliveryList;
+      if (filterRoute !== 'ALL') {
+        itemsToDisplay = deliveryList.filter(item => item.route === filterRoute);
+      }
+
+      if (itemsToDisplay.length === 0) {
+        delTbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8;">ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
+        return;
+      }
+
+      itemsToDisplay.forEach(item => {
+        const isDelivered = item.deliveryStatus === 'Delivered';
+        const escapedRoute = String(item.route || '').replace(/'/g, "\\'");
+        const dRow = `<tr>
+          <td>
+            <input type="checkbox" style="width:20px; height:20px; cursor:pointer;" ${isDelivered ? 'checked' : ''} onchange="toggleDeliveryCheck('${item.orderId}', this.checked)">
+          </td>
+          <td><strong>${item.deliveryDate}</strong></td>
+          <td><strong>${item.storeId}</strong></td>
+          <td>${item.storeName}</td>
+          <td>${item.idiyappam}</td>
+          <td>${item.vellayappam}</td>
+          <td>${item.idli}</td>
+          <td><strong>₹${Number(item.totalAmount || 0).toFixed(2)}</strong></td>
+          <td style="display: flex; gap: 6px;">
+            <button class="btn btn-edit btn-pill" onclick="openEditOrderModal('${item.orderId}', ${item.idiyappam}, ${item.vellayappam}, ${item.idli}, '${escapedRoute}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-delete btn-pill" onclick="confirmDeleteOrder('${item.orderId}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>`;
+        delTbody.innerHTML += dRow;
+      });
+    }
+
+    function renderAccountsLedger(ledgerList) {
+      const accTbody = document.querySelector('#accounts-ledger-table tbody');
+      if (!accTbody) return;
+      accTbody.innerHTML = '';
+
+      if (ledgerList.length === 0) {
+        accTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8;">അക്കൗണ്ട് ലെഡ്ജർ വിവരങ്ങൾ ലഭ്യമല്ല.</td></tr>';
+        return;
+      }
+
+      ledgerList.forEach(item => {
+        const isFullyPaid = item.paymentStatus === 'Paid';
+        const badgeColor = isFullyPaid ? 'var(--color-success)' : (item.paidAmount > 0 ? 'var(--color-info)' : 'var(--color-error)');
+
+        const row = `<tr>
+          <td style="text-align: center;">
+            <input type="checkbox" style="width:22px; height:22px; cursor:pointer;" ${isFullyPaid ? 'checked' : ''} onchange="toggleAccountPaidCheckbox('${item.orderId}', this.checked, ${item.totalAmount})">
+          </td>
+          <td>${item.deliveryDate}</td>
+          <td><strong>[${item.storeId}] ${item.storeName}</strong></td>
+          <td>₹${Number(item.totalAmount || 0).toFixed(2)}</td>
+          <td>₹${Number(item.paidAmount || 0).toFixed(2)}</td>
+          <td><strong style="color: ${item.balanceDue > 0 ? 'var(--color-error)' : 'green'}">₹${Number(item.balanceDue || 0).toFixed(2)}</strong></td>
+          <td><span style="background:${badgeColor}; color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem;">${isFullyPaid ? 'തീർത്തു' : (item.paidAmount > 0 ? 'ഭാഗികം' : 'തരാനുണ്ട്')}</span></td>
+          <td style="display: flex; gap: 6px;">
+            <button class="btn btn-pill btn-edit" style="padding: 4px 10px; font-size: 0.8rem;" onclick="openPaymentModal('${item.orderId}', ${item.balanceDue})">
+              <i class="fa-solid fa-coins"></i> ഭാഗികം
+            </button>
+          </td>
+        </tr>`;
+        accTbody.innerHTML += row;
+      });
+    }
+
+    function toggleDeliveryCheck(orderId, isChecked) {
+      const status = isChecked ? 'Delivered' : 'Pending';
+      db.collection("orders").doc(orderId).update({ deliveryStatus: status });
+    }
+
+    function toggleAccountPaidCheckbox(orderId, isChecked, totalAmount) {
+      if (isChecked) {
+        db.collection("orders").doc(orderId).update({
+          paidAmount: Number(totalAmount),
+          balanceDue: 0,
+          paymentStatus: 'Paid'
+        });
+      } else {
+        db.collection("orders").doc(orderId).update({
+          paidAmount: 0,
+          balanceDue: Number(totalAmount),
+          paymentStatus: 'Pending'
+        });
+      }
+    }
+
+    function openPaymentModal(orderId, balanceDue) {
+      document.getElementById('pay-order-id').value = orderId;
+      document.getElementById('pay-balance-due').value = `₹${Number(balanceDue).toFixed(2)}`;
+      document.getElementById('pay-amount').value = balanceDue;
+      document.getElementById('payment-modal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('payment-modal').classList.remove('active');
+    }
+
+    function submitPaymentRecord() {
+      const orderId = document.getElementById('pay-order-id').value;
+      const payAmount = Number(document.getElementById('pay-amount').value);
+
+      if (!payAmount || payAmount <= 0) {
+        showModal('ശ്രദ്ധിക്കുക', 'കൃത്യമായ തുക രേഖപ്പെടുത്തുക.', 'error');
+        return;
+      }
+
+      const orderRef = db.collection("orders").doc(orderId);
+      orderRef.get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const currentPaid = Number(data.paidAmount || 0);
+          const total = Number(data.totalAmount || 0);
+          const newPaid = currentPaid + payAmount;
+          const newBalance = Math.max(0, total - newPaid);
+          const status = newBalance === 0 ? 'Paid' : 'Partial';
+
+          orderRef.update({
+            paidAmount: newPaid,
+            balanceDue: newBalance,
+            paymentStatus: status
+          }).then(() => {
+            closePaymentModal();
+            showModal('സേവ് ചെയ്തു', 'പേയ്മെന്റ് വിജയകരമായി രേഖപ്പെടുത്തി.', 'success');
+          });
+        }
+      });
+    }
+
+    // FORM SUBMIT: REGISTER STORE
+    document.getElementById('store-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const storeId = document.getElementById('reg-store-id').value.trim();
+      const storeData = {
+        storeName: document.getElementById('reg-store-name').value,
+        ownerName: document.getElementById('reg-owner-name').value,
+        mobile: document.getElementById('reg-mobile').value,
+        whatsapp: document.getElementById('reg-whatsapp').value,
+        route: document.getElementById('reg-route').value,
+        priceIdiyappam: Number(document.getElementById('reg-price-idiyappam').value),
+        priceVellayappam: Number(document.getElementById('reg-price-vellayappam').value),
+        priceIdli: Number(document.getElementById('reg-price-idli').value)
+      };
+
+      db.collection("stores").doc(storeId).set(storeData).then(() => {
+        showModal('കട രജിസ്റ്റർ ചെയ്തു', 'പുതിയ കട വിജയകരമായി സേവ് ചെയ്തു.', 'success');
+        document.getElementById('store-form').reset();
+      }).catch(err => showModal('പിശക്', err.message, 'error'));
+    });
+
+    // FORM SUBMIT: CREATE ORDER
+    document.getElementById('order-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (isSubmittingOrder) return;
+
+      const storeId = document.getElementById('selected-store-id').value;
+      const selectedStore = registeredStoresList.find(s => s.id === storeId);
+
+      if (!selectedStore) {
+        showModal('ശ്രദ്ധിക്കുക', 'കട നൽകിയിട്ടുള്ള ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക.', 'error');
+        return;
+      }
+
+      const lockedDeliveryDate = document.getElementById('order-delivery-date').value;
+      const lockedRoute = document.getElementById('order-route').value;
+      const qtyIdiyappam = Number(document.getElementById('qty-idiyappam').value || 0);
+      const qtyVellayappam = Number(document.getElementById('qty-vellayappam').value || 0);
+      const qtyIdli = Number(document.getElementById('qty-idli').value || 0);
+
+      const totalAmount = (qtyIdiyappam * (selectedStore.priceIdiyappam || 0)) +
+                          (qtyVellayappam * (selectedStore.priceVellayappam || 0)) +
+                          (qtyIdli * (selectedStore.priceIdli || 0));
+
+      const orderPayload = {
+        storeId: selectedStore.id,
+        storeName: selectedStore.storeName,
+        route: lockedRoute,
+        deliveryDate: lockedDeliveryDate,
+        idiyappam: qtyIdiyappam,
+        vellayappam: qtyVellayappam,
+        idli: qtyIdli,
+        totalAmount: totalAmount,
+        paidAmount: 0,
+        balanceDue: totalAmount,
+        deliveryStatus: 'Pending',
+        paymentStatus: 'Pending',
+        timestamp: new Date()
+      };
+
+      isSubmittingOrder = true;
+      const submitBtn = document.getElementById('submit-order-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> സേവ് ചെയ്യുന്നു...';
+
+      db.collection("orders").add(orderPayload).then(() => {
+        isSubmittingOrder = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക';
+        showModal('ഓർഡർ സമർപ്പിച്ചു', 'ഓർഡർ വിജയകരമായി രേഖപ്പെടുത്തി.', 'success');
+
+        document.getElementById('order-form').reset();
+        document.getElementById('selected-store-id').value = '';
+        document.getElementById('order-store-search').value = '';
+        document.getElementById('order-delivery-date').value = lockedDeliveryDate;
+        document.getElementById('order-route').value = lockedRoute;
+        document.getElementById('order-store-search').focus();
+      }).catch(err => {
+        isSubmittingOrder = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ഓർഡർ നൽകുക';
+        showModal('പിശക്', err.message, 'error');
+      });
+    });
+
+    // LOGIN FORM SUBMISSION
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+
+      // സിംപിൾ ക്ലയന്റ്-സൈഡ് അഡ്മിൻ പാസ്‌വേഡ് ചെക്കിംഗ്
+      if ((user === "admin" || user === "101") && pass.length >= 4) {
+        localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: user, storeName: 'Admin Panel' }));
+        checkSessionState();
+      } else {
+        showModal('ലോഗിൻ പരാജയപ്പെട്ടു', 'ശരിയായ യൂസർനേമും പാസ്‌വേഡും നൽകുക.', 'error');
+      }
+    });
+
+    function showModal(title, message, type = 'info') {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-message').innerText = message;
+      const iconContainer = document.getElementById('modal-icon-container');
+      if (type === 'success') {
+        iconContainer.innerHTML = '<i class="fa-solid fa-circle-check modal-icon success" style="color:var(--color-success); font-size:2.5rem; margin-bottom:10px;"></i>';
+      } else if (type === 'error') {
+        iconContainer.innerHTML = '<i class="fa-solid fa-circle-exclamation modal-icon error" style="color:var(--color-error); font-size:2.5rem; margin-bottom:10px;"></i>';
+      } else {
+        iconContainer.innerHTML = '<i class="fa-solid fa-circle-info modal-icon" style="color: var(--color-info); font-size:2.5rem; margin-bottom:10px;"></i>';
+      }
+      document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('custom-modal').classList.remove('active');
+    }
+
+    function showConfirmModal(title, message, onConfirm) {
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-message').innerText = message;
+      pendingConfirmAction = onConfirm;
+      document.getElementById('confirm-action-btn').onclick = () => {
+        if (pendingConfirmAction) pendingConfirmAction();
+        closeConfirmModal();
+      };
+      document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirm-modal').classList.remove('active');
+    }
+
+    function renderPacketPills(containerId, packetObject) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      const keys = Object.keys(packetObject);
+      if (keys.length === 0) {
+        container.innerHTML = '<span style="color: #94a3b8;">ഓർഡറുകൾ ഇല്ല</span>';
+        return;
+      }
+      keys.forEach(qty => {
+        const count = packetObject[qty];
+        const pill = `<div class="packet-badge">${qty} എണ്ണം &times; ${count} പാക്കറ്റ്</div>`;
+        container.innerHTML += pill;
+      });
+    }
+
+    function renderMonthlyCalendar() {
+      if (!currentMetricsData || !currentMetricsData.calendarMap) return;
+
+      const mPickerVal = document.getElementById('calendar-month-picker').value;
+      if (!mPickerVal) return;
+
+      const [year, month] = mPickerVal.split('-').map(Number);
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const container = document.getElementById('calendar-days-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const dayHeaders = ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി'];
+      dayHeaders.forEach(dh => {
+        container.innerHTML += `<div class="calendar-header">${dh}</div>`;
+      });
+
+      const firstDayIndex = new Date(year, month - 1, 1).getDay();
+      for (let i = 0; i < firstDayIndex; i++) {
+        container.innerHTML += `<div style="background: transparent;"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayData = currentMetricsData.calendarMap[dateStr] || { idiyappam: 0, vellayappam: 0, idli: 0, totalOrders: 0, orders: [] };
+
+        const card = document.createElement('div');
+        card.className = 'calendar-day-card';
+        if (dayData.totalOrders > 0) card.style.borderColor = 'var(--color-info)';
+
+        card.innerHTML = `
+          <div class="calendar-day-number">${day}</div>
+          <div class="calendar-day-pills">
+            ${dayData.idiyappam > 0 ? `<span style="color:#1e3c72;">ഇ: ${dayData.idiyappam}</span><br>` : ''}
+            ${dayData.vellayappam > 0 ? `<span style="color:#05c46b;">വെ: ${dayData.vellayappam}</span><br>` : ''}
+            ${dayData.idli > 0 ? `<span style="color:#2a5298;">ഇഡ്ഡ: ${dayData.idli}</span>` : ''}
+            ${dayData.totalOrders === 0 ? '<span style="color:#cbd5e1;">ഓർഡറില്ല</span>' : ''}
+          </div>
+        `;
+
+        card.onclick = () => showCalendarDayDetails(dateStr, dayData);
+        container.appendChild(card);
+      }
+    }
+
+    function showCalendarDayDetails(dateStr, dayData) {
+      document.getElementById('calendar-day-detail-panel').style.display = 'block';
+      document.getElementById('cal-selected-date-title').innerText = `${dateStr} ലെ ഓർഡർ വിവരങ്ങൾ`;
+      document.getElementById('cal-day-idiyappam').innerText = dayData.idiyappam;
+      document.getElementById('cal-day-vellayappam').innerText = dayData.vellayappam;
+      document.getElementById('cal-day-idli').innerText = dayData.idli;
+
+      const tbody = document.querySelector('#calendar-day-orders-table tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!dayData.orders || dayData.orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #94a3b8;">ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ലഭ്യമല്ല.</td></tr>';
+        return;
+      }
+
+      dayData.orders.forEach(o => {
+        const escapedRoute = String(o.route || '').replace(/'/g, "\\'");
+        const row = `<tr>
+          <td><strong>${o.storeId}</strong></td>
+          <td>${o.storeName}</td>
+          <td>${o.route}</td>
+          <td>${o.idiyappam}</td>
+          <td>${o.vellayappam}</td>
+          <td>${o.idli}</td>
+          <td style="display: flex; gap: 6px;">
+            <button class="btn btn-edit btn-pill" onclick="openEditOrderModal('${o.orderId}', ${o.idiyappam}, ${o.vellayappam}, ${o.idli}, '${escapedRoute}')">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-delete btn-pill" onclick="confirmDeleteOrder('${o.orderId}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById('calendar-day-detail-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openEditStoreModal(storeId) {
+      const store = registeredStoresList.find(s => s.id === storeId);
+      if (!store) return;
+
+      document.getElementById('edit-store-id').value = store.id;
+      document.getElementById('edit-store-name').value = store.storeName;
+      document.getElementById('edit-owner-name').value = store.ownerName || '';
+      document.getElementById('edit-mobile').value = store.mobile || '';
+      document.getElementById('edit-whatsapp').value = store.whatsapp || '';
+      document.getElementById('edit-route').value = store.route || 'Route 1 - Morning';
+      document.getElementById('edit-price-idiyappam').value = store.priceIdiyappam || 0;
+      document.getElementById('edit-price-vellayappam').value = store.priceVellayappam || 0;
+      document.getElementById('edit-price-idli').value = store.priceIdli || 0;
+
+      document.getElementById('edit-store-modal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-store-modal').classList.remove('active');
+    }
+
+    function submitStoreUpdate() {
+      const id = document.getElementById('edit-store-id').value;
+      const updatePayload = {
+        storeName: document.getElementById('edit-store-name').value,
+        ownerName: document.getElementById('edit-owner-name').value,
+        mobile: document.getElementById('edit-mobile').value,
+        whatsapp: document.getElementById('edit-whatsapp').value,
+        route: document.getElementById('edit-route').value,
+        priceIdiyappam: Number(document.getElementById('edit-price-idiyappam').value),
+        priceVellayappam: Number(document.getElementById('edit-price-vellayappam').value),
+        priceIdli: Number(document.getElementById('edit-price-idli').value)
+      };
+
+      db.collection("stores").doc(id).update(updatePayload).then(() => {
+        closeEditModal();
+        showModal('അപ്ഡേറ്റ് ചെയ്തു', 'കടയുടെ വിവരങ്ങൾ മാറ്റി.', 'success');
+      });
+    }
+
+    function confirmDeleteStore(storeId, storeName) {
+      showConfirmModal('കട മായ്ക്കുക', `നിങ്ങൾ കട ${storeId} - ${storeName} ഡിലീറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?`, () => {
+        db.collection("stores").doc(storeId).delete().then(() => {
+          showModal('ഡിലീറ്റ് ചെയ്തു', 'കട ഒഴിവാക്കി.', 'success');
+        });
+      });
+    }
+
+    function openEditOrderModal(orderId, idiyappam, vellayappam, idli, route = "Route 1 - Morning") {
+      document.getElementById('edit-order-id').value = orderId;
+      document.getElementById('edit-order-route').value = route;
+      document.getElementById('edit-order-idiyappam').value = idiyappam;
+      document.getElementById('edit-order-vellayappam').value = vellayappam;
+      document.getElementById('edit-order-idli').value = idli;
+      document.getElementById('edit-order-modal').classList.add('active');
+    }
+
+    function closeEditOrderModal() {
+      document.getElementById('edit-order-modal').classList.remove('active');
+    }
+
+    function submitOrderUpdate() {
+      const orderId = document.getElementById('edit-order-id').value;
+      const payload = {
+        route: document.getElementById('edit-order-route').value,
+        idiyappam: Number(document.getElementById('edit-order-idiyappam').value),
+        vellayappam: Number(document.getElementById('edit-order-vellayappam').value),
+        idli: Number(document.getElementById('edit-order-idli').value)
+      };
+
+      db.collection("orders").doc(orderId).update(payload).then(() => {
+        closeEditOrderModal();
+        showModal('അപ്ഡേറ്റ് ചെയ്തു', 'ഓർഡർ വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+      });
+    }
+
+    function confirmDeleteOrder(orderId) {
+      showConfirmModal('ഓർഡർ മായ്ക്കുക', `നിങ്ങൾ ഈ ഓർഡർ (#${orderId}) ഡിലീറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?`, () => {
+        db.collection("orders").doc(orderId).delete().then(() => {
+          showModal('ഡിലീറ്റ് ചെയ്തു', 'ഓർഡർ ഡിലീറ്റ് ചെയ്തു.', 'success');
+        });
+      });
+    }
+
+    function markAllVisibleDelivered() {
+      if (!currentMetricsData || !currentMetricsData.deliveryList) return;
+      const selectedRoute = document.getElementById('delivery-route-filter').value;
+      
+      let targets = currentMetricsData.deliveryList;
+      if (selectedRoute !== 'ALL') {
+        targets = targets.filter(item => item.route === selectedRoute);
+      }
+
+      showConfirmModal('എല്ലാം ഡെലിവറി ചെയ്തതായി മാറ്റുക', 'എല്ലാ ഓർഡറുകളും ഡെലിവറി ചെയ്തതായി അടയാളപ്പെടുത്തണോ?', () => {
+        const batch = db.batch();
+        targets.forEach(item => {
+          const docRef = db.collection("orders").doc(item.orderId);
+          batch.update(docRef, { deliveryStatus: 'Delivered' });
+        });
+        batch.commit().then(() => {
+          showModal('അപ്ഡേറ്റ് ചെയ്തു', 'എല്ലാ ഓർഡറുകളും അപ്ഡേറ്റ് ചെയ്തു.', 'success');
+        });
+      });
+    }
+
+    function filterDeliveryTable() {
+      if (!currentMetricsData) return;
+      const currentFilter = document.getElementById('delivery-route-filter').value;
+      renderDeliveryTable(currentMetricsData.deliveryList, currentFilter);
+    }
+  </script>
 </body>
 </html>
