@@ -89,11 +89,6 @@
       color: #475569;
     }
 
-    .input-with-btn {
-      display: flex;
-      gap: 10px;
-    }
-
     .form-control {
       width: 100%;
       min-height: 44px;
@@ -1509,7 +1504,6 @@
       }
 
       registeredStoresList.forEach((store) => {
-        // Check if an order already exists for this store on the chosen date
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
 
         const valIdi = existingOrder ? existingOrder.idiyappam : 0;
@@ -1732,7 +1726,6 @@
           calendarMap
         };
 
-        // Render UI
         document.getElementById('total-idiyappam').innerText = totalIdiyappam;
         document.getElementById('total-vellayappam').innerText = totalVellayappam;
         document.getElementById('total-idli').innerText = totalIdli;
