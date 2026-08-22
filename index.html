@@ -1237,14 +1237,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // 🌟 ഫയർബേസ് കൺസോളിൽ നിന്നും ലഭിച്ച ശരിയായ API KEY നൽകുക
+    // 🌟 നിശ്ചിത Firebase Configuration
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyBxpPwb6ZFmbAc4KH7VVQwGo0G9d-PJwAM",
       authDomain: "malabar-idiyappam.firebaseapp.com",
       projectId: "malabar-idiyappam",
-      storageBucket: "malabar-idiyappam.appspot.com",
+      storageBucket: "malabar-idiyappam.firebasestorage.app",
       messagingSenderId: "246016481020",
-      appId: "YOUR_APP_ID"
+      appId: "1:246016481020:web:3c2bacd8cd150cc6c4a979",
+      measurementId: "G-SD8SP8RNT3"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -1818,7 +1819,6 @@
       const user = document.getElementById('login-user').value.trim();
       const pass = document.getElementById('login-pass').value.trim();
 
-      // സിംപിൾ ക്ലയന്റ്-സൈഡ് അഡ്മിൻ പാസ്‌വേഡ് ചെക്കിംഗ്
       if ((user === "admin" || user === "101") && pass.length >= 4) {
         localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: user, storeName: 'Admin Panel' }));
         checkSessionState();
@@ -2070,6 +2070,68 @@
       if (!currentMetricsData) return;
       const currentFilter = document.getElementById('delivery-route-filter').value;
       renderDeliveryTable(currentMetricsData.deliveryList, currentFilter);
+    }
+
+    function shareSingleItemWhatsApp(itemKey) {
+      if (!currentMetricsData) return;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
+      let packetsObj = {};
+      let totalQty = 0;
+      let itemNameMalayalam = "";
+
+      if (itemKey === 'idiyappam') {
+        itemNameMalayalam = "ഇടിയപ്പം";
+        packetsObj = currentMetricsData.idiyappamPackets;
+        totalQty = currentMetricsData.totals.idiyappam;
+      } else if (itemKey === 'vellayappam') {
+        itemNameMalayalam = "വെള്ളയപ്പം";
+        packetsObj = currentMetricsData.vellayappamPackets;
+        totalQty = currentMetricsData.totals.vellayappam;
+      } else if (itemKey === 'idli') {
+        itemNameMalayalam = "ഇഡ്ഡലി";
+        packetsObj = currentMetricsData.idliPackets;
+        totalQty = currentMetricsData.totals.idli;
+      }
+
+      msg += `*${itemNameMalayalam} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
+
+      let hasPackets = false;
+      for (let qty in packetsObj) {
+        hasPackets = true;
+        msg += ` - ${qty} എണ്ണത്തിന്റെ പാക്കറ്റ്: ${packetsObj[qty]} എണ്ണം\n`;
+      }
+      if (!hasPackets) msg += ` (ഈ തിയ്യതിയിൽ ഓർഡറുകൾ ഇല്ല)\n`;
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function shareProductionToWhatsApp() {
+      if (!currentMetricsData) return;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totals.idiyappam}\n• വെള്ളയപ്പം: ${currentMetricsData.totals.vellayappam}\n• ഇഡ്ഡലി: ${currentMetricsData.totals.idli}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
+      for (let route in currentMetricsData.routeSummary) {
+        msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idiyappam} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vellayappam} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idli}\n`;
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function shareDeliveryToWhatsApp() {
+      if (!currentMetricsData || !currentMetricsData.deliveryList) return;
+      const selectedRoute = document.getElementById('delivery-route-filter').value;
+      let filteredList = currentMetricsData.deliveryList;
+
+      if (selectedRoute !== 'ALL') {
+        filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
+      }
+
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*കടകളുടെ ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
+      if (filteredList.length === 0) {
+        msg += `ഈ റൂട്ടിൽ ഡെലിവറി ഓർഡറുകൾ ഇല്ല.\n`;
+      } else {
+        filteredList.forEach((item, index) => {
+          msg += `${index + 1}. *${item.storeName}* (കട നമ്പർ: ${item.storeId})\n   ഷിഫ്റ്റ്: ${item.route}\n   സാധനങ്ങൾ: ഇടിയപ്പം: ${item.idiyappam} | വെള്ളയപ്പം: ${item.vellayappam} | ഇഡ്ഡലി: ${item.idli}\n   ബിൽ തുക: ₹${item.totalAmount.toFixed(2)}\n\n`;
+        });
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
   </script>
 </body>
