@@ -1184,7 +1184,6 @@
     let currentOrdersList = [];
     let currentMetricsData = null;
 
-    // Format YYYY-MM-DD to DD-MM-YYYY
     function formatDateToDMY(dateStr) {
       if (!dateStr) return '';
       const parts = dateStr.split('-');
@@ -1327,7 +1326,6 @@
       });
     }
 
-    // 🌟 Load Mobile-Friendly Bulk Cards with Individual Delete / Cancel Button
     function loadBulkOrderSheet() {
       const container = document.getElementById('bulk-cards-container');
       if (!container) return;
@@ -1355,7 +1353,7 @@
         const orderDocId = existingOrder ? existingOrder.orderId : '';
 
         const card = `
-          <div class="bulk-store-card" data-store-id="${store.id}" data-order-id="${orderDocId}">
+          <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
             <div class="bulk-store-header">
               <div class="store-badge-title">
                 <span class="store-id-tag">#${store.id}</span>
@@ -1363,11 +1361,9 @@
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
-                ${orderDocId ? `
-                  <button class="btn btn-danger-soft btn-pill btn-xs" onclick="deleteSingleStoreOrder('${orderDocId}', '${store.storeName}')" title="Cancel/Delete this store order">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                ` : ''}
+                <button class="btn btn-danger-soft btn-pill btn-xs del-btn" id="del-btn-${store.id}" style="${orderDocId ? 'display:inline-flex;' : 'display:none;'}" onclick="deleteSingleStoreOrder('${store.id}', '${store.storeName}')" title="Cancel/Delete order">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
             </div>
             <div class="bulk-inputs-row">
@@ -1390,17 +1386,32 @@
       });
     }
 
-    // 🌟 Cancel / Delete Single Store Order for Selected Date
-    function deleteSingleStoreOrder(orderId, storeName) {
+    // 🌟 Instant Reset and Delete Single Store Order
+    function deleteSingleStoreOrder(storeId, storeName) {
+      const card = document.getElementById(`card-store-${storeId}`);
+      const orderId = card ? card.dataset.orderId : null;
+
+      if (!orderId) {
+        if (card) {
+          card.querySelectorAll('.bulk-qty-field').forEach(inp => inp.value = '');
+        }
+        return;
+      }
+
       if (confirm(`Are you sure you want to cancel the order for ${storeName}?`)) {
         db.collection("orders").doc(orderId).delete().then(() => {
-          showModal('Order Cancelled', `Order for ${storeName} has been deleted.`, 'success');
+          if (card) {
+            card.querySelectorAll('.bulk-qty-field').forEach(inp => inp.value = '');
+            card.dataset.orderId = '';
+            const delBtn = document.getElementById(`del-btn-${storeId}`);
+            if (delBtn) delBtn.style.display = 'none';
+          }
+          showModal('Order Cancelled', `Order for ${storeName} has been cleared.`, 'success');
           fetchProductionMetrics();
         });
       }
     }
 
-    // 🌟 Clear All Inputs
     function clearBulkOrderInputs() {
       document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
     }
