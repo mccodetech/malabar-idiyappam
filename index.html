@@ -161,7 +161,7 @@
     }
 
     .btn-xs {
-      min-height: 28px;
+      min-height: 26px;
       padding: 2px 8px;
       font-size: 0.75rem;
     }
@@ -351,6 +351,7 @@
       border-radius: 12px;
       padding: 12px 14px;
       transition: var(--transition-base);
+      position: relative;
     }
 
     .bulk-store-card:focus-within {
@@ -744,7 +745,7 @@
                 <i class="fa-solid fa-floppy-disk"></i> Save All Orders
               </button>
               <button class="btn btn-danger-soft btn-pill" style="flex: 1;" onclick="clearBulkOrderInputs()">
-                <i class="fa-solid fa-eraser"></i> Clear
+                <i class="fa-solid fa-eraser"></i> Clear Form
               </button>
             </div>
           </div>
@@ -1183,6 +1184,14 @@
     let currentOrdersList = [];
     let currentMetricsData = null;
 
+    // Format YYYY-MM-DD to DD-MM-YYYY
+    function formatDateToDMY(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      return dateStr;
+    }
+
     function parseQuantityBreakdown(valStr) {
       if (!valStr) return { total: 0, raw: '', packets: [] };
       const str = String(valStr).trim();
@@ -1318,6 +1327,7 @@
       });
     }
 
+    // 🌟 Load Mobile-Friendly Bulk Cards with Individual Delete / Cancel Button
     function loadBulkOrderSheet() {
       const container = document.getElementById('bulk-cards-container');
       if (!container) return;
@@ -1351,7 +1361,14 @@
                 <span class="store-id-tag">#${store.id}</span>
                 <span>${store.storeName}</span>
               </div>
-              <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
+                ${orderDocId ? `
+                  <button class="btn btn-danger-soft btn-pill btn-xs" onclick="deleteSingleStoreOrder('${orderDocId}', '${store.storeName}')" title="Cancel/Delete this store order">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                ` : ''}
+              </div>
             </div>
             <div class="bulk-inputs-row">
               <div class="bulk-input-col">
@@ -1373,6 +1390,17 @@
       });
     }
 
+    // 🌟 Cancel / Delete Single Store Order for Selected Date
+    function deleteSingleStoreOrder(orderId, storeName) {
+      if (confirm(`Are you sure you want to cancel the order for ${storeName}?`)) {
+        db.collection("orders").doc(orderId).delete().then(() => {
+          showModal('Order Cancelled', `Order for ${storeName} has been deleted.`, 'success');
+          fetchProductionMetrics();
+        });
+      }
+    }
+
+    // 🌟 Clear All Inputs
     function clearBulkOrderInputs() {
       document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
     }
@@ -1596,7 +1624,6 @@
       });
     }
 
-    // 🌟 Monthly Calendar Render Fix
     function renderMonthlyCalendar() {
       const picker = document.getElementById('calendar-month-picker');
       const container = document.getElementById('calendar-days-container');
@@ -1647,7 +1674,7 @@
       if (!panel || !listContainer) return;
 
       panel.style.display = 'block';
-      text.innerText = `Orders for ${dateStr} (Total: ഇടിയപ്പം ${info.idi}, വെള്ളയപ്പം ${info.vel}, ഇഡ്ഡലി ${info.idl})`;
+      text.innerText = `Orders for ${formatDateToDMY(dateStr)} (ഇടിയപ്പം: ${info.idi}, വെള്ളയപ്പം: ${info.vel}, ഇഡ്ഡലി: ${info.idl})`;
       listContainer.innerHTML = '';
 
       if (!info.orders || info.orders.length === 0) {
@@ -1662,7 +1689,7 @@
               <span class="store-badge-title">#${o.storeId} - ${o.storeName}</span>
               <small style="color:#64748b;">${o.route || ''}</small>
             </div>
-            <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px;">
+            <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">
               <span>ഇടിയപ്പം: <strong>${o.idiyappamRaw || o.idiyappam}</strong></span>
               <span>വെള്ളയപ്പം: <strong>${o.vellayappamRaw || o.vellayappam}</strong></span>
               <span>ഇഡ്ഡലി: <strong>${o.idliRaw || o.idli}</strong></span>
@@ -1853,7 +1880,7 @@
         totalQty = currentMetricsData.totalIdl;
       }
 
-      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
+      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
 
       const keys = Object.keys(packetsObj).sort((a,b) => Number(a) - Number(b));
       let hasPackets = false;
@@ -1869,7 +1896,7 @@
 
     function shareProductionToWhatsApp() {
       if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
       for (let route in currentMetricsData.routeSummary) {
         msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idi} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vel} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idl}\n`;
       }
@@ -1885,7 +1912,7 @@
         filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
       }
 
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n`;
       if (filteredList.length === 0) {
         msg += `ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n`;
       } else {
