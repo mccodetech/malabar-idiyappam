@@ -455,11 +455,11 @@
     .packet-badge {
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: var(--radius-pill);
-      font-weight: 600;
-      color: #1e293b;
-      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e3c72;
+      font-size: 0.85rem;
     }
 
     .modal-overlay {
@@ -655,7 +655,7 @@
             <div class="section-header-flex">
               <div>
                 <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
-                <small style="color: #64748b;">You can type single number (e.g. 150) or breakdown (e.g. 50+50+30+20)</small>
+                <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
               </div>
               <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
                 <i class="fa-solid fa-floppy-disk"></i> Save Orders
@@ -771,11 +771,11 @@
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-boxes-packing"></i> Packaging Breakdown (Packet Counts)</h3>
+            <h3><i class="fa-solid fa-boxes-packing"></i> Packaging Summary (പാക്കിംഗ് കണക്കുകൾ)</h3>
             
             <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <span style="font-weight: 600; font-size: 0.9rem;">ഇടിയപ്പം പാക്കറ്റുകൾ:</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">ഇടിയപ്പം പാക്കിംഗ്:</span>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idiyappam')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="idiyappam-packets-list" class="packet-pill-box"></div>
@@ -783,7 +783,7 @@
 
             <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <span style="font-weight: 600; font-size: 0.9rem;">വെള്ളയപ്പം പാക്കറ്റുകൾ:</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">വെള്ളയപ്പം പാക്കിംഗ്:</span>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('vellayappam')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="vellayappam-packets-list" class="packet-pill-box"></div>
@@ -791,7 +791,7 @@
 
             <div style="margin-top: 15px;">
               <div class="sub-header-flex">
-                <span style="font-weight: 600; font-size: 0.9rem;">ഇഡ്ഡലി പാക്കറ്റുകൾ:</span>
+                <span style="font-weight: 600; font-size: 0.9rem;">ഇഡ്ഡലി പാക്കിംഗ്:</span>
                 <button class="btn btn-whatsapp btn-pill btn-xs" onclick="shareSingleItemWhatsApp('idli')"><i class="fa-brands fa-whatsapp"></i> Share</button>
               </div>
               <div id="idli-packets-list" class="packet-pill-box"></div>
@@ -1118,7 +1118,7 @@
     let currentOrdersList = [];
     let currentMetricsData = null;
 
-    // 🌟 Helper to parse "50+50+30+20" into Total & Packet array
+    // Helper to parse "50+50+30+20"
     function parseQuantityBreakdown(valStr) {
       if (!valStr) return { total: 0, raw: '', packets: [] };
       const str = String(valStr).trim();
@@ -1196,7 +1196,6 @@
       }, 500);
     }
 
-    // Load Stores and Sort Numerically
     function loadStoreOptions() {
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
@@ -1210,7 +1209,6 @@
           if (!isNaN(numId) && numId > maxId) maxId = numId;
         });
 
-        // Numeric Sorting: 1, 2, 3... 100, 101, 102
         registeredStoresList.sort((a, b) => {
           const numA = parseInt(a.id, 10);
           const numB = parseInt(b.id, 10);
@@ -1253,7 +1251,6 @@
       });
     }
 
-    // Render Mobile-Friendly Bulk Cards
     function loadBulkOrderSheet() {
       const container = document.getElementById('bulk-cards-container');
       if (!container) return;
@@ -1275,7 +1272,6 @@
       filteredStores.forEach(store => {
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
         
-        // Show raw breakdown if available (e.g. 50+50+30+20)
         const valIdi = existingOrder ? (existingOrder.idiyappamRaw || (existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '')) : '';
         const valVel = existingOrder ? (existingOrder.vellayappamRaw || (existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '')) : '';
         const valIdl = existingOrder ? (existingOrder.idliRaw || (existingOrder.idli > 0 ? existingOrder.idli : '')) : '';
@@ -1370,7 +1366,6 @@
       });
     }
 
-    // Single order autocomplete
     function handleInstantSuggest() {
       const q = document.getElementById('order-store-search').value.toLowerCase().trim();
       const box = document.getElementById('suggest-box');
@@ -1400,7 +1395,6 @@
       box.style.display = 'block';
     }
 
-    // Single Order Form Submit
     document.getElementById('order-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const storeId = document.getElementById('selected-store-id').value;
@@ -1449,7 +1443,6 @@
       });
     });
 
-    // Orders & Metrics with breakdown calculation
     function fetchProductionMetrics() {
       const selectedDate = document.getElementById('production-date-filter').value || new Date().toISOString().split('T')[0];
 
@@ -1469,7 +1462,6 @@
             const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
             totalIdi += idi; totalVel += vel; totalIdl += idl;
 
-            // 🌟 Calculate Packets accurately from array or single number
             const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
             idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
 
@@ -1519,13 +1511,14 @@
       });
     }
 
+    // 🌟 Render Clean Packets Format: e.g. 50 × 1
     function renderPacketPills(id, obj) {
       const el = document.getElementById(id);
       if (!el) return;
       el.innerHTML = '';
-      const keys = Object.keys(obj);
+      const keys = Object.keys(obj).sort((a,b) => Number(a) - Number(b));
       if (keys.length === 0) { el.innerHTML = '<span style="color:#94a3b8; font-size:0.8rem;">No orders</span>'; return; }
-      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} എണ്ണം &times; ${obj[k]} പാക്കറ്റ്</div>`);
+      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} &times; ${obj[k]}</div>`);
     }
 
     function renderDeliveryTable(list) {
@@ -1575,7 +1568,6 @@
       });
     }
 
-    // Register Store
     document.getElementById('store-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const storeId = document.getElementById('reg-store-id').value;
@@ -1596,7 +1588,6 @@
       });
     });
 
-    // Edit Store Modal
     function openEditStoreModal(storeId) {
       const store = registeredStoresList.find(s => s.id === storeId);
       if (!store) return;
@@ -1645,7 +1636,6 @@
       }
     }
 
-    // Google Sheets Import
     function openImportModal() { document.getElementById('import-modal').classList.add('active'); }
     function closeImportModal() { document.getElementById('import-modal').classList.remove('active'); }
 
@@ -1682,7 +1672,7 @@
       });
     }
 
-    // WhatsApp Sharing with breakdown
+    // 🌟 Clean WhatsApp Packaging Message (50 × 1)
     function shareSingleItemWhatsApp(itemKey) {
       if (!currentMetricsData) return;
       let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
@@ -1704,11 +1694,13 @@
 
       msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
 
+      const keys = Object.keys(packetsObj).sort((a,b) => Number(a) - Number(b));
       let hasPackets = false;
-      for (let qty in packetsObj) {
+      keys.forEach(qty => {
         hasPackets = true;
-        msg += ` - ${qty} എണ്ണത്തിന്റെ പാക്കറ്റ്: ${packetsObj[qty]} എണ്ണം\n`;
-      }
+        msg += ` • ${qty} × ${packetsObj[qty]}\n`;
+      });
+
       if (!hasPackets) msg += ` (ഓർഡറുകൾ ഇല്ല)\n`;
 
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -1747,7 +1739,6 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    // Login Form
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-user').value.trim();
