@@ -420,6 +420,60 @@
       background-color: #f0fdf4;
     }
 
+    .calendar-grid-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(100px, 1fr));
+      gap: 6px;
+      margin-top: 15px;
+      min-width: 650px;
+    }
+
+    .calendar-header {
+      font-weight: 700;
+      text-align: center;
+      color: #475569;
+      padding: 8px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+
+    .calendar-day-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 6px 8px;
+      min-height: 80px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calendar-day-card:hover, .calendar-day-card.active {
+      border-color: #2a5298;
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .calendar-day-number {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1e3c72;
+    }
+
+    .calendar-day-pills {
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
     .table-container {
       overflow-x: auto;
       width: 100%;
@@ -516,12 +570,12 @@
     }
 
     .sticky-bottom-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
       position: sticky;
       bottom: 10px;
-      margin-top: 15px;
       z-index: 100;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      border-radius: var(--radius-pill);
     }
 
     @media (max-width: 768px) {
@@ -685,9 +739,14 @@
             <!-- Mobile Cards Container -->
             <div id="bulk-cards-container" class="bulk-card-list"></div>
             
-            <button class="btn btn-primary btn-pill btn-block sticky-bottom-bar" onclick="saveBulkOrders()">
-              <i class="fa-solid fa-floppy-disk"></i> Save All Orders
-            </button>
+            <div class="sticky-bottom-bar">
+              <button class="btn btn-primary btn-pill" style="flex: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.15);" onclick="saveBulkOrders()">
+                <i class="fa-solid fa-floppy-disk"></i> Save All Orders
+              </button>
+              <button class="btn btn-danger-soft btn-pill" style="flex: 1;" onclick="clearBulkOrderInputs()">
+                <i class="fa-solid fa-eraser"></i> Clear
+              </button>
+            </div>
           </div>
         </section>
 
@@ -863,11 +922,17 @@
           <div class="panel-card">
             <div class="section-header-flex">
               <h2><i class="fa-solid fa-calendar-days"></i> Monthly Calendar</h2>
-              <input type="month" id="calendar-month-picker" class="form-control compact-input" style="max-width: 140px;" onchange="renderMonthlyCalendar()">
+              <input type="month" id="calendar-month-picker" class="form-control compact-input" style="max-width: 150px;" onchange="renderMonthlyCalendar()">
             </div>
             <div class="calendar-grid-wrapper">
               <div class="calendar-grid" id="calendar-days-container"></div>
             </div>
+          </div>
+
+          <!-- Day Detail Panel -->
+          <div class="panel-card" id="cal-day-detail-box" style="display: none;">
+            <h3 id="cal-selected-date-text" style="color: #1e3c72; margin-bottom: 15px;"></h3>
+            <div id="cal-day-orders-list" class="bulk-card-list"></div>
           </div>
         </section>
 
@@ -1118,7 +1183,6 @@
     let currentOrdersList = [];
     let currentMetricsData = null;
 
-    // Helper to parse "50+50+30+20"
     function parseQuantityBreakdown(valStr) {
       if (!valStr) return { total: 0, raw: '', packets: [] };
       const str = String(valStr).trim();
@@ -1153,7 +1217,9 @@
         if (el && !el.value) el.value = today;
       });
       const mPicker = document.getElementById('calendar-month-picker');
-      if (mPicker) mPicker.value = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+      if (mPicker && !mPicker.value) {
+        mPicker.value = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+      }
     }
 
     function checkSessionState() {
@@ -1182,6 +1248,7 @@
       if (event) event.currentTarget.classList.add('active');
 
       if (tabId === 'tab-bulk-orders') loadBulkOrderSheet();
+      if (tabId === 'tab-calendar') renderMonthlyCalendar();
       if (tabId === 'tab-production' || tabId === 'tab-delivery' || tabId === 'tab-accounts') fetchProductionMetrics();
     }
 
@@ -1306,6 +1373,10 @@
       });
     }
 
+    function clearBulkOrderInputs() {
+      document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
+    }
+
     function saveBulkOrders() {
       const selectedDate = document.getElementById('bulk-order-date').value;
       const cards = document.querySelectorAll('.bulk-store-card');
@@ -1362,6 +1433,7 @@
 
       batch.commit().then(() => {
         showModal('Saved', `${count} orders recorded successfully!`, 'success');
+        clearBulkOrderInputs();
         fetchProductionMetrics();
       });
     }
@@ -1451,12 +1523,24 @@
         let totalRev = 0, totalPaid = 0, totalPending = 0;
         let idiyappamPackets = {}, vellayappamPackets = {}, idliPackets = {}, routeSummary = {};
         let deliveryList = [], ledgerList = [];
+        let calendarMap = {};
 
         currentOrdersList = [];
 
         snapshot.forEach(doc => {
           const o = { orderId: doc.id, ...doc.data() };
           currentOrdersList.push(o);
+
+          const oDate = o.deliveryDate;
+          if (oDate) {
+            if (!calendarMap[oDate]) {
+              calendarMap[oDate] = { idi: 0, vel: 0, idl: 0, orders: [] };
+            }
+            calendarMap[oDate].idi += Number(o.idiyappam || 0);
+            calendarMap[oDate].vel += Number(o.vellayappam || 0);
+            calendarMap[oDate].idl += Number(o.idli || 0);
+            calendarMap[oDate].orders.push(o);
+          }
 
           if (o.deliveryDate === selectedDate) {
             const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
@@ -1484,7 +1568,7 @@
           ledgerList.push(o);
         });
 
-        currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate };
+        currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate, calendarMap };
 
         document.getElementById('total-idiyappam').innerText = totalIdi;
         document.getElementById('total-vellayappam').innerText = totalVel;
@@ -1508,10 +1592,88 @@
 
         renderDeliveryTable(deliveryList);
         renderAccountsLedger(ledgerList);
+        renderMonthlyCalendar();
       });
     }
 
-    // 🌟 Render Clean Packets Format: e.g. 50 × 1
+    // 🌟 Monthly Calendar Render Fix
+    function renderMonthlyCalendar() {
+      const picker = document.getElementById('calendar-month-picker');
+      const container = document.getElementById('calendar-days-container');
+      if (!picker || !container) return;
+
+      const [year, month] = picker.value.split('-').map(Number);
+      if (!year || !month) return;
+
+      container.innerHTML = '';
+
+      const headers = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      headers.forEach(h => container.innerHTML += `<div class="calendar-header">${h}</div>`);
+
+      const firstDay = new Date(year, month - 1, 1).getDay();
+      const totalDays = new Date(year, month, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        container.innerHTML += `<div style="background:transparent;"></div>`;
+      }
+
+      const map = (currentMetricsData && currentMetricsData.calendarMap) ? currentMetricsData.calendarMap : {};
+
+      for (let day = 1; day <= totalDays; day++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayInfo = map[dateStr] || { idi: 0, vel: 0, idl: 0, orders: [] };
+
+        const hasOrders = (dayInfo.idi > 0 || dayInfo.vel > 0 || dayInfo.idl > 0);
+        const card = document.createElement('div');
+        card.className = `calendar-day-card ${hasOrders ? 'active' : ''}`;
+        card.innerHTML = `
+          <div class="calendar-day-number">${day}</div>
+          <div class="calendar-day-pills">
+            ${dayInfo.idi > 0 ? `<span style="color:#1e3c72;">ഇ: ${dayInfo.idi}</span><br>` : ''}
+            ${dayInfo.vel > 0 ? `<span style="color:#05c46b;">വെ: ${dayInfo.vel}</span><br>` : ''}
+            ${dayInfo.idl > 0 ? `<span style="color:#2a5298;">ഇഡ്ഡ: ${dayInfo.idl}</span>` : ''}
+            ${!hasOrders ? '<span style="color:#cbd5e1;">-</span>' : ''}
+          </div>
+        `;
+        card.onclick = () => showCalendarDayDetail(dateStr, dayInfo);
+        container.appendChild(card);
+      }
+    }
+
+    function showCalendarDayDetail(dateStr, info) {
+      const panel = document.getElementById('cal-day-detail-box');
+      const text = document.getElementById('cal-selected-date-text');
+      const listContainer = document.getElementById('cal-day-orders-list');
+      if (!panel || !listContainer) return;
+
+      panel.style.display = 'block';
+      text.innerText = `Orders for ${dateStr} (Total: ഇടിയപ്പം ${info.idi}, വെള്ളയപ്പം ${info.vel}, ഇഡ്ഡലി ${info.idl})`;
+      listContainer.innerHTML = '';
+
+      if (!info.orders || info.orders.length === 0) {
+        listContainer.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No orders found on this day.</div>';
+        return;
+      }
+
+      info.orders.forEach(o => {
+        listContainer.innerHTML += `
+          <div class="bulk-store-card">
+            <div class="bulk-store-header">
+              <span class="store-badge-title">#${o.storeId} - ${o.storeName}</span>
+              <small style="color:#64748b;">${o.route || ''}</small>
+            </div>
+            <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px;">
+              <span>ഇടിയപ്പം: <strong>${o.idiyappamRaw || o.idiyappam}</strong></span>
+              <span>വെള്ളയപ്പം: <strong>${o.vellayappamRaw || o.vellayappam}</strong></span>
+              <span>ഇഡ്ഡലി: <strong>${o.idliRaw || o.idli}</strong></span>
+              <span>Total: <strong>₹${o.totalAmount}</strong></span>
+            </div>
+          </div>
+        `;
+      });
+      panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function renderPacketPills(id, obj) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -1672,7 +1834,6 @@
       });
     }
 
-    // 🌟 Clean WhatsApp Packaging Message (50 × 1)
     function shareSingleItemWhatsApp(itemKey) {
       if (!currentMetricsData) return;
       let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
