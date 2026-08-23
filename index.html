@@ -338,7 +338,6 @@
       color: #1e293b;
     }
 
-    /* 🌟 Mobile-First Bulk Cards */
     .bulk-card-list {
       display: flex;
       flex-direction: column;
@@ -408,8 +407,8 @@
       width: 100%;
       height: 38px;
       text-align: center;
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 0.95rem;
+      font-weight: 600;
       border: 1.5px solid #cbd5e1;
       border-radius: 8px;
       outline: none;
@@ -656,7 +655,7 @@
             <div class="section-header-flex">
               <div>
                 <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
-                <small style="color: #64748b;">Enter daily quantities store by store</small>
+                <small style="color: #64748b;">You can type single number (e.g. 150) or breakdown (e.g. 50+50+30+20)</small>
               </div>
               <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
                 <i class="fa-solid fa-floppy-disk"></i> Save Orders
@@ -724,16 +723,16 @@
 
               <div class="grid-cards" style="margin-top: 15px;">
                 <div class="form-group">
-                  <label>ഇടിയപ്പം (Qty)</label>
-                  <input type="number" id="qty-idiyappam" class="form-control" placeholder="0" min="0">
+                  <label>ഇടിയപ്പം (Qty / Breakdown)</label>
+                  <input type="text" id="qty-idiyappam" class="form-control" placeholder="e.g. 50+50+30+20">
                 </div>
                 <div class="form-group">
-                  <label>വെള്ളയപ്പം (Qty)</label>
-                  <input type="number" id="qty-vellayappam" class="form-control" placeholder="0" min="0">
+                  <label>വെള്ളയപ്പം (Qty / Breakdown)</label>
+                  <input type="text" id="qty-vellayappam" class="form-control" placeholder="e.g. 50+50">
                 </div>
                 <div class="form-group">
-                  <label>ഇഡ്ഡലി (Qty)</label>
-                  <input type="number" id="qty-idli" class="form-control" placeholder="0" min="0">
+                  <label>ഇഡ്ഡലി (Qty / Breakdown)</label>
+                  <input type="text" id="qty-idli" class="form-control" placeholder="e.g. 30">
                 </div>
               </div>
 
@@ -758,21 +757,21 @@
 
           <div class="grid-cards">
             <div class="stat-card">
-              <h4>ഇടിയപ്പം</h4>
+              <h4>ഇടിയപ്പം (Total)</h4>
               <div class="val" id="total-idiyappam">0</div>
             </div>
             <div class="stat-card" style="border-color: var(--color-success);">
-              <h4>വെള്ളയപ്പം</h4>
+              <h4>വെള്ളയപ്പം (Total)</h4>
               <div class="val" id="total-vellayappam">0</div>
             </div>
             <div class="stat-card" style="border-color: var(--bg-sidebar);">
-              <h4>ഇഡ്ഡലി</h4>
+              <h4>ഇഡ്ഡലി (Total)</h4>
               <div class="val" id="total-idli">0</div>
             </div>
           </div>
 
           <div class="panel-card">
-            <h3><i class="fa-solid fa-boxes-packing"></i> Packaging Breakdown</h3>
+            <h3><i class="fa-solid fa-boxes-packing"></i> Packaging Breakdown (Packet Counts)</h3>
             
             <div style="margin-top: 15px;">
               <div class="sub-header-flex">
@@ -1119,6 +1118,17 @@
     let currentOrdersList = [];
     let currentMetricsData = null;
 
+    // 🌟 Helper to parse "50+50+30+20" into Total & Packet array
+    function parseQuantityBreakdown(valStr) {
+      if (!valStr) return { total: 0, raw: '', packets: [] };
+      const str = String(valStr).trim();
+      if (!str) return { total: 0, raw: '', packets: [] };
+
+      const parts = str.split('+').map(p => parseInt(p.trim(), 10)).filter(n => !isNaN(n) && n > 0);
+      const total = parts.reduce((sum, n) => sum + n, 0);
+      return { total, raw: str, packets: parts };
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       checkSessionState();
       setDefaultDates();
@@ -1186,7 +1196,7 @@
       }, 500);
     }
 
-    // 🌟 Load and Properly Sort Stores Numerically (1, 2, 3... 109)
+    // Load Stores and Sort Numerically
     function loadStoreOptions() {
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
@@ -1200,7 +1210,7 @@
           if (!isNaN(numId) && numId > maxId) maxId = numId;
         });
 
-        // 🌟 Proper Numerical Sorting: 1, 2, 3... 100, 101, 102
+        // Numeric Sorting: 1, 2, 3... 100, 101, 102
         registeredStoresList.sort((a, b) => {
           const numA = parseInt(a.id, 10);
           const numB = parseInt(b.id, 10);
@@ -1208,7 +1218,6 @@
           return numA - numB;
         });
 
-        // Render Stores Table with Action Buttons
         const tableBody = document.querySelector('#dashboard-stores-table tbody');
         if (tableBody) {
           tableBody.innerHTML = '';
@@ -1234,7 +1243,6 @@
           });
         }
 
-        // Auto-assign next store number
         const nextIdField = document.getElementById('reg-store-id');
         if (nextIdField) nextIdField.value = maxId + 1;
 
@@ -1245,7 +1253,7 @@
       });
     }
 
-    // 🌟 Render Mobile-Friendly Bulk Cards without zero (Empty placeholder)
+    // Render Mobile-Friendly Bulk Cards
     function loadBulkOrderSheet() {
       const container = document.getElementById('bulk-cards-container');
       if (!container) return;
@@ -1267,10 +1275,10 @@
       filteredStores.forEach(store => {
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
         
-        // 🌟 If 0, show empty so user doesn't have to backspace '0'
-        const valIdi = existingOrder && existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '';
-        const valVel = existingOrder && existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '';
-        const valIdl = existingOrder && existingOrder.idli > 0 ? existingOrder.idli : '';
+        // Show raw breakdown if available (e.g. 50+50+30+20)
+        const valIdi = existingOrder ? (existingOrder.idiyappamRaw || (existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '')) : '';
+        const valVel = existingOrder ? (existingOrder.vellayappamRaw || (existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '')) : '';
+        const valIdl = existingOrder ? (existingOrder.idliRaw || (existingOrder.idli > 0 ? existingOrder.idli : '')) : '';
         const orderDocId = existingOrder ? existingOrder.orderId : '';
 
         const card = `
@@ -1285,15 +1293,15 @@
             <div class="bulk-inputs-row">
               <div class="bulk-input-col">
                 <label>ഇടിയപ്പം</label>
-                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
+                <input type="text" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
               </div>
               <div class="bulk-input-col">
                 <label>വെള്ളയപ്പം</label>
-                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
+                <input type="text" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
               </div>
               <div class="bulk-input-col">
                 <label>ഇഡ്ഡലി</label>
-                <input type="number" min="0" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
+                <input type="text" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
               </div>
             </div>
           </div>
@@ -1316,23 +1324,29 @@
         const store = registeredStoresList.find(s => s.id === storeId);
         if (!store) return;
 
-        const idi = Number(card.querySelector('.bulk-idi').value || 0);
-        const vel = Number(card.querySelector('.bulk-vel').value || 0);
-        const idl = Number(card.querySelector('.bulk-idl').value || 0);
+        const idiParsed = parseQuantityBreakdown(card.querySelector('.bulk-idi').value);
+        const velParsed = parseQuantityBreakdown(card.querySelector('.bulk-vel').value);
+        const idlParsed = parseQuantityBreakdown(card.querySelector('.bulk-idl').value);
 
-        if (idi > 0 || vel > 0 || idl > 0) {
-          const totalAmount = (idi * (store.priceIdiyappam || 5)) +
-                              (vel * (store.priceVellayappam || 5)) +
-                              (idl * (store.priceIdli || 5));
+        if (idiParsed.total > 0 || velParsed.total > 0 || idlParsed.total > 0) {
+          const totalAmount = (idiParsed.total * (store.priceIdiyappam || 5)) +
+                              (velParsed.total * (store.priceVellayappam || 5)) +
+                              (idlParsed.total * (store.priceIdli || 5));
 
           const payload = {
             storeId: store.id,
             storeName: store.storeName,
             route: store.route || 'Route 1 - Morning',
             deliveryDate: selectedDate,
-            idiyappam: idi,
-            vellayappam: vel,
-            idli: idl,
+            idiyappam: idiParsed.total,
+            idiyappamRaw: idiParsed.raw,
+            idiyappamPackets: idiParsed.packets,
+            vellayappam: velParsed.total,
+            vellayappamRaw: velParsed.raw,
+            vellayappamPackets: velParsed.packets,
+            idli: idlParsed.total,
+            idliRaw: idlParsed.raw,
+            idliPackets: idlParsed.packets,
             totalAmount: totalAmount,
             paidAmount: 0,
             balanceDue: totalAmount,
@@ -1342,13 +1356,7 @@
           };
 
           if (existingOrderId) {
-            batch.update(db.collection("orders").doc(existingOrderId), {
-              idiyappam: idi,
-              vellayappam: vel,
-              idli: idl,
-              totalAmount: totalAmount,
-              balanceDue: totalAmount
-            });
+            batch.update(db.collection("orders").doc(existingOrderId), payload);
           } else {
             batch.set(db.collection("orders").doc(), payload);
           }
@@ -1392,7 +1400,56 @@
       box.style.display = 'block';
     }
 
-    // Orders & Metrics
+    // Single Order Form Submit
+    document.getElementById('order-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const storeId = document.getElementById('selected-store-id').value;
+      const store = registeredStoresList.find(s => s.id === storeId);
+      if (!store) {
+        showModal('Attention', 'Please select a store from the search list.', 'error');
+        return;
+      }
+
+      const idiParsed = parseQuantityBreakdown(document.getElementById('qty-idiyappam').value);
+      const velParsed = parseQuantityBreakdown(document.getElementById('qty-vellayappam').value);
+      const idlParsed = parseQuantityBreakdown(document.getElementById('qty-idli').value);
+
+      const totalAmount = (idiParsed.total * (store.priceIdiyappam || 5)) +
+                          (velParsed.total * (store.priceVellayappam || 5)) +
+                          (idlParsed.total * (store.priceIdli || 5));
+
+      const payload = {
+        storeId: store.id,
+        storeName: store.storeName,
+        route: document.getElementById('order-route').value,
+        deliveryDate: document.getElementById('order-delivery-date').value,
+        idiyappam: idiParsed.total,
+        idiyappamRaw: idiParsed.raw,
+        idiyappamPackets: idiParsed.packets,
+        vellayappam: velParsed.total,
+        vellayappamRaw: velParsed.raw,
+        vellayappamPackets: velParsed.packets,
+        idli: idlParsed.total,
+        idliRaw: idlParsed.raw,
+        idliPackets: idlParsed.packets,
+        totalAmount: totalAmount,
+        paidAmount: 0,
+        balanceDue: totalAmount,
+        deliveryStatus: 'Pending',
+        paymentStatus: 'Pending',
+        timestamp: new Date()
+      };
+
+      db.collection("orders").add(payload).then(() => {
+        showModal('Success', 'Order submitted successfully!', 'success');
+        document.getElementById('order-form').reset();
+        document.getElementById('selected-store-id').value = '';
+        document.getElementById('order-store-search').value = '';
+        setDefaultDates();
+      });
+    });
+
+    // Orders & Metrics with breakdown calculation
     function fetchProductionMetrics() {
       const selectedDate = document.getElementById('production-date-filter').value || new Date().toISOString().split('T')[0];
 
@@ -1412,9 +1469,15 @@
             const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
             totalIdi += idi; totalVel += vel; totalIdl += idl;
 
-            if (idi > 0) idiyappamPackets[idi] = (idiyappamPackets[idi] || 0) + 1;
-            if (vel > 0) vellayappamPackets[vel] = (vellayappamPackets[vel] || 0) + 1;
-            if (idl > 0) idliPackets[idl] = (idliPackets[idl] || 0) + 1;
+            // 🌟 Calculate Packets accurately from array or single number
+            const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
+            idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
+
+            const velPkts = (o.vellayappamPackets && o.vellayappamPackets.length > 0) ? o.vellayappamPackets : (vel > 0 ? [vel] : []);
+            velPkts.forEach(p => vellayappamPackets[p] = (vellayappamPackets[p] || 0) + 1);
+
+            const idlPkts = (o.idliPackets && o.idliPackets.length > 0) ? o.idliPackets : (idl > 0 ? [idl] : []);
+            idlPkts.forEach(p => idliPackets[p] = (idliPackets[p] || 0) + 1);
 
             const r = o.route || 'General';
             if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
@@ -1429,7 +1492,7 @@
           ledgerList.push(o);
         });
 
-        currentMetricsData = { deliveryList };
+        currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate };
 
         document.getElementById('total-idiyappam').innerText = totalIdi;
         document.getElementById('total-vellayappam').innerText = totalVel;
@@ -1462,7 +1525,7 @@
       el.innerHTML = '';
       const keys = Object.keys(obj);
       if (keys.length === 0) { el.innerHTML = '<span style="color:#94a3b8; font-size:0.8rem;">No orders</span>'; return; }
-      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} Qty &times; ${obj[k]} Packets</div>`);
+      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} എണ്ണം &times; ${obj[k]} പാക്കറ്റ്</div>`);
     }
 
     function renderDeliveryTable(list) {
@@ -1470,13 +1533,17 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       list.forEach(item => {
+        const idiDisplay = item.idiyappamRaw ? `${item.idiyappam} <small style="color:#64748b;">(${item.idiyappamRaw})</small>` : item.idiyappam;
+        const velDisplay = item.vellayappamRaw ? `${item.vellayappam} <small style="color:#64748b;">(${item.vellayappamRaw})</small>` : item.vellayappam;
+        const idlDisplay = item.idliRaw ? `${item.idli} <small style="color:#64748b;">(${item.idliRaw})</small>` : item.idli;
+
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
           <td><strong>#${item.storeId}</strong></td>
           <td>${item.storeName}</td>
-          <td>${item.idiyappam}</td>
-          <td>${item.vellayappam}</td>
-          <td>${item.idli}</td>
+          <td>${idiDisplay}</td>
+          <td>${velDisplay}</td>
+          <td>${idlDisplay}</td>
           <td><strong>₹${item.totalAmount}</strong></td>
         </tr>`;
       });
@@ -1529,7 +1596,7 @@
       });
     });
 
-    // 🌟 Edit Store Modal
+    // Edit Store Modal
     function openEditStoreModal(storeId) {
       const store = registeredStoresList.find(s => s.id === storeId);
       if (!store) return;
@@ -1613,6 +1680,71 @@
         closeImportModal();
         showModal('Import Complete', `${count} stores imported!`, 'success');
       });
+    }
+
+    // WhatsApp Sharing with breakdown
+    function shareSingleItemWhatsApp(itemKey) {
+      if (!currentMetricsData) return;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
+      let packetsObj = {}, totalQty = 0, itemName = "";
+
+      if (itemKey === 'idiyappam') {
+        itemName = "ഇടിയപ്പം";
+        packetsObj = currentMetricsData.idiyappamPackets;
+        totalQty = currentMetricsData.totalIdi;
+      } else if (itemKey === 'vellayappam') {
+        itemName = "വെള്ളയപ്പം";
+        packetsObj = currentMetricsData.vellayappamPackets;
+        totalQty = currentMetricsData.totalVel;
+      } else if (itemKey === 'idli') {
+        itemName = "ഇഡ്ഡലി";
+        packetsObj = currentMetricsData.idliPackets;
+        totalQty = currentMetricsData.totalIdl;
+      }
+
+      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
+
+      let hasPackets = false;
+      for (let qty in packetsObj) {
+        hasPackets = true;
+        msg += ` - ${qty} എണ്ണത്തിന്റെ പാക്കറ്റ്: ${packetsObj[qty]} എണ്ണം\n`;
+      }
+      if (!hasPackets) msg += ` (ഓർഡറുകൾ ഇല്ല)\n`;
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function shareProductionToWhatsApp() {
+      if (!currentMetricsData) return;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
+      for (let route in currentMetricsData.routeSummary) {
+        msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idi} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vel} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idl}\n`;
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function shareDeliveryToWhatsApp() {
+      if (!currentMetricsData || !currentMetricsData.deliveryList) return;
+      const selectedRoute = document.getElementById('delivery-route-filter').value;
+      let filteredList = currentMetricsData.deliveryList;
+
+      if (selectedRoute !== 'ALL') {
+        filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
+      }
+
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${currentMetricsData.selectedDate}*\n------------------------------------\n\n`;
+      if (filteredList.length === 0) {
+        msg += `ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n`;
+      } else {
+        filteredList.forEach((item, index) => {
+          const idiStr = item.idiyappamRaw ? `${item.idiyappam} (${item.idiyappamRaw})` : item.idiyappam;
+          const velStr = item.vellayappamRaw ? `${item.vellayappam} (${item.vellayappamRaw})` : item.vellayappam;
+          const idlStr = item.idliRaw ? `${item.idli} (${item.idliRaw})` : item.idli;
+
+          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
+        });
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     // Login Form
