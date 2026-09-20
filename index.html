@@ -808,8 +808,8 @@
               </button>
             </div>
 
-            <!-- Filters -->
-            <div class="grid-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+            <!-- Filters & Search Bar -->
+            <div class="grid-cards" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 12px;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label><i class="fa-solid fa-calendar-day"></i> Delivery Date</label>
                 <input type="date" id="bulk-order-date" class="form-control compact-input" onchange="loadBulkOrderSheet()">
@@ -825,6 +825,10 @@
                   <option value="Route 3 - Morning">Route 3 - Morning</option>
                   <option value="Route 3 - Evening">Route 3 - Evening</option>
                 </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label><i class="fa-solid fa-magnifying-glass"></i> Search Store</label>
+                <input type="text" id="bulk-store-search-filter" class="form-control compact-input" placeholder="കടയുടെ പേര് ടൈപ്പ് ചെയ്യുക..." oninput="loadBulkOrderSheet()">
               </div>
             </div>
 
@@ -1079,7 +1083,6 @@
                   <label>Store ID (Auto)</label>
                   <input type="text" id="reg-store-id" class="form-control" readonly style="background: #e2e8f0; font-weight: bold;">
                 </div>
-                <!-- പുതിയ ഫീൽഡ്: Store Order / Rank -->
                 <div class="form-group">
                   <label>Store Display Order (ക്രമം)</label>
                   <input type="number" id="reg-store-order" class="form-control" value="0" required>
@@ -1388,7 +1391,6 @@
 
         snapshot.forEach(doc => {
           const store = { id: doc.id, ...doc.data() };
-          // storeOrder ഇല്ലെങ്കിൽ 0 ആക്കി മാറ്റുന്നു
           store.storeOrder = store.storeOrder !== undefined ? store.storeOrder : 0;
           registeredStoresList.push(store);
 
@@ -1398,7 +1400,6 @@
           if (store.storeOrder > maxOrder) maxOrder = store.storeOrder;
         });
 
-        // ക്രമം (storeOrder) അടിസ്ഥാനമാക്കി സോർട്ട് ചെയ്യുന്നു
         registeredStoresList.sort((a, b) => {
           return a.storeOrder - b.storeOrder;
         });
@@ -1449,14 +1450,20 @@
 
       const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
       const selectedRoute = document.getElementById('bulk-route-filter').value;
+      const searchQuery = document.getElementById('bulk-store-search-filter') ? document.getElementById('bulk-store-search-filter').value.toLowerCase().trim() : '';
 
       let filteredStores = registeredStoresList;
+      
       if (selectedRoute !== 'ALL') {
-        filteredStores = registeredStoresList.filter(s => s.route === selectedRoute);
+        filteredStores = filteredStores.filter(s => s.route === selectedRoute);
+      }
+
+      if (searchQuery) {
+        filteredStores = filteredStores.filter(s => s.storeName.toLowerCase().includes(searchQuery) || String(s.storeOrder).includes(searchQuery));
       }
 
       if (filteredStores.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">No stores found for this route.</div>';
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">No stores found matching criteria.</div>';
         return;
       }
 
@@ -1724,7 +1731,6 @@
           ledgerList.push(o);
         });
 
-        // ഡെലിവറി ലിസ്റ്റും ഓർഡർ ലിസ്റ്റും ക്രമീകരിക്കുന്നു
         deliveryList.sort((a, b) => (a.storeOrder || 0) - (b.storeOrder || 0));
 
         currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate, calendarMap };
@@ -2085,4 +2091,4 @@
   </script>
 </body>
 </html>
-```[cite: 1, 3]
+```[cite: 1]
