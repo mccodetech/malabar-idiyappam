@@ -338,6 +338,54 @@
       color: #1e293b;
     }
 
+    /* ഹോം സ്ക്രീൻ മെനു ബട്ടണുകൾക്കായുള്ള സ്റ്റൈൽ */
+    .home-menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .home-menu-btn {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-panel);
+      padding: 20px 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #1e3c72;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .home-menu-btn i {
+      font-size: 2rem;
+      color: #2a5298;
+      margin-right: 0;
+    }
+
+    .home-menu-btn span {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .home-menu-btn:hover {
+      background: var(--bg-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .home-menu-btn:hover i {
+      color: #ffffff;
+    }
+
     .bulk-card-list {
       display: flex;
       flex-direction: column;
@@ -651,6 +699,11 @@
         </div>
         <ul class="nav-list">
           <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchTab('tab-home', event)">
+              <i class="fa-solid fa-house"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="#" class="nav-link active" onclick="switchTab('tab-bulk-orders', event)">
               <i class="fa-solid fa-table-list"></i> Bulk Orders
             </a>
@@ -704,6 +757,45 @@
 
       <main class="content-area">
         
+        <!-- SECTION -1: HOME / DASHBOARD MENU -->
+        <section id="tab-home" class="section-view">
+          <div class="panel-card">
+            <h2><i class="fa-solid fa-house"></i> ഡാഷ്‌ബോർഡ് മെനു</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-top: 5px;">ആവശ്യമായ വിഭാഗം തിരഞ്ഞെടുക്കുക:</p>
+            
+            <div class="home-menu-grid">
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-bulk-orders', event)">
+                <i class="fa-solid fa-table-list"></i>
+                <span>Bulk Orders</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-orders', event)">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span>Single Order</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-production', event)">
+                <i class="fa-solid fa-industry"></i>
+                <span>Production</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-delivery', event)">
+                <i class="fa-solid fa-truck"></i>
+                <span>Delivery Sheet</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-calendar', event)">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendar</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-accounts', event)">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Accounts</span>
+              </a>
+              <a href="#" class="home-menu-btn" onclick="switchTab('tab-stores-dir', event)">
+                <i class="fa-solid fa-store"></i>
+                <span>Stores</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
         <!-- SECTION 0: BULK ORDER ENTRY -->
         <section id="tab-bulk-orders" class="section-view active">
           <div class="panel-card">
@@ -1237,6 +1329,8 @@
         document.getElementById('app-screen').style.display = 'flex';
         loadStoreOptions();
         fetchProductionMetrics();
+        // ലോഗിൻ ചെയ്ത ഉടൻ ഹോം സ്ക്രീൻ (ഡാഷ്‌ബോർഡ് മെനു) കാണിക്കുക
+        switchTab('tab-home');
       } else {
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('app-screen').style.display = 'none';
@@ -1252,8 +1346,16 @@
       if (event) event.preventDefault();
       document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      if (event) event.currentTarget.classList.add('active');
+      
+      const targetSection = document.getElementById(tabId);
+      if (targetSection) targetSection.classList.add('active');
+
+      // സൈഡ്ബാർ ലിങ്കുകളിൽ ആക്ടീവ് ക്ലാസ് സെറ്റ് ചെയ്യാൻ
+      document.querySelectorAll('.nav-link').forEach(el => {
+        if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(tabId)) {
+          el.classList.add('active');
+        }
+      });
 
       if (tabId === 'tab-bulk-orders') loadBulkOrderSheet();
       if (tabId === 'tab-calendar') renderMonthlyCalendar();
@@ -1386,7 +1488,6 @@
       });
     }
 
-    // 🌟 Instant Reset and Delete Single Store Order
     function deleteSingleStoreOrder(storeId, storeName) {
       const card = document.getElementById(`card-store-${storeId}`);
       const orderId = card ? card.dataset.orderId : null;
@@ -1941,7 +2042,7 @@
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-user').value.trim();
-      const p = document.getElementById('login-pass').value.trim();
+      const p = document.getElementById('login-pass.value').trim();
       if ((u === 'admin' || u === '101') && p.length >= 4) {
         localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: u }));
         checkSessionState();
@@ -1959,3 +2060,4 @@
   </script>
 </body>
 </html>
+```[cite: 1]
