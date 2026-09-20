@@ -338,7 +338,6 @@
       color: #1e293b;
     }
 
-    /* ഹോം സ്ക്രീൻ മെനു ബട്ടണുകൾക്കായുള്ള സ്റ്റൈൽ */
     .home-menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -1080,28 +1079,33 @@
                   <label>Store ID (Auto)</label>
                   <input type="text" id="reg-store-id" class="form-control" readonly style="background: #e2e8f0; font-weight: bold;">
                 </div>
+                <!-- പുതിയ ഫീൽഡ്: Store Order / Rank -->
+                <div class="form-group">
+                  <label>Store Display Order (ക്രമം)</label>
+                  <input type="number" id="reg-store-order" class="form-control" value="0" required>
+                </div>
+              </div>
+              <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label>Store Name (കടയുടെ പേര്)</label>
                   <input type="text" id="reg-store-name" class="form-control" placeholder="കടയുടെ പേര്" required>
                 </div>
-              </div>
-
-              <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label>Owner Name</label>
                   <input type="text" id="reg-owner-name" class="form-control" placeholder="Owner Name">
                 </div>
+              </div>
+              <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label>Mobile Number</label>
                   <input type="tel" id="reg-mobile" class="form-control" placeholder="Mobile Number">
                 </div>
-              </div>
-
-              <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label>WhatsApp Number</label>
                   <input type="tel" id="reg-whatsapp" class="form-control" placeholder="WhatsApp Number">
                 </div>
+              </div>
+              <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label>Default Route</label>
                   <select id="reg-route" class="form-control" required>
@@ -1145,6 +1149,7 @@
               <table id="dashboard-stores-table">
                 <thead>
                   <tr>
+                    <th style="width: 50px;">Order</th>
                     <th style="width: 50px;">ID</th>
                     <th>Store Name</th>
                     <th>Route</th>
@@ -1172,6 +1177,10 @@
       <div class="modal-body">
         <form id="edit-store-form">
           <input type="hidden" id="edit-store-id">
+          <div class="form-group">
+            <label>Store Display Order (ക്രമം)</label>
+            <input type="number" id="edit-store-order" class="form-control" required>
+          </div>
           <div class="form-group">
             <label>Store Name (കടയുടെ പേര്)</label>
             <input type="text" id="edit-store-name" class="form-control" required>
@@ -1329,7 +1338,6 @@
         document.getElementById('app-screen').style.display = 'flex';
         loadStoreOptions();
         fetchProductionMetrics();
-        // ലോഗിൻ ചെയ്ത ഉടൻ ഹോം സ്ക്രീൻ (ഡാഷ്‌ബോർഡ് മെനു) കാണിക്കുക
         switchTab('tab-home');
       } else {
         document.getElementById('auth-screen').style.display = 'flex';
@@ -1350,7 +1358,6 @@
       const targetSection = document.getElementById(tabId);
       if (targetSection) targetSection.classList.add('active');
 
-      // സൈഡ്ബാർ ലിങ്കുകളിൽ ആക്ടീവ് ക്ലാസ് സെറ്റ് ചെയ്യാൻ
       document.querySelectorAll('.nav-link').forEach(el => {
         if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(tabId)) {
           el.classList.add('active');
@@ -1377,20 +1384,23 @@
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
         let maxId = 0;
+        let maxOrder = 0;
 
         snapshot.forEach(doc => {
           const store = { id: doc.id, ...doc.data() };
+          // storeOrder ഇല്ലെങ്കിൽ 0 ആക്കി മാറ്റുന്നു
+          store.storeOrder = store.storeOrder !== undefined ? store.storeOrder : 0;
           registeredStoresList.push(store);
 
           const numId = parseInt(doc.id, 10);
           if (!isNaN(numId) && numId > maxId) maxId = numId;
+          
+          if (store.storeOrder > maxOrder) maxOrder = store.storeOrder;
         });
 
+        // ക്രമം (storeOrder) അടിസ്ഥാനമാക്കി സോർട്ട് ചെയ്യുന്നു
         registeredStoresList.sort((a, b) => {
-          const numA = parseInt(a.id, 10);
-          const numB = parseInt(b.id, 10);
-          if (isNaN(numA) || isNaN(numB)) return a.id.localeCompare(b.id);
-          return numA - numB;
+          return a.storeOrder - b.storeOrder;
         });
 
         const tableBody = document.querySelector('#dashboard-stores-table tbody');
@@ -1398,6 +1408,7 @@
           tableBody.innerHTML = '';
           registeredStoresList.forEach(store => {
             tableBody.innerHTML += `<tr>
+              <td><strong>${store.storeOrder}</strong></td>
               <td><strong>${store.id}</strong></td>
               <td><strong>${store.storeName}</strong></td>
               <td><small style="color:#64748b;">${store.route || ''}</small></td>
@@ -1420,6 +1431,9 @@
 
         const nextIdField = document.getElementById('reg-store-id');
         if (nextIdField) nextIdField.value = maxId + 1;
+        
+        const nextOrderField = document.getElementById('reg-store-order');
+        if (nextOrderField) nextOrderField.value = maxOrder + 1;
 
         const badge = document.getElementById('store-count-badge');
         if (badge) badge.innerText = `${registeredStoresList.length} Stores`;
@@ -1458,7 +1472,7 @@
           <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
             <div class="bulk-store-header">
               <div class="store-badge-title">
-                <span class="store-id-tag">#${store.id}</span>
+                <span class="store-id-tag">${store.storeOrder}</span>
                 <span>${store.storeName}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -1543,6 +1557,7 @@
           const payload = {
             storeId: store.id,
             storeName: store.storeName,
+            storeOrder: store.storeOrder,
             route: store.route || 'Route 1 - Morning',
             deliveryDate: selectedDate,
             idiyappam: idiParsed.total,
@@ -1595,9 +1610,9 @@
       matches.forEach(s => {
         const el = document.createElement('div');
         el.className = 'suggest-item';
-        el.innerText = `${s.id} - ${s.storeName}`;
+        el.innerText = `${s.storeOrder} - ${s.storeName}`;
         el.onclick = () => {
-          document.getElementById('order-store-search').value = `${s.id} - ${s.storeName}`;
+          document.getElementById('order-store-search').value = `${s.storeOrder} - ${s.storeName}`;
           document.getElementById('selected-store-id').value = s.id;
           if (s.route) document.getElementById('order-route').value = s.route;
           box.style.display = 'none';
@@ -1627,6 +1642,7 @@
       const payload = {
         storeId: store.id,
         storeName: store.storeName,
+        storeOrder: store.storeOrder,
         route: document.getElementById('order-route').value,
         deliveryDate: document.getElementById('order-delivery-date').value,
         idiyappam: idiParsed.total,
@@ -1707,6 +1723,9 @@
           totalPending += Number(o.balanceDue || 0);
           ledgerList.push(o);
         });
+
+        // ഡെലിവറി ലിസ്റ്റും ഓർഡർ ലിസ്റ്റും ക്രമീകരിക്കുന്നു
+        deliveryList.sort((a, b) => (a.storeOrder || 0) - (b.storeOrder || 0));
 
         currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate, calendarMap };
 
@@ -1793,12 +1812,14 @@
         listContainer.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No orders found on this day.</div>';
         return;
       }
+      
+      let dayOrders = info.orders.sort((a,b) => (a.storeOrder || 0) - (b.storeOrder || 0));
 
-      info.orders.forEach(o => {
+      dayOrders.forEach(o => {
         listContainer.innerHTML += `
           <div class="bulk-store-card">
             <div class="bulk-store-header">
-              <span class="store-badge-title">#${o.storeId} - ${o.storeName}</span>
+              <span class="store-badge-title">#${o.storeOrder || o.storeId} - ${o.storeName}</span>
               <small style="color:#64748b;">${o.route || ''}</small>
             </div>
             <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">
@@ -1833,7 +1854,7 @@
 
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
-          <td><strong>#${item.storeId}</strong></td>
+          <td><strong>#${item.storeOrder || item.storeId}</strong></td>
           <td>${item.storeName}</td>
           <td>${idiDisplay}</td>
           <td>${velDisplay}</td>
@@ -1850,7 +1871,7 @@
       list.forEach(item => {
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
-          <td>[${item.storeId}] ${item.storeName}</td>
+          <td>[${item.storeOrder || item.storeId}] ${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
           <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
         </tr>`;
@@ -1873,6 +1894,7 @@
       e.preventDefault();
       const storeId = document.getElementById('reg-store-id').value;
       const data = {
+        storeOrder: Number(document.getElementById('reg-store-order').value),
         storeName: document.getElementById('reg-store-name').value,
         ownerName: document.getElementById('reg-owner-name').value,
         mobile: document.getElementById('reg-mobile').value,
@@ -1894,6 +1916,7 @@
       if (!store) return;
 
       document.getElementById('edit-store-id').value = store.id;
+      document.getElementById('edit-store-order').value = store.storeOrder !== undefined ? store.storeOrder : 0;
       document.getElementById('edit-store-name').value = store.storeName;
       document.getElementById('edit-owner-name').value = store.ownerName || '';
       document.getElementById('edit-mobile').value = store.mobile || '';
@@ -1913,6 +1936,7 @@
     function submitStoreUpdate() {
       const id = document.getElementById('edit-store-id').value;
       const updateData = {
+        storeOrder: Number(document.getElementById('edit-store-order').value),
         storeName: document.getElementById('edit-store-name').value,
         ownerName: document.getElementById('edit-owner-name').value,
         mobile: document.getElementById('edit-mobile').value,
@@ -1946,7 +1970,7 @@
       const batch = db.batch();
       let count = 0;
 
-      lines.forEach(line => {
+      lines.forEach((line, index) => {
         const cols = line.split('\t').map(c => c.trim());
         if (cols.length < 2 || cols[0].toLowerCase().includes('store id')) return;
 
@@ -1954,6 +1978,7 @@
         const storeName = cols[1];
         if (storeId && storeName) {
           batch.set(db.collection("stores").doc(storeId), {
+            storeOrder: index + 1,
             storeName: storeName,
             ownerName: cols[3] || storeName,
             mobile: cols[4] || '',
@@ -2033,7 +2058,7 @@
           const velStr = item.vellayappamRaw ? `${item.vellayappam} (${item.vellayappamRaw})` : item.vellayappam;
           const idlStr = item.idliRaw ? `${item.idli} (${item.idliRaw})` : item.idli;
 
-          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
+          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeOrder || item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
         });
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -2042,7 +2067,7 @@
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-user').value.trim();
-      const p = document.getElementById('login-pass.value').trim();
+      const p = document.getElementById('login-pass').value.trim();
       if ((u === 'admin' || u === '101') && p.length >= 4) {
         localStorage.setItem('snec_authenticated_user', JSON.stringify({ id: u }));
         checkSessionState();
@@ -2060,4 +2085,4 @@
   </script>
 </body>
 </html>
-```[cite: 1]
+```[cite: 1, 3]
