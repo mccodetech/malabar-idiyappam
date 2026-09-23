@@ -547,6 +547,18 @@
       font-weight: 600;
     }
 
+    /* ഡ്രാഗ് ചെയ്യുമ്പോഴുള്ള സ്റ്റൈലുകൾ */
+    tr.draggable-row {
+      cursor: grab;
+    }
+    tr.draggable-row:active {
+      cursor: grabbing;
+    }
+    tr.dragging {
+      opacity: 0.4;
+      background: #e2e8f0;
+    }
+
     .packet-pill-box {
       display: flex;
       flex-wrap: wrap;
@@ -999,6 +1011,7 @@
                 <thead>
                   <tr>
                     <th>Done?</th>
+                    <th>Sl No</th>
                     <th>Store Name</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
@@ -1055,7 +1068,8 @@
                 <thead>
                   <tr>
                     <th>Paid?</th>
-                    <th>Store</th>
+                    <th>Sl No</th>
+                    <th>Store Name</th>
                     <th>Bill (₹)</th>
                     <th>Due (₹)</th>
                   </tr>
@@ -1140,21 +1154,22 @@
 
           <div class="panel-card">
             <div class="section-header-flex">
-              <h2><i class="fa-solid fa-address-book"></i> Stores List</h2>
+              <h2><i class="fa-solid fa-address-book"></i> Stores List <small style="font-size: 0.75rem; color: #64748b;">(Drag & Drop to reorder)</small></h2>
               <span id="store-count-badge" style="background: var(--bg-gradient); color: white; padding: 3px 12px; border-radius: 50px; font-size: 0.8rem;">0 Stores</span>
             </div>
             <div class="table-container">
               <table id="dashboard-stores-table">
                 <thead>
                   <tr>
-                    <th style="width: 50px;">ID</th>
+                    <th style="width: 50px;">Sl No</th>
+                    <th style="display:none;">ID</th>
                     <th>Store Name</th>
                     <th>Route</th>
                     <th>Mobile</th>
-                    <th style="width: 140px; text-align: center;">Reorder / Actions</th>
+                    <th style="width: 100px; text-align: center;">Actions</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="sortable-store-tbody"></tbody>
               </table>
             </div>
           </div>
@@ -1389,30 +1404,30 @@
 
         registeredStoresList.sort((a, b) => a.storeOrder - b.storeOrder);
 
-        const tableBody = document.querySelector('#dashboard-stores-table tbody');
+        const tableBody = document.getElementById('sortable-store-tbody');
         if (tableBody) {
           tableBody.innerHTML = '';
           registeredStoresList.forEach((store, index) => {
-            tableBody.innerHTML += `<tr>
-              <td><strong>${store.id}</strong></td>
-              <td><strong>${store.storeName}</strong></td>
-              <td><small style="color:#64748b;">${store.route || ''}</small></td>
-              <td>${store.mobile || '-'}</td>
-              <td style="text-align: center; white-space: nowrap;">
-                <button class="btn btn-secondary btn-pill btn-xs" onclick="moveStoreOrder('${store.id}', 'up')" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
-                <button class="btn btn-secondary btn-pill btn-xs" onclick="moveStoreOrder('${store.id}', 'down')" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
-                <button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal('${store.id}')" title="Edit">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-                ${store.whatsapp || store.mobile ? `
-                  <a href="https://wa.me/91${store.whatsapp || store.mobile}" target="_blank" class="btn btn-whatsapp btn-pill btn-xs" title="WhatsApp">
-                    <i class="fa-brands fa-whatsapp"></i>
-                  </a>` : ''}
-                <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}', '${store.storeName}')" title="Delete">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </td>
-            </tr>`;
+            tableBody.innerHTML += `
+              <tr draggable="true" class="draggable-row" data-store-id="${store.id}" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)">
+                <td><strong>${index + 1}</strong></td>
+                <td style="display:none;">${store.id}</td>
+                <td><strong>${store.storeName}</strong></td>
+                <td><small style="color:#64748b;">${store.route || ''}</small></td>
+                <td>${store.mobile || '-'}</td>
+                <td style="text-align: center; white-space: nowrap;">
+                  <button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal('${store.id}')" title="Edit">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  ${store.whatsapp || store.mobile ? `
+                    <a href="https://wa.me/91${store.whatsapp || store.mobile}" target="_blank" class="btn btn-whatsapp btn-pill btn-xs" title="WhatsApp">
+                      <i class="fa-brands fa-whatsapp"></i>
+                    </a>` : ''}
+                  <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}', '${store.storeName}')" title="Delete">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>`;
           });
         }
 
@@ -1426,40 +1441,49 @@
       });
     }
 
-    function moveStoreOrder(storeId, direction) {
-      const index = registeredStoresList.findIndex(s => s.id === storeId);
-      if (index === -1) return;
+    // HTML5 Drag and Drop Functions
+    let draggedRow = null;
 
-      if (direction === 'up' && index > 0) {
-        const temp = registeredStoresList[index].storeOrder;
-        registeredStoresList[index].storeOrder = registeredStoresList[index - 1].storeOrder;
-        registeredStoresList[index - 1].storeOrder = temp;
+    function onDragStart(e) {
+      draggedRow = e.currentTarget;
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
 
-        if (registeredStoresList[index].storeOrder === registeredStoresList[index - 1].storeOrder) {
-          registeredStoresList[index].storeOrder = index;
-          registeredStoresList[index - 1].storeOrder = index - 1;
-        }
-
-        updateStoreOrderInDB(registeredStoresList[index]);
-        updateStoreOrderInDB(registeredStoresList[index - 1]);
-      } else if (direction === 'down' && index < registeredStoresList.length - 1) {
-        const temp = registeredStoresList[index].storeOrder;
-        registeredStoresList[index].storeOrder = registeredStoresList[index + 1].storeOrder;
-        registeredStoresList[index + 1].storeOrder = temp;
-
-        if (registeredStoresList[index].storeOrder === registeredStoresList[index + 1].storeOrder) {
-          registeredStoresList[index].storeOrder = index;
-          registeredStoresList[index + 1].storeOrder = index + 1;
-        }
-
-        updateStoreOrderInDB(registeredStoresList[index]);
-        updateStoreOrderInDB(registeredStoresList[index + 1]);
+    function onDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const targetRow = e.target.closest('tr');
+      const tbody = document.getElementById('sortable-store-tbody');
+      if (targetRow && targetRow !== draggedRow) {
+        const rect = targetRow.getBoundingClientRect();
+        const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+        tbody.insertBefore(draggedRow, next ? targetRow.nextSibling : targetRow);
       }
     }
 
-    function updateStoreOrderInDB(store) {
-      db.collection("stores").doc(store.id).update({
-        storeOrder: store.storeOrder
+    function onDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      draggedRow = null;
+      saveNewOrderSequence();
+    }
+
+    function saveNewOrderSequence() {
+      const rows = document.querySelectorAll('#sortable-store-tbody tr');
+      const batch = db.batch();
+      
+      rows.forEach((row, index) => {
+        const storeId = row.getAttribute('data-store-id');
+        const store = registeredStoresList.find(s => s.id === storeId);
+        if (store) {
+          store.storeOrder = index + 1;
+          const storeRef = db.collection("stores").doc(storeId);
+          batch.update(storeRef, { storeOrder: index + 1 });
+        }
+      });
+
+      batch.commit().then(() => {
+        registeredStoresList.sort((a, b) => a.storeOrder - b.storeOrder);
       });
     }
 
@@ -1487,7 +1511,7 @@
         return;
       }
 
-      filteredStores.forEach(store => {
+      filteredStores.forEach((store, index) => {
         const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
         
         const valIdi = existingOrder ? (existingOrder.idiyappamRaw || (existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '')) : '';
@@ -1499,7 +1523,7 @@
           <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
             <div class="bulk-store-header">
               <div class="store-badge-title">
-                <span class="store-id-tag">#${store.id}</span>
+                <span class="store-id-tag">#${index + 1}</span>
                 <span>${store.storeName}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -1637,9 +1661,9 @@
       matches.forEach(s => {
         const el = document.createElement('div');
         el.className = 'suggest-item';
-        el.innerText = `${s.id} - ${s.storeName}`;
+        el.innerText = `${s.storeName}`;
         el.onclick = () => {
-          document.getElementById('order-store-search').value = `${s.id} - ${s.storeName}`;
+          document.getElementById('order-store-search').value = `${s.storeName}`;
           document.getElementById('selected-store-id').value = s.id;
           if (s.route) document.getElementById('order-route').value = s.route;
           box.style.display = 'none';
@@ -1873,14 +1897,15 @@
       const tbody = document.querySelector('#delivery-manifest-table tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
-      list.forEach(item => {
+      list.forEach((item, index) => {
         const idiDisplay = item.idiyappamRaw ? `${item.idiyappam} <small style="color:#64748b;">(${item.idiyappamRaw})</small>` : item.idiyappam;
         const velDisplay = item.vellayappamRaw ? `${item.vellayappam} <small style="color:#64748b;">(${item.vellayappamRaw})</small>` : item.vellayappam;
         const idlDisplay = item.idliRaw ? `${item.idli} <small style="color:#64748b;">(${item.idliRaw})</small>` : item.idli;
 
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
-          <td><strong>${item.storeName}</strong></td>
+          <td><strong>${index + 1}</strong></td>
+          <td>${item.storeName}</td>
           <td>${idiDisplay}</td>
           <td>${velDisplay}</td>
           <td>${idlDisplay}</td>
@@ -1893,9 +1918,10 @@
       const tbody = document.querySelector('#accounts-ledger-table tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
-      list.forEach(item => {
+      list.forEach((item, index) => {
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
+          <td><strong>${index + 1}</strong></td>
           <td>${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
           <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
@@ -1984,7 +2010,7 @@
       }
     }
 
-    function openImportModal() { document.getElementById('import-modal').classList.add('active'); `}
+    function openImportModal() { document.getElementById('import-modal').classList.add('active'); }
     function closeImportModal() { document.getElementById('import-modal').classList.remove('active'); }
 
     function processImportSheetData() {
@@ -2085,11 +2111,11 @@
         msg += `ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n`;
       } else {
         msg += `\`\`\`\n`;
-        msg += `കടയുടെ പേര്     | ഇടി | വെള്ള | ഇഡ്ഡ | തുക\n`;
-        msg += `-------------------------------------------\n`;
-        filteredList.forEach((item) => {
-          let sName = item.storeName.length > 12 ? item.storeName.substring(0, 11) + '.' : item.storeName;
-          msg += `${sName.padEnd(14)} | ${String(item.idiyappam).padEnd(3)} | ${String(item.vellayappam).padEnd(5)} | ${String(item.idli).padEnd(5)} | ₹${item.totalAmount}\n`;
+        msg += `Sl | കടയുടെ പേര്      | ഇടി | വെള്ള | ഇഡ്ഡ | തുക\n`;
+        msg += `--------------------------------------------\n`;
+        filteredList.forEach((item, index) => {
+          let sName = item.storeName.length > 10 ? item.storeName.substring(0, 9) + '.' : item.storeName;
+          msg += `${String(index + 1).padEnd(2)} | ${sName.padEnd(12)} | ${String(item.idiyappam).padEnd(3)} | ${String(item.vellayappam).padEnd(5)} | ${String(item.idli).padEnd(5)} | ₹${item.totalAmount}\n`;
         });
         msg += `\`\`\``;
       }
