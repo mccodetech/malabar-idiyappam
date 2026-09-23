@@ -1083,10 +1083,6 @@
                   <label>Store ID (Auto)</label>
                   <input type="text" id="reg-store-id" class="form-control" readonly style="background: #e2e8f0; font-weight: bold;">
                 </div>
-                <div class="form-group">
-                  <label>Store Display Order (ക്രമം)</label>
-                  <input type="number" id="reg-store-order" class="form-control" value="0" required>
-                </div>
               </div>
               <div class="grid-cards" style="margin-bottom: 0;">
                 <div class="form-group">
@@ -1152,12 +1148,11 @@
               <table id="dashboard-stores-table">
                 <thead>
                   <tr>
-                    <th style="width: 50px;">Order</th>
                     <th style="width: 50px;">ID</th>
                     <th>Store Name</th>
                     <th>Route</th>
                     <th>Mobile</th>
-                    <th style="width: 140px; text-align: center;">Actions</th>
+                    <th style="width: 140px; text-align: center;">Reorder / Actions</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -1180,10 +1175,6 @@
       <div class="modal-body">
         <form id="edit-store-form">
           <input type="hidden" id="edit-store-id">
-          <div class="form-group">
-            <label>Store Display Order (ക്രമം)</label>
-            <input type="number" id="edit-store-order" class="form-control" required>
-          </div>
           <div class="form-group">
             <label>Store Name (കടയുടെ പേര്)</label>
             <input type="text" id="edit-store-name" class="form-control" required>
@@ -1387,34 +1378,31 @@
       db.collection("stores").onSnapshot(snapshot => {
         registeredStoresList = [];
         let maxId = 0;
-        let maxOrder = 0;
 
         snapshot.forEach(doc => {
           const store = { id: doc.id, ...doc.data() };
-          store.storeOrder = store.storeOrder !== undefined ? store.storeOrder : 0;
+          store.storeOrder = store.storeOrder !== undefined ? store.storeOrder : 9999;
           registeredStoresList.push(store);
 
           const numId = parseInt(doc.id, 10);
           if (!isNaN(numId) && numId > maxId) maxId = numId;
-          
-          if (store.storeOrder > maxOrder) maxOrder = store.storeOrder;
         });
 
-        registeredStoresList.sort((a, b) => {
-          return a.storeOrder - b.storeOrder;
-        });
+        // storeOrder അനുസരിച്ച് സോർട്ട് ചെയ്യുന്നു
+        registeredStoresList.sort((a, b) => a.storeOrder - b.storeOrder);
 
         const tableBody = document.querySelector('#dashboard-stores-table tbody');
         if (tableBody) {
           tableBody.innerHTML = '';
-          registeredStoresList.forEach(store => {
+          registeredStoresList.forEach((store, index) => {
             tableBody.innerHTML += `<tr>
-              <td><strong>${store.storeOrder}</strong></td>
               <td><strong>${store.id}</strong></td>
               <td><strong>${store.storeName}</strong></td>
               <td><small style="color:#64748b;">${store.route || ''}</small></td>
               <td>${store.mobile || '-'}</td>
               <td style="text-align: center; white-space: nowrap;">
+                <button class="btn btn-secondary btn-pill btn-xs" onclick="moveStoreOrder('${store.id}', 'up')" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+                <button class="btn btn-secondary btn-pill btn-xs" onclick="moveStoreOrder('${store.id}', 'down')" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
                 <button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal('${store.id}')" title="Edit">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -1432,14 +1420,51 @@
 
         const nextIdField = document.getElementById('reg-store-id');
         if (nextIdField) nextIdField.value = maxId + 1;
-        
-        const nextOrderField = document.getElementById('reg-store-order');
-        if (nextOrderField) nextOrderField.value = maxOrder + 1;
 
         const badge = document.getElementById('store-count-badge');
         if (badge) badge.innerText = `${registeredStoresList.length} Stores`;
         
         loadBulkOrderSheet();
+      });
+    }
+
+    // മുകളിലേക്കോ താഴേക്കോ കടയുടെ ഓർഡർ മാറ്റുന്ന ഫങ്ഷൻ
+    function moveStoreOrder(storeId, direction) {
+      const index = registeredStoresList.findIndex(s => s.id === storeId);
+      if (index === -1) return;
+
+      if (direction === 'up' && index > 0) {
+        // തൊട്ടുമുകളിലുള്ള കടയുമായി ഓർഡർ സ്വാപ്പ് ചെയ്യുന്നു
+        const temp = registeredStoresList[index].storeOrder;
+        registeredStoresList[index].storeOrder = registeredStoresList[index - 1].storeOrder;
+        registeredStoresList[index - 1].storeOrder = temp;
+
+        if (registeredStoresList[index].storeOrder === registeredStoresList[index - 1].storeOrder) {
+          registeredStoresList[index].storeOrder = index;
+          registeredStoresList[index - 1].storeOrder = index - 1;
+        }
+
+        updateStoreOrderInDB(registeredStoresList[index]);
+        updateStoreOrderInDB(registeredStoresList[index - 1]);
+      } else if (direction === 'down' && index < registeredStoresList.length - 1) {
+        // തൊട്ടതാഴെയുള്ള കടയുമായി ഓർഡർ സ്വാപ്പ് ചെയ്യുന്നു
+        const temp = registeredStoresList[index].storeOrder;
+        registeredStoresList[index].storeOrder = registeredStoresList[index + 1].storeOrder;
+        registeredStoresList[index + 1].storeOrder = temp;
+
+        if (registeredStoresList[index].storeOrder === registeredStoresList[index + 1].storeOrder) {
+          registeredStoresList[index].storeOrder = index;
+          registeredStoresList[index + 1].storeOrder = index + 1;
+        }
+
+        updateStoreOrderInDB(registeredStoresList[index]);
+        updateStoreOrderInDB(registeredStoresList[index + 1]);
+      }
+    }
+
+    function updateStoreOrderInDB(store) {
+      db.collection("stores").doc(store.id).update({
+        storeOrder: store.storeOrder
       });
     }
 
@@ -1459,7 +1484,7 @@
       }
 
       if (searchQuery) {
-        filteredStores = filteredStores.filter(s => s.storeName.toLowerCase().includes(searchQuery) || String(s.storeOrder).includes(searchQuery));
+        filteredStores = filteredStores.filter(s => s.storeName.toLowerCase().includes(searchQuery) || String(s.id).includes(searchQuery));
       }
 
       if (filteredStores.length === 0) {
@@ -1479,7 +1504,7 @@
           <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
             <div class="bulk-store-header">
               <div class="store-badge-title">
-                <span class="store-id-tag">${store.storeOrder}</span>
+                <span class="store-id-tag">#${store.id}</span>
                 <span>${store.storeName}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -1564,7 +1589,7 @@
           const payload = {
             storeId: store.id,
             storeName: store.storeName,
-            storeOrder: store.storeOrder,
+            storeOrder: store.storeOrder !== undefined ? store.storeOrder : 0,
             route: store.route || 'Route 1 - Morning',
             deliveryDate: selectedDate,
             idiyappam: idiParsed.total,
@@ -1617,9 +1642,9 @@
       matches.forEach(s => {
         const el = document.createElement('div');
         el.className = 'suggest-item';
-        el.innerText = `${s.storeOrder} - ${s.storeName}`;
+        el.innerText = `${s.id} - ${s.storeName}`;
         el.onclick = () => {
-          document.getElementById('order-store-search').value = `${s.storeOrder} - ${s.storeName}`;
+          document.getElementById('order-store-search').value = `${s.id} - ${s.storeName}`;
           document.getElementById('selected-store-id').value = s.id;
           if (s.route) document.getElementById('order-route').value = s.route;
           box.style.display = 'none';
@@ -1649,7 +1674,7 @@
       const payload = {
         storeId: store.id,
         storeName: store.storeName,
-        storeOrder: store.storeOrder,
+        storeOrder: store.storeOrder !== undefined ? store.storeOrder : 0,
         route: document.getElementById('order-route').value,
         deliveryDate: document.getElementById('order-delivery-date').value,
         idiyappam: idiParsed.total,
@@ -1825,7 +1850,7 @@
         listContainer.innerHTML += `
           <div class="bulk-store-card">
             <div class="bulk-store-header">
-              <span class="store-badge-title">#${o.storeOrder || o.storeId} - ${o.storeName}</span>
+              <span class="store-badge-title">#${o.storeId} - ${o.storeName}</span>
               <small style="color:#64748b;">${o.route || ''}</small>
             </div>
             <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">
@@ -1860,7 +1885,7 @@
 
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
-          <td><strong>#${item.storeOrder || item.storeId}</strong></td>
+          <td><strong>#${item.storeId}</strong></td>
           <td>${item.storeName}</td>
           <td>${idiDisplay}</td>
           <td>${velDisplay}</td>
@@ -1877,7 +1902,7 @@
       list.forEach(item => {
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
-          <td>[${item.storeOrder || item.storeId}] ${item.storeName}</td>
+          <td>[${item.storeId}] ${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
           <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
         </tr>`;
@@ -1900,7 +1925,7 @@
       e.preventDefault();
       const storeId = document.getElementById('reg-store-id').value;
       const data = {
-        storeOrder: Number(document.getElementById('reg-store-order').value),
+        storeOrder: registeredStoresList.length > 0 ? registeredStoresList[registeredStoresList.length - 1].storeOrder + 1 : 1,
         storeName: document.getElementById('reg-store-name').value,
         ownerName: document.getElementById('reg-owner-name').value,
         mobile: document.getElementById('reg-mobile').value,
@@ -1922,7 +1947,6 @@
       if (!store) return;
 
       document.getElementById('edit-store-id').value = store.id;
-      document.getElementById('edit-store-order').value = store.storeOrder !== undefined ? store.storeOrder : 0;
       document.getElementById('edit-store-name').value = store.storeName;
       document.getElementById('edit-owner-name').value = store.ownerName || '';
       document.getElementById('edit-mobile').value = store.mobile || '';
@@ -1942,7 +1966,6 @@
     function submitStoreUpdate() {
       const id = document.getElementById('edit-store-id').value;
       const updateData = {
-        storeOrder: Number(document.getElementById('edit-store-order').value),
         storeName: document.getElementById('edit-store-name').value,
         ownerName: document.getElementById('edit-owner-name').value,
         mobile: document.getElementById('edit-mobile').value,
@@ -2064,7 +2087,7 @@
           const velStr = item.vellayappamRaw ? `${item.vellayappam} (${item.vellayappamRaw})` : item.vellayappam;
           const idlStr = item.idliRaw ? `${item.idli} (${item.idliRaw})` : item.idli;
 
-          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeOrder || item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
+          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
         });
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -2091,4 +2114,3 @@
   </script>
 </body>
 </html>
-```[cite: 1]
