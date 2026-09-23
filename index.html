@@ -999,8 +999,7 @@
                 <thead>
                   <tr>
                     <th>Done?</th>
-                    <th>ID</th>
-                    <th>Store</th>
+                    <th>Store Name</th>
                     <th>ഇടിയപ്പം</th>
                     <th>വെള്ളയപ്പം</th>
                     <th>ഇഡ്ഡലി</th>
@@ -1388,7 +1387,6 @@
           if (!isNaN(numId) && numId > maxId) maxId = numId;
         });
 
-        // storeOrder അനുസരിച്ച് സോർട്ട് ചെയ്യുന്നു
         registeredStoresList.sort((a, b) => a.storeOrder - b.storeOrder);
 
         const tableBody = document.querySelector('#dashboard-stores-table tbody');
@@ -1428,13 +1426,11 @@
       });
     }
 
-    // മുകളിലേക്കോ താഴേക്കോ കടയുടെ ഓർഡർ മാറ്റുന്ന ഫങ്ഷൻ
     function moveStoreOrder(storeId, direction) {
       const index = registeredStoresList.findIndex(s => s.id === storeId);
       if (index === -1) return;
 
       if (direction === 'up' && index > 0) {
-        // തൊട്ടുമുകളിലുള്ള കടയുമായി ഓർഡർ സ്വാപ്പ് ചെയ്യുന്നു
         const temp = registeredStoresList[index].storeOrder;
         registeredStoresList[index].storeOrder = registeredStoresList[index - 1].storeOrder;
         registeredStoresList[index - 1].storeOrder = temp;
@@ -1447,7 +1443,6 @@
         updateStoreOrderInDB(registeredStoresList[index]);
         updateStoreOrderInDB(registeredStoresList[index - 1]);
       } else if (direction === 'down' && index < registeredStoresList.length - 1) {
-        // തൊട്ടതാഴെയുള്ള കടയുമായി ഓർഡർ സ്വാപ്പ് ചെയ്യുന്നു
         const temp = registeredStoresList[index].storeOrder;
         registeredStoresList[index].storeOrder = registeredStoresList[index + 1].storeOrder;
         registeredStoresList[index + 1].storeOrder = temp;
@@ -1850,7 +1845,7 @@
         listContainer.innerHTML += `
           <div class="bulk-store-card">
             <div class="bulk-store-header">
-              <span class="store-badge-title">#${o.storeId} - ${o.storeName}</span>
+              <span class="store-badge-title">${o.storeName}</span>
               <small style="color:#64748b;">${o.route || ''}</small>
             </div>
             <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">
@@ -1885,8 +1880,7 @@
 
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
-          <td><strong>#${item.storeId}</strong></td>
-          <td>${item.storeName}</td>
+          <td><strong>${item.storeName}</strong></td>
           <td>${idiDisplay}</td>
           <td>${velDisplay}</td>
           <td>${idlDisplay}</td>
@@ -1902,7 +1896,7 @@
       list.forEach(item => {
         tbody.innerHTML += `<tr>
           <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
-          <td>[${item.storeId}] ${item.storeName}</td>
+          <td>${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
           <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
         </tr>`;
@@ -1990,7 +1984,7 @@
       }
     }
 
-    function openImportModal() { document.getElementById('import-modal').classList.add('active'); }
+    function openImportModal() { document.getElementById('import-modal').classList.add('active'); `}
     function closeImportModal() { document.getElementById('import-modal').classList.remove('active'); }
 
     function processImportSheetData() {
@@ -2046,26 +2040,34 @@
         totalQty = currentMetricsData.totalIdl;
       }
 
-      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ:*\n`;
-
+      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ (ടേബിൾ):*\n`;
+      msg += `\`\`\`\n`;
+      msg += `Qty   | പാക്കറ്റ് എണ്ണം\n`;
+      msg += `---------------------\n`;
       const keys = Object.keys(packetsObj).sort((a,b) => Number(a) - Number(b));
       let hasPackets = false;
       keys.forEach(qty => {
         hasPackets = true;
-        msg += ` • ${qty} × ${packetsObj[qty]}\n`;
+        msg += `${String(qty).padEnd(5)} | ${packetsObj[qty]}\n`;
       });
+      msg += `\`\`\``;
 
-      if (!hasPackets) msg += ` (ഓർഡറുകൾ ഇല്ല)\n`;
+      if (!hasPackets) msg = `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n(ഓർഡറുകൾ ഇല്ല)`;
 
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function shareProductionToWhatsApp() {
       if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള എണ്ണം:*\n`;
+      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള വിവരങ്ങൾ (ടേബിൾ):*\n`;
+      msg += `\`\`\`\n`;
+      msg += `റൂട്ട്        | ഇടി | വെള്ള | ഇഡ്ഡ\n`;
+      msg += `---------------------------------\n`;
       for (let route in currentMetricsData.routeSummary) {
-        msg += `[${route}] -> ഇടിയപ്പം: ${currentMetricsData.routeSummary[route].idi} | വെള്ളയപ്പം: ${currentMetricsData.routeSummary[route].vel} | ഇഡ്ഡലി: ${currentMetricsData.routeSummary[route].idl}\n`;
+        let rName = route.replace('Route ', 'R').replace(' - Morning', 'M').replace(' - Evening', 'E');
+        msg += `${rName.padEnd(12)} | ${String(currentMetricsData.routeSummary[route].idi).padEnd(3)} | ${String(currentMetricsData.routeSummary[route].vel).padEnd(5)} | ${currentMetricsData.routeSummary[route].idl}\n`;
       }
+      msg += `\`\`\``;
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -2082,13 +2084,14 @@
       if (filteredList.length === 0) {
         msg += `ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n`;
       } else {
-        filteredList.forEach((item, index) => {
-          const idiStr = item.idiyappamRaw ? `${item.idiyappam} (${item.idiyappamRaw})` : item.idiyappam;
-          const velStr = item.vellayappamRaw ? `${item.vellayappam} (${item.vellayappamRaw})` : item.vellayappam;
-          const idlStr = item.idliRaw ? `${item.idli} (${item.idliRaw})` : item.idli;
-
-          msg += `${index + 1}. *${item.storeName}* [ID: ${item.storeId}]\n   റൂട്ട്: ${item.route}\n   ഇടിയപ്പം: ${idiStr} | വെള്ളയപ്പം: ${velStr} | ഇഡ്ഡലി: ${idlStr}\n   ബിൽ തുക: ₹${item.totalAmount}\n\n`;
+        msg += `\`\`\`\n`;
+        msg += `കടയുടെ പേര്     | ഇടി | വെള്ള | ഇഡ്ഡ | തുക\n`;
+        msg += `-------------------------------------------\n`;
+        filteredList.forEach((item) => {
+          let sName = item.storeName.length > 12 ? item.storeName.substring(0, 11) + '.' : item.storeName;
+          msg += `${sName.padEnd(14)} | ${String(item.idiyappam).padEnd(3)} | ${String(item.vellayappam).padEnd(5)} | ${String(item.idli).padEnd(5)} | ₹${item.totalAmount}\n`;
         });
+        msg += `\`\`\``;
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
