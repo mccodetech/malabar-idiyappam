@@ -808,17 +808,27 @@
         </section>
 
         <!-- SECTION 0: BULK ORDER ENTRY -->
-        <section id="tab-bulk-orders" class="section-view active">
-          <div class="panel-card">
-            <div class="section-header-flex">
-              <div>
-                <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
-                <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
-              </div>
-              <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
-                <i class="fa-solid fa-floppy-disk"></i> Save Orders
-              </button>
-            </div>
+<section id="tab-bulk-orders" class="section-view active">
+  <div class="panel-card">
+    <div class="section-header-flex">
+      <div>
+        <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
+        <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
+      </div>
+      
+      <!-- ഇവിടെ പുതിയ ബട്ടണുകൾ ചേർത്തു -->
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+        <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearBulkOrderInputs()" title="Clear Form Inputs">
+          <i class="fa-solid fa-eraser"></i> Clear Sheet
+        </button>
+        <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
+          <i class="fa-solid fa-floppy-disk"></i> Save Orders
+        </button>
+      </div>
+    </div>
 
             <!-- Filters & Search Bar -->
             <div class="grid-cards" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 12px;">
