@@ -815,17 +815,17 @@
                 <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
               </div>
               
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
-                  <i class="fa-solid fa-rotate-right"></i> Refresh
-                </button>
-                <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearBulkOrderInputs()" title="Clear Form Inputs">
-                  <i class="fa-solid fa-eraser"></i> Clear Sheet
-                </button>
-                <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
-                  <i class="fa-solid fa-floppy-disk"></i> Save Orders
-                </button>
-              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+  <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
+    <i class="fa-solid fa-rotate-right"></i> Refresh
+  </button>
+  <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearAllOrdersForSelectedDateAndRoute()" title="Delete all orders for this route and date from Database">
+    <i class="fa-solid fa-trash-can"></i> Clear All Saved Orders
+  </button>
+  <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
+    <i class="fa-solid fa-floppy-disk"></i> Save Orders
+  </button>
+</div>
             </div>
 
             <!-- Filters & Search Bar -->
