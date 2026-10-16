@@ -1079,10 +1079,14 @@
                 <button class="btn btn-secondary btn-pill btn-xs" onclick="toggleAllLedgerPaid(false)">
                   <i class="fa-solid fa-xmark"></i> Unselect All
                 </button>
+                <!-- Puthiya Save Accounts Ledger Button -->
+                <button class="btn btn-primary btn-pill btn-sm" onclick="saveAccountsLedgerChanges()" style="box-shadow: 0 4px 10px rgba(5,196,107,0.3); background: var(--color-success);">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Accounts Ledger
+                </button>
               </div>
             </div>
 
-            <!-- Store Search Filter for Ledger -->
+            <!-- Search Filter -->
             <div class="form-group" style="margin-bottom: 15px; max-width: 300px;">
               <input type="text" id="accounts-search-filter" class="form-control compact-input" placeholder="Search store / Sl No..." oninput="filterAccountsLedger()">
             </div>
@@ -1100,7 +1104,7 @@
                     <th>Due (₹)</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="accounts-ledger-tbody"></tbody>
               </table>
             </div>
           </div>
@@ -1318,7 +1322,7 @@
     let registeredStoresList = [];
     let currentOrdersList = [];
     let currentMetricsData = null;
-    let rawLedgerList = [];
+    let consolidatedLedgerList = [];
 
     function formatDateToDMY(dateStr) {
       if (!dateStr) return '';
@@ -1803,7 +1807,7 @@
         let deliveryList = [];
         let calendarMap = {};
 
-        rawLedgerList = [];
+        let storeMap = {};
         currentOrdersList = [];
 
         snapshot.forEach(doc => {
@@ -1843,15 +1847,35 @@
             }
           }
 
-          const bAmount = Number(o.totalAmount || 0);
-          const obAmount = Number(o.oldBalance || 0);
-          const pAmount = o.paidAmount !== undefined ? Number(o.paidAmount) : (o.paymentStatus === 'Paid' ? (bAmount + obAmount) : 0);
-          const dAmount = o.balanceDue !== undefined ? Number(o.balanceDue) : ((bAmount + obAmount) - pAmount);
+          // Grouping Store by StoreID or StoreName to avoid duplicates in Accounts Ledger
+          const key = o.storeId || o.storeName;
+          if (!storeMap[key]) {
+            storeMap[key] = {
+              storeId: o.storeId,
+              storeName: o.storeName,
+              storeOrder: o.storeOrder !== undefined ? o.storeOrder : 9999,
+              totalBill: 0,
+              oldBalance: 0,
+              paidAmount: 0,
+              orderIds: []
+            };
+          }
 
-          totalRev += bAmount;
-          totalPaid += pAmount;
-          totalPending += dAmount;
-          rawLedgerList.push(o);
+          storeMap[key].totalBill += Number(o.totalAmount || 0);
+          storeMap[key].oldBalance += Number(o.oldBalance || 0);
+          storeMap[key].paidAmount += o.paidAmount !== undefined ? Number(o.paidAmount) : (o.paymentStatus === 'Paid' ? Number(o.totalAmount || 0) : 0);
+          storeMap[key].orderIds.push(o.orderId);
+        });
+
+        consolidatedLedgerList = Object.values(storeMap);
+        consolidatedLedgerList.sort((a, b) => (a.storeOrder || 0) - (b.storeOrder || 0));
+
+        consolidatedLedgerList.forEach(item => {
+          const grand = item.totalBill + item.oldBalance;
+          const due = grand - item.paidAmount;
+          totalRev += item.totalBill;
+          totalPaid += item.paidAmount;
+          totalPending += due;
         });
 
         deliveryList.sort((a, b) => (a.storeOrder || 0) - (b.storeOrder || 0));
@@ -1997,9 +2021,9 @@
       const searchEl = document.getElementById('accounts-search-filter');
       const q = searchEl ? searchEl.value.toLowerCase().trim() : '';
 
-      let filtered = rawLedgerList;
+      let filtered = consolidatedLedgerList;
       if (q) {
-        filtered = rawLedgerList.filter((item, idx) => 
+        filtered = consolidatedLedgerList.filter((item, idx) => 
           item.storeName.toLowerCase().includes(q) || String(idx + 1).includes(q)
         );
       }
@@ -2007,93 +2031,124 @@
     }
 
     function renderAccountsLedger(list) {
-      const tbody = document.querySelector('#accounts-ledger-table tbody');
+      const tbody = document.getElementById('accounts-ledger-tbody');
       if (!tbody) return;
       tbody.innerHTML = '';
       
       list.forEach((item, index) => {
-        const billVal = Number(item.totalAmount || 0);
+        const billVal = Number(item.totalBill || 0);
         const obVal = Number(item.oldBalance || 0);
         const netGrand = billVal + obVal;
         
-        const paidVal = item.paidAmount !== undefined ? Number(item.paidAmount) : (item.paymentStatus === 'Paid' ? netGrand : 0);
-        const dueVal = item.balanceDue !== undefined ? Number(item.balanceDue) : (netGrand - paidVal);
+        const paidVal = Number(item.paidAmount || 0);
+        const dueVal = netGrand - paidVal;
 
-        tbody.innerHTML += `<tr>
-          <td><input type="checkbox" ${dueVal === 0 && netGrand > 0 ? 'checked' : ''} onchange="togglePaidCheckbox('${item.orderId}', this.checked, ${billVal},${obVal})"></td>
+        tbody.innerHTML += `<tr class="ledger-row" data-store-id="${item.storeId \vert{}\vert{} ''}" data-bill="${billVal}">
+          <td><input type="checkbox" class="ledger-checkbox" ${dueVal === 0 && netGrand > 0 ? 'checked' : ''} onchange="onLedgerCheckboxToggle(this, ${billVal})"></td>
           <td><strong>${index + 1}</strong></td>
           <td>${item.storeName}</td>
-          <td>₹${billVal}</td>
+          <td class="cell-bill">₹${billVal}</td>
           <td>
-            <input type="number" class="form-control compact-input" style="width: 80px; text-align: center; padding: 2px 4px;" 
-                   value="${obVal}" min="0" step="any"
-                   onchange="updateLedgerRow('${item.orderId}', ${billVal}, this.value, ${paidVal})">
+            <input type="number" class="form-control compact-input input-ob" style="width: 80px; text-align: center; padding: 2px 4px;" 
+                   value="${obVal}" min="0" step="any" oninput="recalcLedgerRow(this)">
           </td>
           <td>
-            <input type="number" class="form-control compact-input" style="width: 85px; text-align: center; padding: 2px 4px;" 
-                   value="${paidVal}" min="0" max="${netGrand}" step="any"
-                   onchange="updateLedgerRow('${item.orderId}', ${billVal},${obVal}, this.value)">
+            <input type="number" class="form-control compact-input input-paid" style="width: 85px; text-align: center; padding: 2px 4px;" 
+                   value="${paidVal}" min="0" step="any" oninput="recalcLedgerRow(this)">
           </td>
-          <td><strong style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
+          <td><strong class="cell-due" style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
         </tr>`;
       });
     }
 
-    function togglePaidCheckbox(id, isChecked, bill, ob) {
+    function onLedgerCheckboxToggle(chk, bill) {
+      const row = chk.closest('tr');
+      const ob = parseFloat(row.querySelector('.input-ob').value) || 0;
       const net = bill + ob;
-      const paid = isChecked ? net : 0;
-      const due = isChecked ? 0 : net;
       
-      db.collection("orders").doc(id).update({
-        paidAmount: paid,
-        balanceDue: due,
-        paymentStatus: isChecked ? 'Paid' : 'Pending'
-      });
+      const paidInput = row.querySelector('.input-paid');
+      if (chk.checked) {
+        paidInput.value = net;
+      } else {
+        paidInput.value = 0;
+      }
+      recalcLedgerRow(paidInput);
     }
 
-    function updateLedgerRow(id, bill, obStr, paidStr) {
-      let ob = parseFloat(obStr);
-      if (isNaN(ob) || ob < 0) ob = 0;
-
-      let paid = parseFloat(paidStr);
-      if (isNaN(paid) || paid < 0) paid = 0;
-
+    function recalcLedgerRow(el) {
+      const row = el.closest('tr');
+      const bill = parseFloat(row.getAttribute('data-bill')) || 0;
+      const ob = parseFloat(row.querySelector('.input-ob').value) || 0;
+      let paid = parseFloat(row.querySelector('.input-paid').value) || 0;
+      
       const net = bill + ob;
       if (paid > net) paid = net;
+      if (paid < 0) paid = 0;
 
       const due = net - paid;
-      const status = due === 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Pending');
+      const chk = row.querySelector('.ledger-checkbox');
+      chk.checked = (due === 0 && net > 0);
 
-      db.collection("orders").doc(id).update({
-        oldBalance: ob,
-        paidAmount: paid,
-        balanceDue: due,
-        paymentStatus: status
-      });
+      const dueText = row.querySelector('.cell-due');
+      dueText.innerText = '₹' + due;
+      dueText.style.color = due > 0 ? 'red' : 'green';
     }
 
     function toggleAllLedgerPaid(markPaid) {
-      if (rawLedgerList.length === 0) return;
-      const batch = db.batch();
-
-      rawLedgerList.forEach(item => {
-        const bill = Number(item.totalAmount || 0);
-        const ob = Number(item.oldBalance || 0);
+      const rows = document.querySelectorAll('#accounts-ledger-tbody tr');
+      rows.forEach(row => {
+        const bill = parseFloat(row.getAttribute('data-bill')) || 0;
+        const ob = parseFloat(row.querySelector('.input-ob').value) || 0;
         const net = bill + ob;
+        
+        const chk = row.querySelector('.ledger-checkbox');
+        const paidInput = row.querySelector('.input-paid');
+        
+        chk.checked = markPaid;
+        paidInput.value = markPaid ? net : 0;
+        recalcLedgerRow(paidInput);
+      });
+    }
 
-        const paid = markPaid ? net : 0;
-        const due = markPaid ? 0 : net;
-        const status = markPaid ? 'Paid' : 'Pending';
+    function saveAccountsLedgerChanges() {
+      const rows = document.querySelectorAll('#accounts-ledger-tbody tr');
+      if (rows.length === 0) return;
 
-        batch.update(db.collection("orders").doc(item.orderId), {
-          paidAmount: paid,
-          balanceDue: due,
-          paymentStatus: status
-        });
+      const batch = db.batch();
+      let updateCount = 0;
+
+      rows.forEach(row => {
+        const storeId = row.getAttribute('data-store-id');
+        const bill = parseFloat(row.getAttribute('data-bill')) || 0;
+        const ob = parseFloat(row.querySelector('.input-ob').value) || 0;
+        let paid = parseFloat(row.querySelector('.input-paid').value) || 0;
+
+        const net = bill + ob;
+        if (paid > net) paid = net;
+        const due = net - paid;
+        const status = due === 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Pending');
+
+        // Find store items from consolidated list
+        const storeData = consolidatedLedgerList.find(c => (c.storeId || '') === storeId);
+        if (storeData && storeData.orderIds) {
+          storeData.orderIds.forEach(docId => {
+            const orderRef = db.collection("orders").doc(docId);
+            batch.update(orderRef, {
+              oldBalance: ob,
+              paidAmount: paid,
+              balanceDue: due,
+              paymentStatus: status
+            });
+            updateCount++;
+          });
+        }
       });
 
       batch.commit().then(() => {
-        showModal('Updated', markPaid ? 'All marked as Paid!' : 'All unmarked!', 'success');
+        showModal('Saved', 'Accounts Ledger database-ലേക്ക് വിജയകരമായി സേവ് ചെയ്തു!', 'success');
+        fetchProductionMetrics();
+      }).catch(err => {
+        showModal('Error', 'സേവ് ചെയ്യാൻ സാധിച്ചില്ല: ' + err.message, 'error');
       });
     }
 
