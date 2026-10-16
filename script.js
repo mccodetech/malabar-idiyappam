@@ -900,3 +900,42 @@ function showModal(title, msg, type = 'info') {
 function closeModal() { 
   document.getElementById('custom-modal').classList.remove('active'); 
 }
+
+// തിരഞ്ഞെടുത്ത തീയതിയിലെയും റൂട്ടിലെയും മുഴുവൻ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് ഡിലീറ്റ് ചെയ്യാൻ
+function clearAllOrdersForSelectedDateAndRoute() {
+  const selectedDate = document.getElementById('bulk-order-date').value;
+  const selectedRoute = document.getElementById('bulk-route-filter').value;
+
+  let confirmMsg = `Are you sure you want to PERMANENTLY DELETE all saved orders for ${formatDateToDMY(selectedDate)}?`;
+  if (selectedRoute !== 'ALL') {
+    confirmMsg = `Are you sure you want to PERMANENTLY DELETE all saved orders for "${selectedRoute}" on ${formatDateToDMY(selectedDate)}?`;
+  }
+
+  if (confirm(confirmMsg)) {
+    const cards = document.querySelectorAll('.bulk-store-card');
+    const batch = db.batch();
+    let deleteCount = 0;
+
+    cards.forEach(card => {
+      const orderId = card.dataset.orderId;
+      if (orderId) {
+        batch.delete(db.collection("orders").doc(orderId));
+        deleteCount++;
+      }
+    });
+
+    if (deleteCount === 0) {
+      showModal('Notice', 'No saved orders found to delete.', 'info');
+      clearBulkOrderInputs();
+      return;
+    }
+
+    batch.commit().then(() => {
+      showModal('Deleted', `${deleteCount} saved orders cleared from Database!`, 'success');
+      clearBulkOrderInputs();
+      fetchProductionMetrics();
+    }).catch(err => {
+      showModal('Error', 'Failed to delete orders: ' + err.message, 'error');
+    });
+  }
+}
