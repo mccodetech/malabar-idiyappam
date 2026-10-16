@@ -306,7 +306,6 @@ function clearBulkOrderInputs() {
 
 function saveBulkOrders() {
   const selectedDate = document.getElementById('bulk-order-date').value;
-  const selectedRoute = document.getElementById('bulk-route-filter').value;
   const cards = document.querySelectorAll('.bulk-store-card');
   if (cards.length === 0) return;
 
@@ -323,7 +322,6 @@ function saveBulkOrders() {
     const velParsed = parseQuantityBreakdown(card.querySelector('.bulk-vel').value);
     const idlParsed = parseQuantityBreakdown(card.querySelector('.bulk-idl').value);
 
-    // Quantity undenkil order save/update cheyyuk, allenkil 0 aane kil pazhaya order delete/clear cheyyuk
     if (idiParsed.total > 0 || velParsed.total > 0 || idlParsed.total > 0) {
       const totalAmount = (idiParsed.total * (store.priceIdiyappam || 5)) +
                           (velParsed.total * (store.priceVellayappam || 5)) +
@@ -359,7 +357,6 @@ function saveBulkOrders() {
       }
       count++;
     } else if (existingOrderId) {
-      // Input 0 aakkuka aanenkil pazhaya order database-il ninnum auto clear aakum
       batch.delete(db.collection("orders").doc(existingOrderId));
     }
   });
@@ -476,7 +473,6 @@ function fetchProductionMetrics() {
         calendarMap[oDate].orders.push(o);
       }
 
-      // Selected Date & Shift Filter Match aayath mathram Production-il edukkuka
       if (o.deliveryDate === selectedDate) {
         if (selectedRouteFilter === 'ALL' || o.route === selectedRouteFilter) {
           const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
@@ -499,10 +495,13 @@ function fetchProductionMetrics() {
         }
       }
 
-      // Accounts / Ledger-il saadana vilpanayude total kootathekku edukkuka
-      totalRev += Number(o.totalAmount || 0);
-      totalPaid += Number(o.paidAmount || 0);
-      totalPending += Number(o.balanceDue || 0);
+      const bAmount = Number(o.totalAmount || 0);
+      const pAmount = o.paidAmount !== undefined ? Number(o.paidAmount) : (o.paymentStatus === 'Paid' ? bAmount : 0);
+      const dAmount = o.balanceDue !== undefined ? Number(o.balanceDue) : (bAmount - pAmount);
+
+      totalRev += bAmount;
+      totalPaid += pAmount;
+      totalPending += dAmount;
       ledgerList.push(o);
     });
 
@@ -659,8 +658,8 @@ function renderAccountsLedger(list) {
       <td>${item.storeName}</td>
       <td>₹${item.totalAmount}</td>
       <td>
-        <input type="number" class="form-control compact-input" style="width: 80px; text-align: center;" 
-               value="${paidVal}" min="0" max="${item.totalAmount}" 
+        <input type="number" class="form-control compact-input" style="width: 85px; text-align: center; padding: 2px 4px;" 
+               value="${paidVal}" min="0" max="${item.totalAmount}" step="any"
                onchange="updateCustomPaidAmount('${item.orderId}', this.value, ${item.totalAmount})">
       </td>
       <td><strong style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
@@ -668,7 +667,10 @@ function renderAccountsLedger(list) {
   });
 }
 
-// Checkbox tick/untick cheyyumbol
+function toggleDelivery(id, done) {
+  db.collection("orders").doc(id).update({ deliveryStatus: done ? 'Delivered' : 'Pending' });
+}
+
 function togglePaidCheckbox(id, isChecked, total) {
   const paid = isChecked ? total : 0;
   const due = isChecked ? 0 : total;
@@ -680,9 +682,9 @@ function togglePaidCheckbox(id, isChecked, total) {
   });
 }
 
-// Paid amount input box-il type cheyyumbol
 function updateCustomPaidAmount(id, val, total) {
-  let paid = parseFloat(val) || 0;
+  let paid = parseFloat(val);
+  if (isNaN(paid)) paid = 0;
   if (paid > total) paid = total;
   if (paid < 0) paid = 0;
 
@@ -693,17 +695,6 @@ function updateCustomPaidAmount(id, val, total) {
     paidAmount: paid,
     balanceDue: due,
     paymentStatus: status
-  });
-}
-function toggleDelivery(id, done) {
-  db.collection("orders").doc(id).update({ deliveryStatus: done ? 'Delivered' : 'Pending' });
-}
-
-function togglePaid(id, paid, total) {
-  db.collection("orders").doc(id).update({
-    paidAmount: paid ? total : 0,
-    balanceDue: paid ? 0 : total,
-    paymentStatus: paid ? 'Paid' : 'Pending'
   });
 }
 
@@ -905,75 +896,7 @@ function showModal(title, msg, type = 'info') {
   document.getElementById('modal-message').innerText = msg;
   document.getElementById('custom-modal').classList.add('active');
 }
-function closeModal() { document.getElementById('custom-modal').classList.remove('active'); }
 
-function loadBulkOrderSheet() {
-  const container = document.getElementById('bulk-cards-container');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
-  const selectedRoute = document.getElementById('bulk-route-filter').value;
-  const searchQuery = document.getElementById('bulk-store-search-filter') ? document.getElementById('bulk-store-search-filter').value.toLowerCase().trim() : '';
-
-  let filteredStores = registeredStoresList;
-  
-  if (selectedRoute !== 'ALL') {
-    filteredStores = filteredStores.filter(s => s.route === selectedRoute);
-  }
-
-  if (searchQuery) {
-    filteredStores = filteredStores.filter(s => s.storeName.toLowerCase().includes(searchQuery) || String(s.id).includes(searchQuery));
-  }
-
-  if (filteredStores.length === 0) {
-    container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">No stores found matching criteria.</div>';
-    return;
-  }
-
-  filteredStores.forEach((store, index) => {
-    const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
-    
-    const valIdi = existingOrder ? (existingOrder.idiyappamRaw || (existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '')) : '';
-    const valVel = existingOrder ? (existingOrder.vellayappamRaw || (existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '')) : '';
-    const valIdl = existingOrder ? (existingOrder.idliRaw || (existingOrder.idli > 0 ? existingOrder.idli : '')) : '';
-    const orderDocId = existingOrder ? existingOrder.orderId : '';
-
-    const card = `
-      <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
-        <div class="bulk-store-header">
-          <div class="store-badge-title">
-            <span class="store-id-tag">#${index + 1}</span>
-            <span>${store.storeName}</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
-            <button class="btn btn-danger-soft btn-pill btn-xs del-btn" id="del-btn-${store.id}" style="${orderDocId ? 'display:inline-flex;' : 'display:none;'}" onclick="deleteSingleStoreOrder('${store.id}', '${store.storeName}')" title="Cancel/Delete order">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        </div>
-        <div class="bulk-inputs-row">
-          <div class="bulk-input-col">
-            <label>ഇടിയപ്പം</label>
-            <input type="text" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
-          </div>
-          <div class="bulk-input-col">
-            <label>വെള്ളയപ്പം</label>
-            <input type="text" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
-          </div>
-          <div class="bulk-input-col">
-            <label>ഇഡ്ഡലി</label>
-            <input type="text" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
-          </div>
-        </div>
-      </div>
-    `;
-    container.innerHTML += card;
-  });
-}
-
-// ഫീൽഡുകൾ മാത്രം ക്ലിയർ ചെയ്യാൻ
-function clearBulkOrderInputs() {
-  document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
+function closeModal() { 
+  document.getElementById('custom-modal').classList.remove('active'); 
 }
