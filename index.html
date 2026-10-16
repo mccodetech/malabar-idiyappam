@@ -1279,7 +1279,44 @@
       </div>
     </div>
   </div>
+function clearAllOrdersNow() {
+  const selectedDate = document.getElementById('bulk-order-date').value;
+  const selectedRoute = document.getElementById('bulk-route-filter').value;
 
+  let confirmMsg = `നിങ്ങൾ ഈ തീയതിയിലെ (${formatDateToDMY(selectedDate)}) എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നുവോ?`;
+  if (selectedRoute !== 'ALL') {
+    confirmMsg = `"${selectedRoute}" റൂട്ടിലെ ${formatDateToDMY(selectedDate)} തീയതിയിലെ എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് ഡിലീറ്റ് ചെയ്യണമോ?`;
+  }
+
+  if (confirm(confirmMsg)) {
+    const cards = document.querySelectorAll('.bulk-store-card');
+    const batch = db.batch();
+    let deleteCount = 0;
+
+    cards.forEach(card => {
+      const orderId = card.dataset.orderId;
+      if (orderId) {
+        batch.delete(db.collection("orders").doc(orderId));
+        deleteCount++;
+      }
+    });
+
+    if (deleteCount === 0) {
+      showModal('Notice', 'ഡിലീറ്റ് ചെയ്യാൻ സേവ് ചെയ്ത ഓർഡറുകൾ ഒന്നും ഇല്ല.', 'info');
+      clearBulkOrderInputs();
+      return;
+    }
+
+    batch.commit().then(() => {
+      showModal('Deleted', `${deleteCount} ഓർഡറുകൾ ഡാറ്റാബേസിൽ നിന്ന് മായ്‌ച്ചു!`, 'success');
+      clearBulkOrderInputs();
+      fetchProductionMetrics();
+    }).catch(err => {
+      showModal('Error', 'ഡിലീറ്റ് ചെയ്യാൻ സാധിച്ചില്ല: ' + err.message, 'error');
+    });
+  }
+}
+  
   <!-- FIREBASE SDK COMPAT -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
