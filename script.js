@@ -862,3 +862,74 @@ function showModal(title, msg, type = 'info') {
   document.getElementById('custom-modal').classList.add('active');
 }
 function closeModal() { document.getElementById('custom-modal').classList.remove('active'); }
+
+function loadBulkOrderSheet() {
+  const container = document.getElementById('bulk-cards-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const selectedDate = document.getElementById('bulk-order-date').value || new Date().toISOString().split('T')[0];
+  const selectedRoute = document.getElementById('bulk-route-filter').value;
+  const searchQuery = document.getElementById('bulk-store-search-filter') ? document.getElementById('bulk-store-search-filter').value.toLowerCase().trim() : '';
+
+  let filteredStores = registeredStoresList;
+  
+  if (selectedRoute !== 'ALL') {
+    filteredStores = filteredStores.filter(s => s.route === selectedRoute);
+  }
+
+  if (searchQuery) {
+    filteredStores = filteredStores.filter(s => s.storeName.toLowerCase().includes(searchQuery) || String(s.id).includes(searchQuery));
+  }
+
+  if (filteredStores.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">No stores found matching criteria.</div>';
+    return;
+  }
+
+  filteredStores.forEach((store, index) => {
+    const existingOrder = currentOrdersList.find(o => o.storeId === store.id && o.deliveryDate === selectedDate);
+    
+    const valIdi = existingOrder ? (existingOrder.idiyappamRaw || (existingOrder.idiyappam > 0 ? existingOrder.idiyappam : '')) : '';
+    const valVel = existingOrder ? (existingOrder.vellayappamRaw || (existingOrder.vellayappam > 0 ? existingOrder.vellayappam : '')) : '';
+    const valIdl = existingOrder ? (existingOrder.idliRaw || (existingOrder.idli > 0 ? existingOrder.idli : '')) : '';
+    const orderDocId = existingOrder ? existingOrder.orderId : '';
+
+    const card = `
+      <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
+        <div class="bulk-store-header">
+          <div class="store-badge-title">
+            <span class="store-id-tag">#${index + 1}</span>
+            <span>${store.storeName}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
+            <button class="btn btn-danger-soft btn-pill btn-xs del-btn" id="del-btn-${store.id}" style="${orderDocId ? 'display:inline-flex;' : 'display:none;'}" onclick="deleteSingleStoreOrder('${store.id}', '${store.storeName}')" title="Cancel/Delete order">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="bulk-inputs-row">
+          <div class="bulk-input-col">
+            <label>ഇടിയപ്പം</label>
+            <input type="text" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
+          </div>
+          <div class="bulk-input-col">
+            <label>വെള്ളയപ്പം</label>
+            <input type="text" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
+          </div>
+          <div class="bulk-input-col">
+            <label>ഇഡ്ഡലി</label>
+            <input type="text" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
+          </div>
+        </div>
+      </div>
+    `;
+    container.innerHTML += card;
+  });
+}
+
+// ഫീൽഡുകൾ മാത്രം ക്ലിയർ ചെയ്യാൻ
+function clearBulkOrderInputs() {
+  document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
+}
