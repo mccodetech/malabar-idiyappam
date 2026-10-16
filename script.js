@@ -450,6 +450,7 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
 
 function fetchProductionMetrics() {
   const selectedDate = document.getElementById('production-date-filter').value || new Date().toISOString().split('T')[0];
+  const selectedRouteFilter = document.getElementById('bulk-route-filter') ? document.getElementById('bulk-route-filter').value : 'ALL';
 
   db.collection("orders").onSnapshot(snapshot => {
     let totalIdi = 0, totalVel = 0, totalIdl = 0;
@@ -475,26 +476,30 @@ function fetchProductionMetrics() {
         calendarMap[oDate].orders.push(o);
       }
 
+      // Selected Date & Shift Filter Match aayath mathram Production-il edukkuka
       if (o.deliveryDate === selectedDate) {
-        const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
-        totalIdi += idi; totalVel += vel; totalIdl += idl;
+        if (selectedRouteFilter === 'ALL' || o.route === selectedRouteFilter) {
+          const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
+          totalIdi += idi; totalVel += vel; totalIdl += idl;
 
-        const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
-        idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
+          const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
+          idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
 
-        const velPkts = (o.vellayappamPackets && o.vellayappamPackets.length > 0) ? o.vellayappamPackets : (vel > 0 ? [vel] : []);
-        velPkts.forEach(p => vellayappamPackets[p] = (vellayappamPackets[p] || 0) + 1);
+          const velPkts = (o.vellayappamPackets && o.vellayappamPackets.length > 0) ? o.vellayappamPackets : (vel > 0 ? [vel] : []);
+          velPkts.forEach(p => vellayappamPackets[p] = (vellayappamPackets[p] || 0) + 1);
 
-        const idlPkts = (o.idliPackets && o.idliPackets.length > 0) ? o.idliPackets : (idl > 0 ? [idl] : []);
-        idlPkts.forEach(p => idliPackets[p] = (idliPackets[p] || 0) + 1);
+          const idlPkts = (o.idliPackets && o.idliPackets.length > 0) ? o.idliPackets : (idl > 0 ? [idl] : []);
+          idlPkts.forEach(p => idliPackets[p] = (idliPackets[p] || 0) + 1);
 
-        const r = o.route || 'General';
-        if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
-        routeSummary[r].idi += idi; routeSummary[r].vel += vel; routeSummary[r].idl += idl;
+          const r = o.route || 'General';
+          if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
+          routeSummary[r].idi += idi; routeSummary[r].vel += vel; routeSummary[r].idl += idl;
 
-        deliveryList.push(o);
+          deliveryList.push(o);
+        }
       }
 
+      // Accounts / Ledger-il saadana vilpanayude total kootathekku edukkuka
       totalRev += Number(o.totalAmount || 0);
       totalPaid += Number(o.paidAmount || 0);
       totalPending += Number(o.balanceDue || 0);
