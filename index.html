@@ -816,16 +816,16 @@
               </div>
               
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-  <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
-    <i class="fa-solid fa-rotate-right"></i> Refresh
-  </button>
-  <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearAllOrdersNow()" title="Clear Saved Orders">
-    <i class="fa-solid fa-trash-can"></i> Clear All Saved Orders
-  </button>
-  <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
-    <i class="fa-solid fa-floppy-disk"></i> Save Orders
-  </button>
-</div>
+                <button type="button" class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
+                  <i class="fa-solid fa-rotate-right"></i> Refresh
+                </button>
+                <button type="button" class="btn btn-danger-soft btn-pill btn-sm" onclick="clearAllOrdersNow()" title="Clear Saved Orders">
+                  <i class="fa-solid fa-trash-can"></i> Clear All Saved Orders
+                </button>
+                <button type="button" class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Orders
+                </button>
+              </div>
             </div>
 
             <!-- Filters & Search Bar -->
@@ -1279,44 +1279,7 @@
       </div>
     </div>
   </div>
-function clearAllOrdersNow() {
-  const selectedDate = document.getElementById('bulk-order-date').value;
-  const selectedRoute = document.getElementById('bulk-route-filter').value;
 
-  let confirmMsg = `നിങ്ങൾ ഈ തീയതിയിലെ (${formatDateToDMY(selectedDate)}) എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നുവോ?`;
-  if (selectedRoute !== 'ALL') {
-    confirmMsg = `"${selectedRoute}" റൂട്ടിലെ ${formatDateToDMY(selectedDate)} തീയതിയിലെ എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് ഡിലീറ്റ് ചെയ്യണമോ?`;
-  }
-
-  if (confirm(confirmMsg)) {
-    const cards = document.querySelectorAll('.bulk-store-card');
-    const batch = db.batch();
-    let deleteCount = 0;
-
-    cards.forEach(card => {
-      const orderId = card.dataset.orderId;
-      if (orderId) {
-        batch.delete(db.collection("orders").doc(orderId));
-        deleteCount++;
-      }
-    });
-
-    if (deleteCount === 0) {
-      showModal('Notice', 'ഡിലീറ്റ് ചെയ്യാൻ സേവ് ചെയ്ത ഓർഡറുകൾ ഒന്നും ഇല്ല.', 'info');
-      clearBulkOrderInputs();
-      return;
-    }
-
-    batch.commit().then(() => {
-      showModal('Deleted', `${deleteCount} ഓർഡറുകൾ ഡാറ്റാബേസിൽ നിന്ന് മായ്‌ച്ചു!`, 'success');
-      clearBulkOrderInputs();
-      fetchProductionMetrics();
-    }).catch(err => {
-      showModal('Error', 'ഡിലീറ്റ് ചെയ്യാൻ സാധിച്ചില്ല: ' + err.message, 'error');
-    });
-  }
-}
-  
   <!-- FIREBASE SDK COMPAT -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -1627,6 +1590,46 @@ function clearAllOrdersNow() {
       document.querySelectorAll('.bulk-qty-field').forEach(input => input.value = '');
     }
 
+    function clearAllOrdersNow() {
+      const selectedDate = document.getElementById('bulk-order-date').value;
+      const selectedRoute = document.getElementById('bulk-route-filter').value;
+
+      let formattedD = formatDateToDMY(selectedDate);
+      let confirmMsg = "നിങ്ങൾ ഈ തീയതിയിലെ (" + formattedD + ") എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യാൻ ആഗ്രഹിക്കുന്നുവോ?";
+      
+      if (selectedRoute !== 'ALL') {
+        confirmMsg = '"' + selectedRoute + '" റൂട്ടിലെ ' + formattedD + ' തീയതിയിലെ എല്ലാ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് ഡിലീറ്റ് ചെയ്യണമോ?';
+      }
+
+      if (confirm(confirmMsg)) {
+        const cards = document.querySelectorAll('.bulk-store-card');
+        const batch = db.batch();
+        let deleteCount = 0;
+
+        cards.forEach(card => {
+          const orderId = card.dataset.orderId;
+          if (orderId) {
+            batch.delete(db.collection("orders").doc(orderId));
+            deleteCount++;
+          }
+        });
+
+        if (deleteCount === 0) {
+          showModal('Notice', 'ഡിലീറ്റ് ചെയ്യാൻ സേവ് ചെയ്ത ഓർഡറുകൾ ഒന്നും ഇല്ല.', 'info');
+          clearBulkOrderInputs();
+          return;
+        }
+
+        batch.commit().then(() => {
+          showModal('Deleted', deleteCount + ' ഓർഡറുകൾ ഡാറ്റാബേസിൽ നിന്ന് മായ്‌ച്ചു!', 'success');
+          clearBulkOrderInputs();
+          fetchProductionMetrics();
+        }).catch(err => {
+          showModal('Error', 'ഡിലീറ്റ് ചെയ്യാൻ സാധിച്ചില്ല: ' + err.message, 'error');
+        });
+      }
+    }
+
     function saveBulkOrders() {
       const selectedDate = document.getElementById('bulk-order-date').value;
       const cards = document.querySelectorAll('.bulk-store-card');
@@ -1771,6 +1774,7 @@ function clearAllOrdersNow() {
 
     function fetchProductionMetrics() {
       const selectedDate = document.getElementById('production-date-filter').value || new Date().toISOString().split('T')[0];
+      const selectedRouteFilter = document.getElementById('bulk-route-filter') ? document.getElementById('bulk-route-filter').value : 'ALL';
 
       db.collection("orders").onSnapshot(snapshot => {
         let totalIdi = 0, totalVel = 0, totalIdl = 0;
@@ -1797,23 +1801,25 @@ function clearAllOrdersNow() {
           }
 
           if (o.deliveryDate === selectedDate) {
-            const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
-            totalIdi += idi; totalVel += vel; totalIdl += idl;
+            if (selectedRouteFilter === 'ALL' || o.route === selectedRouteFilter) {
+              const idi = Number(o.idiyappam || 0), vel = Number(o.vellayappam || 0), idl = Number(o.idli || 0);
+              totalIdi += idi; totalVel += vel; totalIdl += idl;
 
-            const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
-            idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
+              const idiPkts = (o.idiyappamPackets && o.idiyappamPackets.length > 0) ? o.idiyappamPackets : (idi > 0 ? [idi] : []);
+              idiPkts.forEach(p => idiyappamPackets[p] = (idiyappamPackets[p] || 0) + 1);
 
-            const velPkts = (o.vellayappamPackets && o.vellayappamPackets.length > 0) ? o.vellayappamPackets : (vel > 0 ? [vel] : []);
-            velPkts.forEach(p => vellayappamPackets[p] = (vellayappamPackets[p] || 0) + 1);
+              const velPkts = (o.vellayappamPackets && o.vellayappamPackets.length > 0) ? o.vellayappamPackets : (vel > 0 ? [vel] : []);
+              velPkts.forEach(p => vellayappamPackets[p] = (vellayappamPackets[p] || 0) + 1);
 
-            const idlPkts = (o.idliPackets && o.idliPackets.length > 0) ? o.idliPackets : (idl > 0 ? [idl] : []);
-            idlPkts.forEach(p => idliPackets[p] = (idliPackets[p] || 0) + 1);
+              const idlPkts = (o.idliPackets && o.idliPackets.length > 0) ? o.idliPackets : (idl > 0 ? [idl] : []);
+              idlPkts.forEach(p => idliPackets[p] = (idliPackets[p] || 0) + 1);
 
-            const r = o.route || 'General';
-            if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
-            routeSummary[r].idi += idi; routeSummary[r].vel += vel; routeSummary[r].idl += idl;
+              const r = o.route || 'General';
+              if (!routeSummary[r]) routeSummary[r] = { idi: 0, vel: 0, idl: 0 };
+              routeSummary[r].idi += idi; routeSummary[r].vel += vel; routeSummary[r].idl += idl;
 
-            deliveryList.push(o);
+              deliveryList.push(o);
+            }
           }
 
           const bAmount = Number(o.totalAmount || 0);
@@ -2217,7 +2223,10 @@ function clearAllOrdersNow() {
       document.getElementById('modal-message').innerText = msg;
       document.getElementById('custom-modal').classList.add('active');
     }
-    function closeModal() { document.getElementById('custom-modal').classList.remove('active'); }
+
+    function closeModal() { 
+      document.getElementById('custom-modal').classList.remove('active'); 
+    }
   </script>
 </body>
 </html>
