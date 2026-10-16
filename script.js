@@ -650,16 +650,51 @@ function renderAccountsLedger(list) {
   if (!tbody) return;
   tbody.innerHTML = '';
   list.forEach((item, index) => {
+    const paidVal = item.paidAmount !== undefined ? item.paidAmount : (item.paymentStatus === 'Paid' ? item.totalAmount : 0);
+    const dueVal = item.balanceDue !== undefined ? item.balanceDue : (item.totalAmount - paidVal);
+
     tbody.innerHTML += `<tr>
-      <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
+      <td><input type="checkbox" ${dueVal === 0 && item.totalAmount > 0 ? 'checked' : ''} onchange="togglePaidCheckbox('${item.orderId}', this.checked, ${item.totalAmount})"></td>
       <td><strong>${index + 1}</strong></td>
       <td>${item.storeName}</td>
       <td>₹${item.totalAmount}</td>
-      <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
+      <td>
+        <input type="number" class="form-control compact-input" style="width: 80px; text-align: center;" 
+               value="${paidVal}" min="0" max="${item.totalAmount}" 
+               onchange="updateCustomPaidAmount('${item.orderId}', this.value, ${item.totalAmount})">
+      </td>
+      <td><strong style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
     </tr>`;
   });
 }
 
+// Checkbox tick/untick cheyyumbol
+function togglePaidCheckbox(id, isChecked, total) {
+  const paid = isChecked ? total : 0;
+  const due = isChecked ? 0 : total;
+  
+  db.collection("orders").doc(id).update({
+    paidAmount: paid,
+    balanceDue: due,
+    paymentStatus: isChecked ? 'Paid' : 'Pending'
+  });
+}
+
+// Paid amount input box-il type cheyyumbol
+function updateCustomPaidAmount(id, val, total) {
+  let paid = parseFloat(val) || 0;
+  if (paid > total) paid = total;
+  if (paid < 0) paid = 0;
+
+  const due = total - paid;
+  const status = due === 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Pending');
+
+  db.collection("orders").doc(id).update({
+    paidAmount: paid,
+    balanceDue: due,
+    paymentStatus: status
+  });
+}
 function toggleDelivery(id, done) {
   db.collection("orders").doc(id).update({ deliveryStatus: done ? 'Delivered' : 'Pending' });
 }
