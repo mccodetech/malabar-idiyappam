@@ -547,7 +547,6 @@
       font-weight: 600;
     }
 
-    /* ഡ്രാഗ് ചെയ്യുമ്പോഴുള്ള സ്റ്റൈലുകൾ */
     tr.draggable-row {
       cursor: grab;
     }
@@ -808,27 +807,26 @@
         </section>
 
         <!-- SECTION 0: BULK ORDER ENTRY -->
-<section id="tab-bulk-orders" class="section-view active">
-  <div class="panel-card">
-    <div class="section-header-flex">
-      <div>
-        <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
-        <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
-      </div>
-      
-      <!-- ഇവിടെ പുതിയ ബട്ടണുകൾ ചേർത്തു -->
-      <div style="display: flex; gap: 8px;">
-        <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
-          <i class="fa-solid fa-rotate-right"></i> Refresh
-        </button>
-        <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearBulkOrderInputs()" title="Clear Form Inputs">
-          <i class="fa-solid fa-eraser"></i> Clear Sheet
-        </button>
-        <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
-          <i class="fa-solid fa-floppy-disk"></i> Save Orders
-        </button>
-      </div>
-    </div>
+        <section id="tab-bulk-orders" class="section-view active">
+          <div class="panel-card">
+            <div class="section-header-flex">
+              <div>
+                <h2><i class="fa-solid fa-table-list"></i> Bulk Order Entry</h2>
+                <small style="color: #64748b;">Enter single number (150) or breakdown (50+50+30+20)</small>
+              </div>
+              
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary btn-pill btn-sm" onclick="loadBulkOrderSheet()" title="Refresh Sheet">
+                  <i class="fa-solid fa-rotate-right"></i> Refresh
+                </button>
+                <button class="btn btn-danger-soft btn-pill btn-sm" onclick="clearBulkOrderInputs()" title="Clear Form Inputs">
+                  <i class="fa-solid fa-eraser"></i> Clear Sheet
+                </button>
+                <button class="btn btn-primary btn-pill btn-sm hide-on-mobile" onclick="saveBulkOrders()">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Orders
+                </button>
+              </div>
+            </div>
 
             <!-- Filters & Search Bar -->
             <div class="grid-cards" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 12px;">
@@ -1081,6 +1079,7 @@
                     <th>Sl No</th>
                     <th>Store Name</th>
                     <th>Bill (₹)</th>
+                    <th style="width: 110px;">Paid (₹)</th>
                     <th>Due (₹)</th>
                   </tr>
                 </thead>
@@ -1089,28 +1088,6 @@
             </div>
           </div>
         </section>
-        <!-- SECTION 5: ACCOUNTS -->
-<section id="tab-accounts" class="section-view">
-  ...
-  <div class="panel-card">
-    <h3><i class="fa-solid fa-receipt"></i> Orders Ledger</h3>
-    <div class="table-container">
-      <table id="accounts-ledger-table">
-        <thead>
-          <tr>
-            <th>Paid?</th>
-            <th>Sl No</th>
-            <th>Store Name</th>
-            <th>Bill (₹)</th>
-            <th style="width: 100px;">Paid (₹)</th> <!-- Puthiya Column -->
-            <th>Due (₹)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-</section>
 
         <!-- SECTION 6: STORES DIRECTORY -->
         <section id="tab-stores-dir" class="section-view">
@@ -1473,7 +1450,6 @@
       });
     }
 
-    // HTML5 Drag and Drop Functions
     let draggedRow = null;
 
     function onDragStart(e) {
@@ -1666,6 +1642,8 @@
             batch.set(db.collection("orders").doc(), payload);
           }
           count++;
+        } else if (existingOrderId) {
+          batch.delete(db.collection("orders").doc(existingOrderId));
         }
       });
 
@@ -1801,9 +1779,13 @@
             deliveryList.push(o);
           }
 
-          totalRev += Number(o.totalAmount || 0);
-          totalPaid += Number(o.paidAmount || 0);
-          totalPending += Number(o.balanceDue || 0);
+          const bAmount = Number(o.totalAmount || 0);
+          const pAmount = o.paidAmount !== undefined ? Number(o.paidAmount) : (o.paymentStatus === 'Paid' ? bAmount : 0);
+          const dAmount = o.balanceDue !== undefined ? Number(o.balanceDue) : (bAmount - pAmount);
+
+          totalRev += bAmount;
+          totalPaid += pAmount;
+          totalPending += dAmount;
           ledgerList.push(o);
         });
 
@@ -1951,12 +1933,20 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       list.forEach((item, index) => {
+        const paidVal = item.paidAmount !== undefined ? item.paidAmount : (item.paymentStatus === 'Paid' ? item.totalAmount : 0);
+        const dueVal = item.balanceDue !== undefined ? item.balanceDue : (item.totalAmount - paidVal);
+
         tbody.innerHTML += `<tr>
-          <td><input type="checkbox" ${item.paymentStatus === 'Paid' ? 'checked' : ''} onchange="togglePaid('${item.orderId}', this.checked, ${item.totalAmount})"></td>
+          <td><input type="checkbox" ${dueVal === 0 && item.totalAmount > 0 ? 'checked' : ''} onchange="togglePaidCheckbox('${item.orderId}', this.checked, ${item.totalAmount})"></td>
           <td><strong>${index + 1}</strong></td>
           <td>${item.storeName}</td>
           <td>₹${item.totalAmount}</td>
-          <td><strong style="color:${item.balanceDue > 0 ? 'red' : 'green'}">₹${item.balanceDue}</strong></td>
+          <td>
+            <input type="number" class="form-control compact-input" style="width: 85px; text-align: center; padding: 2px 4px;" 
+                   value="${paidVal}" min="0" max="${item.totalAmount}" step="any"
+                   onchange="updateCustomPaidAmount('${item.orderId}', this.value, ${item.totalAmount})">
+          </td>
+          <td><strong style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
         </tr>`;
       });
     }
@@ -1965,11 +1955,30 @@
       db.collection("orders").doc(id).update({ deliveryStatus: done ? 'Delivered' : 'Pending' });
     }
 
-    function togglePaid(id, paid, total) {
+    function togglePaidCheckbox(id, isChecked, total) {
+      const paid = isChecked ? total : 0;
+      const due = isChecked ? 0 : total;
+      
       db.collection("orders").doc(id).update({
-        paidAmount: paid ? total : 0,
-        balanceDue: paid ? 0 : total,
-        paymentStatus: paid ? 'Paid' : 'Pending'
+        paidAmount: paid,
+        balanceDue: due,
+        paymentStatus: isChecked ? 'Paid' : 'Pending'
+      });
+    }
+
+    function updateCustomPaidAmount(id, val, total) {
+      let paid = parseFloat(val);
+      if (isNaN(paid)) paid = 0;
+      if (paid > total) paid = total;
+      if (paid < 0) paid = 0;
+
+      const due = total - paid;
+      const status = due === 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Pending');
+
+      db.collection("orders").doc(id).update({
+        paidAmount: paid,
+        balanceDue: due,
+        paymentStatus: status
       });
     }
 
