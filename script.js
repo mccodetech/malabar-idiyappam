@@ -306,6 +306,7 @@ function clearBulkOrderInputs() {
 
 function saveBulkOrders() {
   const selectedDate = document.getElementById('bulk-order-date').value;
+  const selectedRoute = document.getElementById('bulk-route-filter').value;
   const cards = document.querySelectorAll('.bulk-store-card');
   if (cards.length === 0) return;
 
@@ -322,6 +323,7 @@ function saveBulkOrders() {
     const velParsed = parseQuantityBreakdown(card.querySelector('.bulk-vel').value);
     const idlParsed = parseQuantityBreakdown(card.querySelector('.bulk-idl').value);
 
+    // Quantity undenkil order save/update cheyyuk, allenkil 0 aane kil pazhaya order delete/clear cheyyuk
     if (idiParsed.total > 0 || velParsed.total > 0 || idlParsed.total > 0) {
       const totalAmount = (idiParsed.total * (store.priceIdiyappam || 5)) +
                           (velParsed.total * (store.priceVellayappam || 5)) +
@@ -356,12 +358,14 @@ function saveBulkOrders() {
         batch.set(db.collection("orders").doc(), payload);
       }
       count++;
+    } else if (existingOrderId) {
+      // Input 0 aakkuka aanenkil pazhaya order database-il ninnum auto clear aakum
+      batch.delete(db.collection("orders").doc(existingOrderId));
     }
   });
 
   batch.commit().then(() => {
-    showModal('Saved', `${count} orders recorded successfully!`, 'success');
-    clearBulkOrderInputs();
+    showModal('Saved', `${count} orders updated successfully!`, 'success');
     fetchProductionMetrics();
   });
 }
