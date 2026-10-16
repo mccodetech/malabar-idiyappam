@@ -901,41 +901,36 @@ function closeModal() {
   document.getElementById('custom-modal').classList.remove('active'); 
 }
 
-// തിരഞ്ഞെടുത്ത തീയതിയിലെയും റൂട്ടിലെയും മുഴുവൻ ഓർഡറുകളും ഡാറ്റാബേസിൽ നിന്ന് ഡിലീറ്റ് ചെയ്യാൻ
 function clearAllOrdersForSelectedDateAndRoute() {
   const selectedDate = document.getElementById('bulk-order-date').value;
   const selectedRoute = document.getElementById('bulk-route-filter').value;
 
-  let confirmMsg = `Are you sure you want to PERMANENTLY DELETE all saved orders for ${formatDateToDMY(selectedDate)}?`;
+  let confirmMsg = `Are you sure you want to PERMANENTLY DELETE ALL saved orders for ${formatDateToDMY(selectedDate)}?`;
   if (selectedRoute !== 'ALL') {
-    confirmMsg = `Are you sure you want to PERMANENTLY DELETE all saved orders for "${selectedRoute}" on ${formatDateToDMY(selectedDate)}?`;
+    confirmMsg = `Are you sure you want to PERMANENTLY DELETE ALL saved orders for "${selectedRoute}" on ${formatDateToDMY(selectedDate)}?`;
   }
 
   if (confirm(confirmMsg)) {
-    const cards = document.querySelectorAll('.bulk-store-card');
-    const batch = db.batch();
-    let deleteCount = 0;
-
-    cards.forEach(card => {
-      const orderId = card.dataset.orderId;
-      if (orderId) {
-        batch.delete(db.collection("orders").doc(orderId));
-        deleteCount++;
-      }
-    });
-
-    if (deleteCount === 0) {
-      showModal('Notice', 'No saved orders found to delete.', 'info');
-      clearBulkOrderInputs();
-      return;
+    let query = db.collection("orders").where("deliveryDate", "==", selectedDate);
+    
+    if (selectedRoute !== 'ALL') {
+      query = query.where("route", "==", selectedRoute);
     }
 
-    batch.commit().then(() => {
-      showModal('Deleted', `${deleteCount} saved orders cleared from Database!`, 'success');
-      clearBulkOrderInputs();
-      fetchProductionMetrics();
-    }).catch(err => {
-      showModal('Error', 'Failed to delete orders: ' + err.message, 'error');
-    });
-  }
-}
+    query.get().then(snapshot => {
+      if (snapshot.empty) {
+        showModal('Notice', 'No saved orders found to delete for this filter.', 'info');
+        clearBulkOrderInputs();
+        return;
+      }
+
+      const batch = db.batch();
+      let deleteCount = 0;
+
+      snapshot.forEach(doc => {
+        batch.delete(doc.ref);
+        deleteCount++;
+      });
+
+      return batch.commit().then(() => {
+        showModal('Deleted', `${deleteCount} saved orders cleared from Database
