@@ -1079,7 +1079,6 @@
                 <button class="btn btn-secondary btn-pill btn-xs" onclick="toggleAllLedgerPaid(false)">
                   <i class="fa-solid fa-xmark"></i> Unselect All
                 </button>
-                <!-- Puthiya Save Accounts Ledger Button -->
                 <button class="btn btn-primary btn-pill btn-sm" onclick="saveAccountsLedgerChanges()" style="box-shadow: 0 4px 10px rgba(5,196,107,0.3); background: var(--color-success);">
                   <i class="fa-solid fa-floppy-disk"></i> Save Accounts Ledger
                 </button>
@@ -1327,7 +1326,7 @@
     function formatDateToDMY(dateStr) {
       if (!dateStr) return '';
       const parts = dateStr.split('-');
-      if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      if (parts.length === 3) return parts[2] + '-' + parts[1] + '-' + parts[0];
       return dateStr;
     }
 
@@ -1338,7 +1337,7 @@
 
       const parts = str.split('+').map(p => parseInt(p.trim(), 10)).filter(n => !isNaN(n) && n > 0);
       const total = parts.reduce((sum, n) => sum + n, 0);
-      return { total, raw: str, packets: parts };
+      return { total: total, raw: str, packets: parts };
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1366,7 +1365,7 @@
       });
       const mPicker = document.getElementById('calendar-month-picker');
       if (mPicker && !mPicker.value) {
-        mPicker.value = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+        mPicker.value = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
       }
     }
 
@@ -1425,7 +1424,7 @@
         let maxId = 0;
 
         snapshot.forEach(doc => {
-          const store = { id: doc.id, ...doc.data() };
+          const store = Object.assign({ id: doc.id }, doc.data());
           store.storeOrder = store.storeOrder !== undefined ? store.storeOrder : 9999;
           registeredStoresList.push(store);
 
@@ -1439,26 +1438,22 @@
         if (tableBody) {
           tableBody.innerHTML = '';
           registeredStoresList.forEach((store, index) => {
-            tableBody.innerHTML += `
-              <tr draggable="true" class="draggable-row" data-store-id="${store.id}" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)">
-                <td><strong>${index + 1}</strong></td>
-                <td style="display:none;">${store.id}</td>
-                <td><strong>${store.storeName}</strong></td>
-                <td><small style="color:#64748b;">${store.route || ''}</small></td>
-                <td>${store.mobile || '-'}</td>
-                <td style="text-align: center; white-space: nowrap;">
-                  <button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal('${store.id}')" title="Edit">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
-                  ${store.whatsapp || store.mobile ? `
-                    <a href="https://wa.me/91${store.whatsapp || store.mobile}" target="_blank" class="btn btn-whatsapp btn-pill btn-xs" title="WhatsApp">
-                      <i class="fa-brands fa-whatsapp"></i>
-                    </a>` : ''}
-                  <button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore('${store.id}', '${store.storeName}')" title="Delete">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </td>
-              </tr>`;
+            let waBtn = (store.whatsapp || store.mobile) ? 
+              '<a href="https://wa.me/91' + (store.whatsapp || store.mobile) + '" target="_blank" class="btn btn-whatsapp btn-pill btn-xs" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>' : '';
+
+            tableBody.innerHTML += 
+              '<tr draggable="true" class="draggable-row" data-store-id="' + store.id + '" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)">' +
+                '<td><strong>' + (index + 1) + '</strong></td>' +
+                '<td style="display:none;">' + store.id + '</td>' +
+                '<td><strong>' + store.storeName + '</strong></td>' +
+                '<td><small style="color:#64748b;">' + (store.route || '') + '</small></td>' +
+                '<td>' + (store.mobile || '-') + '</td>' +
+                '<td style="text-align: center; white-space: nowrap;">' +
+                  '<button class="btn btn-edit btn-pill btn-xs" onclick="openEditStoreModal(\'' + store.id + '\')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button> ' +
+                  waBtn + ' ' +
+                  '<button class="btn btn-delete btn-pill btn-xs" onclick="deleteStore(\'' + store.id + '\', \'' + store.storeName + '\')" title="Delete"><i class="fa-solid fa-trash"></i></button>' +
+                '</td>' +
+              '</tr>';
           });
         }
 
@@ -1466,7 +1461,7 @@
         if (nextIdField) nextIdField.value = maxId + 1;
 
         const badge = document.getElementById('store-count-badge');
-        if (badge) badge.innerText = `${registeredStoresList.length} Stores`;
+        if (badge) badge.innerText = registeredStoresList.length + ' Stores';
         
         loadBulkOrderSheet();
       });
@@ -1549,42 +1544,43 @@
         const valIdl = existingOrder ? (existingOrder.idliRaw || (existingOrder.idli > 0 ? existingOrder.idli : '')) : '';
         const orderDocId = existingOrder ? existingOrder.orderId : '';
 
-        const card = `
-          <div class="bulk-store-card" id="card-store-${store.id}" data-store-id="${store.id}" data-order-id="${orderDocId}">
-            <div class="bulk-store-header">
-              <div class="store-badge-title">
-                <span class="store-id-tag">#${index + 1}</span>
-                <span>${store.storeName}</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <small style="color:#64748b; font-size:0.75rem;">${store.route || ''}</small>
-                <button class="btn btn-danger-soft btn-pill btn-xs del-btn" id="del-btn-${store.id}" style="${orderDocId ? 'display:inline-flex;' : 'display:none;'}" onclick="deleteSingleStoreOrder('${store.id}', '${store.storeName}')" title="Cancel/Delete order">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div class="bulk-inputs-row">
-              <div class="bulk-input-col">
-                <label>ഇടിയപ്പം</label>
-                <input type="text" placeholder="0" class="bulk-qty-field bulk-idi" value="${valIdi}" onfocus="this.select()">
-              </div>
-              <div class="bulk-input-col">
-                <label>വെള്ളയപ്പം</label>
-                <input type="text" placeholder="0" class="bulk-qty-field bulk-vel" value="${valVel}" onfocus="this.select()">
-              </div>
-              <div class="bulk-input-col">
-                <label>ഇഡ്ഡലി</label>
-                <input type="text" placeholder="0" class="bulk-qty-field bulk-idl" value="${valIdl}" onfocus="this.select()">
-              </div>
-            </div>
-          </div>
-        `;
+        const delStyle = orderDocId ? 'display:inline-flex;' : 'display:none;';
+
+        const card = 
+          '<div class="bulk-store-card" id="card-store-' + store.id + '" data-store-id="' + store.id + '" data-order-id="' + orderDocId + '">' +
+            '<div class="bulk-store-header">' +
+              '<div class="store-badge-title">' +
+                '<span class="store-id-tag">#' + (index + 1) + '</span>' +
+                '<span>' + store.storeName + '</span>' +
+              '</div>' +
+              '<div style="display: flex; align-items: center; gap: 8px;">' +
+                '<small style="color:#64748b; font-size:0.75rem;">' + (store.route || '') + '</small>' +
+                '<button class="btn btn-danger-soft btn-pill btn-xs del-btn" id="del-btn-' + store.id + '" style="' + delStyle + '" onclick="deleteSingleStoreOrder(\'' + store.id + '\', \'' + store.storeName + '\')" title="Cancel/Delete order">' +
+                  '<i class="fa-solid fa-trash"></i>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="bulk-inputs-row">' +
+              '<div class="bulk-input-col">' +
+                '<label>ഇടിയപ്പം</label>' +
+                '<input type="text" placeholder="0" class="bulk-qty-field bulk-idi" value="' + valIdi + '" onfocus="this.select()">' +
+              '</div>' +
+              '<div class="bulk-input-col">' +
+                '<label>വെള്ളയപ്പം</label>' +
+                '<input type="text" placeholder="0" class="bulk-qty-field bulk-vel" value="' + valVel + '" onfocus="this.select()">' +
+              '</div>' +
+              '<div class="bulk-input-col">' +
+                '<label>ഇഡ്ഡലി</label>' +
+                '<input type="text" placeholder="0" class="bulk-qty-field bulk-idl" value="' + valIdl + '" onfocus="this.select()">' +
+              '</div>' +
+            '</div>' +
+          '</div>';
         container.innerHTML += card;
       });
     }
 
     function deleteSingleStoreOrder(storeId, storeName) {
-      const card = document.getElementById(`card-store-${storeId}`);
+      const card = document.getElementById('card-store-' + storeId);
       const orderId = card ? card.dataset.orderId : null;
 
       if (!orderId) {
@@ -1594,15 +1590,15 @@
         return;
       }
 
-      if (confirm(`Are you sure you want to cancel the order for ${storeName}?`)) {
+      if (confirm('Are you sure you want to cancel the order for ' + storeName + '?')) {
         db.collection("orders").doc(orderId).delete().then(() => {
           if (card) {
             card.querySelectorAll('.bulk-qty-field').forEach(inp => inp.value = '');
             card.dataset.orderId = '';
-            const delBtn = document.getElementById(`del-btn-${storeId}`);
+            const delBtn = document.getElementById('del-btn-' + storeId);
             if (delBtn) delBtn.style.display = 'none';
           }
-          showModal('Order Cancelled', `Order for ${storeName} has been cleared.`, 'success');
+          showModal('Order Cancelled', 'Order for ' + storeName + ' has been cleared.', 'success');
           fetchProductionMetrics();
         });
       }
@@ -1711,7 +1707,7 @@
       });
 
       batch.commit().then(() => {
-        showModal('Saved', `${count} orders recorded successfully!`, 'success');
+        showModal('Saved', count + ' orders recorded successfully!', 'success');
         clearBulkOrderInputs();
         fetchProductionMetrics();
       });
@@ -1734,9 +1730,9 @@
       matches.forEach(s => {
         const el = document.createElement('div');
         el.className = 'suggest-item';
-        el.innerText = `${s.storeName}`;
+        el.innerText = s.storeName;
         el.onclick = () => {
-          document.getElementById('order-store-search').value = `${s.storeName}`;
+          document.getElementById('order-store-search').value = s.storeName;
           document.getElementById('selected-store-id').value = s.id;
           if (s.route) document.getElementById('order-route').value = s.route;
           box.style.display = 'none';
@@ -1811,7 +1807,7 @@
         currentOrdersList = [];
 
         snapshot.forEach(doc => {
-          const o = { orderId: doc.id, ...doc.data() };
+          const o = Object.assign({ orderId: doc.id }, doc.data());
           currentOrdersList.push(o);
 
           const oDate = o.deliveryDate;
@@ -1847,7 +1843,6 @@
             }
           }
 
-          // Grouping Store by StoreID or StoreName to avoid duplicates in Accounts Ledger
           const key = o.storeId || o.storeName;
           if (!storeMap[key]) {
             storeMap[key] = {
@@ -1880,15 +1875,15 @@
 
         deliveryList.sort((a, b) => (a.storeOrder || 0) - (b.storeOrder || 0));
 
-        currentMetricsData = { deliveryList, totalIdi, totalVel, totalIdl, idiyappamPackets, vellayappamPackets, idliPackets, routeSummary, selectedDate, calendarMap };
+        currentMetricsData = { deliveryList: deliveryList, totalIdi: totalIdi, totalVel: totalVel, totalIdl: totalIdl, idiyappamPackets: idiyappamPackets, vellayappamPackets: vellayappamPackets, idliPackets: idliPackets, routeSummary: routeSummary, selectedDate: selectedDate, calendarMap: calendarMap };
 
         document.getElementById('total-idiyappam').innerText = totalIdi;
         document.getElementById('total-vellayappam').innerText = totalVel;
         document.getElementById('total-idli').innerText = totalIdl;
 
-        document.getElementById('acc-total-revenue').innerText = `₹${totalRev.toFixed(2)}`;
-        document.getElementById('acc-total-collected').innerText = `₹${totalPaid.toFixed(2)}`;
-        document.getElementById('acc-total-pending').innerText = `₹${totalPending.toFixed(2)}`;
+        document.getElementById('acc-total-revenue').innerText = '₹' + totalRev.toFixed(2);
+        document.getElementById('acc-total-collected').innerText = '₹' + totalPaid.toFixed(2);
+        document.getElementById('acc-total-pending').innerText = '₹' + totalPending.toFixed(2);
 
         renderPacketPills('idiyappam-packets-list', idiyappamPackets);
         renderPacketPills('vellayappam-packets-list', vellayappamPackets);
@@ -1898,7 +1893,7 @@
         if (routeTbody) {
           routeTbody.innerHTML = '';
           for (let r in routeSummary) {
-            routeTbody.innerHTML += `<tr><td><strong>${r}</strong></td><td>${routeSummary[r].idi}</td><td>${routeSummary[r].vel}</td><td>${routeSummary[r].idl}</td></tr>`;
+            routeTbody.innerHTML += '<tr><td><strong>' + r + '</strong></td><td>' + routeSummary[r].idi + '</td><td>' + routeSummary[r].vel + '</td><td>' + routeSummary[r].idl + '</td></tr>';
           }
         }
 
@@ -1913,39 +1908,39 @@
       const container = document.getElementById('calendar-days-container');
       if (!picker || !container) return;
 
-      const [year, month] = picker.value.split('-').map(Number);
+      const parts = picker.value.split('-').map(Number);
+      const year = parts[0], month = parts[1];
       if (!year || !month) return;
 
       container.innerHTML = '';
 
       const headers = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      headers.forEach(h => container.innerHTML += `<div class="calendar-header">${h}</div>`);
+      headers.forEach(h => container.innerHTML += '<div class="calendar-header">' + h + '</div>');
 
       const firstDay = new Date(year, month - 1, 1).getDay();
       const totalDays = new Date(year, month, 0).getDate();
 
       for (let i = 0; i < firstDay; i++) {
-        container.innerHTML += `<div style="background:transparent;"></div>`;
+        container.innerHTML += '<div style="background:transparent;"></div>';
       }
 
       const map = (currentMetricsData && currentMetricsData.calendarMap) ? currentMetricsData.calendarMap : {};
 
       for (let day = 1; day <= totalDays; day++) {
-        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dateStr = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
         const dayInfo = map[dateStr] || { idi: 0, vel: 0, idl: 0, orders: [] };
 
         const hasOrders = (dayInfo.idi > 0 || dayInfo.vel > 0 || dayInfo.idl > 0);
         const card = document.createElement('div');
-        card.className = `calendar-day-card ${hasOrders ? 'active' : ''}`;
-        card.innerHTML = `
-          <div class="calendar-day-number">${day}</div>
-          <div class="calendar-day-pills">
-            ${dayInfo.idi > 0 ? `<span style="color:#1e3c72;">ഇ: ${dayInfo.idi}</span><br>` : ''}
-            ${dayInfo.vel > 0 ? `<span style="color:#05c46b;">വെ: ${dayInfo.vel}</span><br>` : ''}
-            ${dayInfo.idl > 0 ? `<span style="color:#2a5298;">ഇഡ്ഡ: ${dayInfo.idl}</span>` : ''}
-            ${!hasOrders ? '<span style="color:#cbd5e1;">-</span>' : ''}
-          </div>
-        `;
+        card.className = 'calendar-day-card ' + (hasOrders ? 'active' : '');
+        card.innerHTML = 
+          '<div class="calendar-day-number">' + day + '</div>' +
+          '<div class="calendar-day-pills">' +
+            (dayInfo.idi > 0 ? '<span style="color:#1e3c72;">ഇ: ' + dayInfo.idi + '</span><br>' : '') +
+            (dayInfo.vel > 0 ? '<span style="color:#05c46b;">വെ: ' + dayInfo.vel + '</span><br>' : '') +
+            (dayInfo.idl > 0 ? '<span style="color:#2a5298;">ഇഡ്ഡ: ' + dayInfo.idl + '</span>' : '') +
+            (!hasOrders ? '<span style="color:#cbd5e1;">-</span>' : '') +
+          '</div>';
         card.onclick = () => showCalendarDayDetail(dateStr, dayInfo);
         container.appendChild(card);
       }
@@ -1958,7 +1953,7 @@
       if (!panel || !listContainer) return;
 
       panel.style.display = 'block';
-      text.innerText = `Orders for ${formatDateToDMY(dateStr)} (ഇടിയപ്പം: ${info.idi}, വെള്ളയപ്പം: ${info.vel}, ഇഡ്ഡലി: ${info.idl})`;
+      text.innerText = 'Orders for ' + formatDateToDMY(dateStr) + ' (ഇടിയപ്പം: ' + info.idi + ', വെള്ളയപ്പം: ' + info.vel + ', ഇഡ്ഡലി: ' + info.idl + ')';
       listContainer.innerHTML = '';
 
       if (!info.orders || info.orders.length === 0) {
@@ -1969,20 +1964,19 @@
       let dayOrders = info.orders.sort((a,b) => (a.storeOrder || 0) - (b.storeOrder || 0));
 
       dayOrders.forEach(o => {
-        listContainer.innerHTML += `
-          <div class="bulk-store-card">
-            <div class="bulk-store-header">
-              <span class="store-badge-title">${o.storeName}</span>
-              <small style="color:#64748b;">${o.route || ''}</small>
-            </div>
-            <div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">
-              <span>ഇടിയപ്പം: <strong>${o.idiyappamRaw || o.idiyappam}</strong></span>
-              <span>വെള്ളയപ്പം: <strong>${o.vellayappamRaw || o.vellayappam}</strong></span>
-              <span>ഇഡ്ഡലി: <strong>${o.idliRaw || o.idli}</strong></span>
-              <span>Total: <strong>₹${o.totalAmount}</strong></span>
-            </div>
-          </div>
-        `;
+        listContainer.innerHTML += 
+          '<div class="bulk-store-card">' +
+            '<div class="bulk-store-header">' +
+              '<span class="store-badge-title">' + o.storeName + '</span>' +
+              '<small style="color:#64748b;">' + (o.route || '') + '</small>' +
+            '</div>' +
+            '<div style="font-size:0.85rem; color:#334155; display:flex; gap:12px; flex-wrap:wrap;">' +
+              '<span>ഇടിയപ്പം: <strong>' + (o.idiyappamRaw || o.idiyappam) + '</strong></span>' +
+              '<span>വെള്ളയപ്പം: <strong>' + (o.vellayappamRaw || o.vellayappam) + '</strong></span>' +
+              '<span>ഇഡ്ഡലി: <strong>' + (o.idliRaw || o.idli) + '</strong></span>' +
+              '<span>Total: <strong>₹' + o.totalAmount + '</strong></span>' +
+            '</div>' +
+          '</div>';
       });
       panel.scrollIntoView({ behavior: 'smooth' });
     }
@@ -1993,7 +1987,7 @@
       el.innerHTML = '';
       const keys = Object.keys(obj).sort((a,b) => Number(a) - Number(b));
       if (keys.length === 0) { el.innerHTML = '<span style="color:#94a3b8; font-size:0.8rem;">No orders</span>'; return; }
-      keys.forEach(k => el.innerHTML += `<div class="packet-badge">${k} &times; ${obj[k]}</div>`);
+      keys.forEach(k => el.innerHTML += '<div class="packet-badge">' + k + ' &times; ' + obj[k] + '</div>');
     }
 
     function renderDeliveryTable(list) {
@@ -2001,19 +1995,21 @@
       if (!tbody) return;
       tbody.innerHTML = '';
       list.forEach((item, index) => {
-        const idiDisplay = item.idiyappamRaw ? `${item.idiyappam} <small style="color:#64748b;">(${item.idiyappamRaw})</small>` : item.idiyappam;
-        const velDisplay = item.vellayappamRaw ? `${item.vellayappam} <small style="color:#64748b;">(${item.vellayappamRaw})</small>` : item.vellayappam;
-        const idlDisplay = item.idliRaw ? `${item.idli} <small style="color:#64748b;">(${item.idliRaw})</small>` : item.idli;
+        const idiDisplay = item.idiyappamRaw ? item.idiyappam + ' <small style="color:#64748b;">(' + item.idiyappamRaw + ')</small>' : item.idiyappam;
+        const velDisplay = item.vellayappamRaw ? item.vellayappam + ' <small style="color:#64748b;">(' + item.vellayappamRaw + ')</small>' : item.vellayappam;
+        const idlDisplay = item.idliRaw ? item.idli + ' <small style="color:#64748b;">(' + item.idliRaw + ')</small>' : item.idli;
 
-        tbody.innerHTML += `<tr>
-          <td><input type="checkbox" ${item.deliveryStatus === 'Delivered' ? 'checked' : ''} onchange="toggleDelivery('${item.orderId}', this.checked)"></td>
-          <td><strong>${index + 1}</strong></td>
-          <td>${item.storeName}</td>
-          <td>${idiDisplay}</td>
-          <td>${velDisplay}</td>
-          <td>${idlDisplay}</td>
-          <td><strong>₹${item.totalAmount}</strong></td>
-        </tr>`;
+        const chkStyle = item.deliveryStatus === 'Delivered' ? 'checked' : '';
+
+        tbody.innerHTML += '<tr>' +
+          '<td><input type="checkbox" ' + chkStyle + ' onchange="toggleDelivery(\'' + item.orderId + '\', this.checked)"></td>' +
+          '<td><strong>' + (index + 1) + '</strong></td>' +
+          '<td>' + item.storeName + '</td>' +
+          '<td>' + idiDisplay + '</td>' +
+          '<td>' + velDisplay + '</td>' +
+          '<td>' + idlDisplay + '</td>' +
+          '<td><strong>₹' + item.totalAmount + '</strong></td>' +
+        '</tr>';
       });
     }
 
@@ -2043,21 +2039,24 @@
         const paidVal = Number(item.paidAmount || 0);
         const dueVal = netGrand - paidVal;
 
-        tbody.innerHTML += `<tr class="ledger-row" data-store-id="${item.storeId \vert{}\vert{} ''}" data-bill="${billVal}">
-          <td><input type="checkbox" class="ledger-checkbox" ${dueVal === 0 && netGrand > 0 ? 'checked' : ''} onchange="onLedgerCheckboxToggle(this, ${billVal})"></td>
-          <td><strong>${index + 1}</strong></td>
-          <td>${item.storeName}</td>
-          <td class="cell-bill">₹${billVal}</td>
-          <td>
-            <input type="number" class="form-control compact-input input-ob" style="width: 80px; text-align: center; padding: 2px 4px;" 
-                   value="${obVal}" min="0" step="any" oninput="recalcLedgerRow(this)">
-          </td>
-          <td>
-            <input type="number" class="form-control compact-input input-paid" style="width: 85px; text-align: center; padding: 2px 4px;" 
-                   value="${paidVal}" min="0" step="any" oninput="recalcLedgerRow(this)">
-          </td>
-          <td><strong class="cell-due" style="color:${dueVal > 0 ? 'red' : 'green'}">₹${dueVal}</strong></td>
-        </tr>`;
+        const chkVal = (dueVal === 0 && netGrand > 0) ? 'checked' : '';
+        const dueColor = dueVal > 0 ? 'red' : 'green';
+
+        tbody.innerHTML += '<tr class="ledger-row" data-store-id="' + (item.storeId || '') + '" data-bill="' + billVal + '">' +
+          '<td><input type="checkbox" class="ledger-checkbox" ' + chkVal + ' onchange="onLedgerCheckboxToggle(this, ' + billVal + ')"></td>' +
+          '<td><strong>' + (index + 1) + '</strong></td>' +
+          '<td>' + item.storeName + '</td>' +
+          '<td class="cell-bill">₹' + billVal + '</td>' +
+          '<td>' +
+            '<input type="number" class="form-control compact-input input-ob" style="width: 80px; text-align: center; padding: 2px 4px;" ' +
+                   'value="' + obVal + '" min="0" step="any" oninput="recalcLedgerRow(this)">' +
+          '</td>' +
+          '<td>' +
+            '<input type="number" class="form-control compact-input input-paid" style="width: 85px; text-align: center; padding: 2px 4px;" ' +
+                   'value="' + paidVal + '" min="0" step="any" oninput="recalcLedgerRow(this)">' +
+          '</td>' +
+          '<td><strong class="cell-due" style="color:' + dueColor + '">₹' + dueVal + '</strong></td>' +
+        '</tr>';
       });
     }
 
@@ -2115,7 +2114,6 @@
       if (rows.length === 0) return;
 
       const batch = db.batch();
-      let updateCount = 0;
 
       rows.forEach(row => {
         const storeId = row.getAttribute('data-store-id');
@@ -2128,7 +2126,6 @@
         const due = net - paid;
         const status = due === 0 ? 'Paid' : (paid > 0 ? 'Partial' : 'Pending');
 
-        // Find store items from consolidated list
         const storeData = consolidatedLedgerList.find(c => (c.storeId || '') === storeId);
         if (storeData && storeData.orderIds) {
           storeData.orderIds.forEach(docId => {
@@ -2139,7 +2136,6 @@
               balanceDue: due,
               paymentStatus: status
             });
-            updateCount++;
           });
         }
       });
@@ -2172,7 +2168,7 @@
       };
 
       db.collection("stores").doc(storeId).set(data).then(() => {
-        showModal('Store Saved', `Store #${storeId} registered successfully!`, 'success');
+        showModal('Store Saved', 'Store #' + storeId + ' registered successfully!', 'success');
         document.getElementById('store-form').reset();
       });
     });
@@ -2218,7 +2214,7 @@
     }
 
     function deleteStore(id, name) {
-      if (confirm(`Are you sure you want to delete Store #${id} (${name})?`)) {
+      if (confirm('Are you sure you want to delete Store #' + id + ' (' + name + ')?')) {
         db.collection("stores").doc(id).delete().then(() => {
           showModal('Deleted', 'Store removed.', 'success');
         });
@@ -2258,13 +2254,13 @@
 
       batch.commit().then(() => {
         closeImportModal();
-        showModal('Import Complete', `${count} stores imported!`, 'success');
+        showModal('Import Complete', count + ' stores imported!', 'success');
       });
     }
 
     function shareSingleItemWhatsApp(itemKey) {
       if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n`;
+      let msg = "*മലബാർ ഇടിയപ്പം കമ്പനി*\n";
       let packetsObj = {}, totalQty = 0, itemName = "";
 
       if (itemKey === 'idiyappam') {
@@ -2281,35 +2277,35 @@
         totalQty = currentMetricsData.totalIdl;
       }
 
-      msg += `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: ${totalQty} എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ (ടേബിൾ):*\n`;
-      msg += `\`\`\`\n`;
-      msg += `Qty   | പാക്കറ്റ് എണ്ണം\n`;
-      msg += `---------------------\n`;
+      msg += "*"+itemName+" പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: "+formatDateToDMY(currentMetricsData.selectedDate)+"*\n------------------------------------\n*ആകെ ആവിശ്യമുള്ളത്: "+totalQty+" എണ്ണം*\n\n*പാക്കിംഗ് കണക്കുകൾ (ടേബിൾ):*\n";
+      msg += "```\n";
+      msg += "Qty   | പാക്കറ്റ് എണ്ണം\n";
+      msg += "---------------------\n";
       const keys = Object.keys(packetsObj).sort((a,b) => Number(a) - Number(b));
       let hasPackets = false;
       keys.forEach(qty => {
         hasPackets = true;
-        msg += `${String(qty).padEnd(5)} | ${packetsObj[qty]}\n`;
+        msg += String(qty).padEnd(5) + " | " + packetsObj[qty] + "\n";
       });
-      msg += `\`\`\``;
+      msg += "```";
 
-      if (!hasPackets) msg = `*${itemName} പാക്കിംഗ് വിവരങ്ങൾ*\n(ഓർഡറുകൾ ഇല്ല)`;
+      if (!hasPackets) msg = "*"+itemName+" പാക്കിംഗ് വിവരങ്ങൾ*\n(ഓർഡറുകൾ ഇല്ല)";
 
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function shareProductionToWhatsApp() {
       if (!currentMetricsData) return;
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: ${currentMetricsData.totalIdi}\n• വെള്ളയപ്പം: ${currentMetricsData.totalVel}\n• ഇഡ്ഡലി: ${currentMetricsData.totalIdl}\n\n*റൂട്ട് തിരിച്ചുള്ള വിവരങ്ങൾ (ടേബിൾ):*\n`;
-      msg += `\`\`\`\n`;
-      msg += `റൂട്ട്        | ഇടി | വെള്ള | ഇഡ്ഡ\n`;
-      msg += `---------------------------------\n`;
+      let msg = "*മലബാർ ഇടിയപ്പം കമ്പനി*\n*പ്രൊഡക്ഷൻ & പാക്കിംഗ് വിവരങ്ങൾ*\n*തിയ്യതി: "+formatDateToDMY(currentMetricsData.selectedDate)+"*\n------------------------------------\n\n*ആകെ വിവരങ്ങൾ:*\n• ഇടിയപ്പം: "+currentMetricsData.totalIdi+"\n• വെള്ളയപ്പം: "+currentMetricsData.totalVel+"\n• ഇഡ്ഡലി: "+currentMetricsData.totalIdl+"\n\n*റൂട്ട് തിരിച്ചുള്ള വിവരങ്ങൾ (ടേബിൾ):*\n";
+      msg += "```\n";
+      msg += "റൂട്ട്        | ഇടി | വെള്ള | ഇഡ്ഡ\n";
+      msg += "---------------------------------\n";
       for (let route in currentMetricsData.routeSummary) {
         let rName = route.replace('Route ', 'R').replace(' - Morning', 'M').replace(' - Evening', 'E');
-        msg += `${rName.padEnd(12)} | ${String(currentMetricsData.routeSummary[route].idi).padEnd(3)} | ${String(currentMetricsData.routeSummary[route].vel).padEnd(5)} | ${currentMetricsData.routeSummary[route].idl}\n`;
+        msg += rName.padEnd(12) + " | " + String(currentMetricsData.routeSummary[route].idi).padEnd(3) + " | " + String(currentMetricsData.routeSummary[route].vel).padEnd(5) + " | " + currentMetricsData.routeSummary[route].idl + "\n";
       }
-      msg += `\`\`\``;
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      msg += "```";
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function shareDeliveryToWhatsApp() {
@@ -2321,20 +2317,20 @@
         filteredList = currentMetricsData.deliveryList.filter(item => item.route === selectedRoute);
       }
 
-      let msg = `*മലബാർ ഇടിയപ്പം കമ്പനി*\n*ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: ${formatDateToDMY(currentMetricsData.selectedDate)}*\n------------------------------------\n\n`;
+      let msg = "*മലബാർ ഇടിയപ്പം കമ്പനി*\n*ഡെലിവറി ഷീറ്റ്*\n*തിയ്യതി: "+formatDateToDMY(currentMetricsData.selectedDate)+"*\n------------------------------------\n\n";
       if (filteredList.length === 0) {
-        msg += `ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n`;
+        msg += "ഈ റൂട്ടിൽ ഓർഡറുകൾ ഇല്ല.\n";
       } else {
-        msg += `\`\`\`\n`;
-        msg += `Sl | കടയുടെ പേര്      | ഇടി | വെള്ള | ഇഡ്ഡ | തുക\n`;
-        msg += `--------------------------------------------\n`;
+        msg += "```\n";
+        msg += "Sl | കടയുടെ പേര്      | ഇടി | വെള്ള | ഇഡ്ഡ | തുക\n";
+        msg += "--------------------------------------------\n";
         filteredList.forEach((item, index) => {
           let sName = item.storeName.length > 10 ? item.storeName.substring(0, 9) + '.' : item.storeName;
-          msg += `${String(index + 1).padEnd(2)} | ${sName.padEnd(12)} | ${String(item.idiyappam).padEnd(3)} | ${String(item.vellayappam).padEnd(5)} | ${String(item.idli).padEnd(5)} | ₹${item.totalAmount}\n`;
+          msg += String(index + 1).padEnd(2) + " | " + sName.padEnd(12) + " | " + String(item.idiyappam).padEnd(3) + " | " + String(item.vellayappam).padEnd(5) + " | " + String(item.idli).padEnd(5) + " | ₹" + item.totalAmount + "\n";
         });
-        msg += `\`\`\``;
+        msg += "```";
       }
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
 
     document.getElementById('login-form').addEventListener('submit', (e) => {
