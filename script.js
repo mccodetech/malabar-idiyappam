@@ -939,3 +939,36 @@ function showModal(title, msg, type = 'info') {
 function closeModal() { 
   document.getElementById('custom-modal').classList.remove('active'); 
 }
+function clearAllAccountsHistory() {
+  if (confirm("പഴയ എല്ലാ അക്കൗണ്ട്സ് ലെഡ്ജർ വിവരങ്ങളും (പേയ്‌മെന്റുകൾ & ബാക്കി തുകകൾ) പൂർണ്ണമായി റീസെറ്റ് ചെയ്ത് 0 ആക്കാൻ ആഗ്രഹിക്കുന്നുവോ?")) {
+    db.collection("orders").get().then(snapshot => {
+      if (snapshot.empty) {
+        showModal('Notice', 'റീസെറ്റ് ചെയ്യാൻ ഓർഡറുകൾ ഒന്നും ഇല്ല.', 'info');
+        return;
+      }
+
+      const batch = db.batch();
+      let count = 0;
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const bill = Number(data.totalAmount || 0);
+
+        batch.update(doc.ref, {
+          oldBalance: 0,
+          paidAmount: 0,
+          balanceDue: bill,
+          paymentStatus: 'Pending'
+        });
+        count++;
+      });
+
+      return batch.commit().then(() => {
+        showModal('Reset Complete', `${count} ഓർഡറുകളുടെ അക്കൗണ്ട്സ് കണക്കുകൾ വിജയകരമായി റീസെറ്റ് ചെയ്തു!`, 'success');
+        fetchProductionMetrics();
+      });
+    }).catch(err => {
+      showModal('Error', 'റീസെറ്റ് ചെയ്യാൻ സാധിച്ചില്ല: ' + err.message, 'error');
+    });
+  }
+}
